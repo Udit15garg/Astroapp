@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Simple hand silhouette -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,20 C54,20 44,20 44,30 L44,55 C44,55 34,55 34,62 C34,62 34,72 44,72
+                         L44,80 C44,80 44,90 54,90 C64,90 64,80 64,80 L64,72 C74,72 74,62 74,62
+                         C74,55 64,55 64,55 L64,30 C64,20 54,20 54,20 Z" />
+</vector>

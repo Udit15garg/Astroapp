@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#E65100</color>
+    <color name="primary_dark">#BF360C</color>
+    <color name="secondary">#F9A825</color>
+    <color name="bg_warm">#FFF8F0</color>
+    <color name="text_dark">#2D1B00</color>
+    <color name="text_medium">#6D4C41</color>
+    <color name="chat_user_bg">#E65100</color>
+    <color name="chat_bot_bg">#FFF3E0</color>
+    <color name="score_track">#FFCCBC</color>
+    <color name="score_fill">#E65100</color>
+</resources>
