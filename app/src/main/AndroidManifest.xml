@@ -21,8 +21,24 @@
             </intent-filter>
         </activity>
 
+        <!-- Palm reading flow -->
         <activity android:name=".ScanActivity" android:exported="false" />
         <activity android:name=".ResultActivity" android:exported="false" />
+
+        <!-- Auth -->
+        <activity android:name=".AuthActivity" android:exported="false" />
+
+        <!-- Main dashboard -->
+        <activity android:name=".HomeActivity" android:exported="false" />
+
+        <!-- Multi-feature (Tarot / Numerology / Kundli / Sign / SunSign) -->
+        <activity android:name=".FeatureActivity" android:exported="false" />
+
+        <!-- Plans and credits -->
+        <activity android:name=".SubscriptionActivity" android:exported="false" />
+
+        <!-- Q&A history -->
+        <activity android:name=".HistoryActivity" android:exported="false" />
 
     </application>
 </manifest>

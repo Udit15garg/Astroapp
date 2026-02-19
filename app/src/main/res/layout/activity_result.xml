@@ -21,13 +21,33 @@
             android:textStyle="bold"
             android:textColor="@android:color/white" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/result_subtitle"
-            android:textSize="13sp"
-            android:textColor="@android:color/white"
-            android:alpha="0.85" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/result_subtitle"
+                android:textSize="13sp"
+                android:textColor="@android:color/white"
+                android:alpha="0.85" />
+
+            <TextView
+                android:id="@+id/tvCredits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🪙 1 Credit"
+                android:textSize="13sp"
+                android:textColor="@android:color/white"
+                android:background="#33FFFFFF"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Scrollable content -->

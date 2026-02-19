@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Hast Rekha</string>
-    <string name="app_title">Hast Rekha</string>
-    <string name="app_subtitle">Apne haath se jaaniye apna bhavishya\nSehat • Vivah • Kismat • Career</string>
+    <string name="app_name">AstroApp</string>
+    <string name="app_title">AstroApp 🔮</string>
+    <string name="app_subtitle">Tarot • Kundli • Numerology • Hast Rekha • Rashifal</string>
     <string name="btn_start">🖐️ Haath Scan Karein</string>
     <string name="disclaimer">Sirf manoranjan ke liye. Kisi bhi bade nirnay ke liye kisi expert se zaroor milein.</string>
 

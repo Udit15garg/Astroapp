@@ -10,4 +10,5 @@
     <color name="chat_bot_bg">#FFF3E0</color>
     <color name="score_track">#FFCCBC</color>
     <color name="score_fill">#E65100</color>
+    <color name="divider">#E0D0C8</color>
 </resources>

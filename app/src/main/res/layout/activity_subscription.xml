@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_warm">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textSize="18sp"
+            android:backgroundTint="#33FFFFFF"
+            android:layout_marginEnd="12dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:strokeColor="@android:color/white" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💎 Plans &amp; Credits"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/tvCurrentCredits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🪙 1 Credit"
+                android:textSize="13sp"
+                android:textColor="@android:color/white"
+                android:alpha="0.9" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apna plan chunein 🌟"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Plan 1: ₹49 / 3 questions -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🎯" android:textSize="32sp" android:layout_marginEnd="12dp" />
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Starter Pack" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3 sawalon ke credits" android:textSize="13sp" android:textColor="@color/text_medium" />
+                        </LinearLayout>
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹49" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBuy49"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="3 Credits Kharido — ₹49"
+                        android:backgroundTint="@color/secondary"
+                        android:layout_marginTop="12dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Plan 2: ₹99 / 10 credits per month -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#F3E5F5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⭐ POPULAR" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/secondary" android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🌟" android:textSize="32sp" android:layout_marginEnd="12dp" />
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Basic Monthly" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="10 credits — har mahine" android:textSize="13sp" android:textColor="@color/text_medium" />
+                        </LinearLayout>
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹99" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBuy99"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="10 Credits/Month — ₹99"
+                        android:backgroundTint="@color/primary"
+                        android:layout_marginTop="12dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Plan 3: ₹199 / unlimited per month -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#E8F5E9">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="♾️" android:textSize="32sp" android:layout_marginEnd="12dp" />
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Unlimited Monthly" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jitne chaaho utne sawaal!" android:textSize="13sp" android:textColor="@color/text_medium" />
+                        </LinearLayout>
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹199" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBuy199"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Unlimited/Month — ₹199"
+                        android:backgroundTint="#2E7D32"
+                        android:layout_marginTop="12dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Divider -->
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginVertical="8dp" />
+
+            <!-- Free trial button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFreeTrial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Abhi nahi — Free Trial se chalao (1 Credit)"
+                android:backgroundTint="@color/text_medium"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="@color/text_medium" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
