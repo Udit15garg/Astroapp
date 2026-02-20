@@ -68,6 +68,9 @@ class HomeActivity : AppCompatActivity() {
         binding.btnHistory.setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
+        binding.btnProfile.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
         binding.btnSubscription.setOnClickListener {
             startActivity(Intent(this, SubscriptionActivity::class.java))
         }

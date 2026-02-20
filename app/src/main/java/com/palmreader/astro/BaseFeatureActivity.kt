@@ -36,34 +36,54 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
         initDeps()
     }
 
-    /** Check credits, deduct one if available, then call onAllowed. If none, show paywall. */
-    protected fun useCredit(onAllowed: () -> Unit) {
+    /**
+     * Check credits, deduct one if available, then call onAllowed.
+     * [featureLabel] used in transaction description (e.g. "Tarot", "Kundli").
+     */
+    protected fun useCredit(featureLabel: String = "Question", onAllowed: () -> Unit) {
         lifecycleScope.launch {
-            val user = db.userDao().findById(session.userId) ?: return@launch
-            val now = System.currentTimeMillis()
-            val isUnlimited = user.planType == "UNLIMITED" && user.planExpiry > now
-            when {
-                isUnlimited -> withContext(Dispatchers.Main) { onAllowed() }
-                user.credits > 0 -> {
-                    db.userDao().deductCredit(session.userId)
-                    withContext(Dispatchers.Main) { onAllowed() }
+            try {
+                val user = db.userDao().findById(session.userId)
+                    ?: run { withContext(Dispatchers.Main) { showError("User data nahi mila. Wapas login karo.") }; return@launch }
+                val now = System.currentTimeMillis()
+                val isUnlimited = user.planType == "UNLIMITED" && user.planExpiry > now
+                when {
+                    isUnlimited -> withContext(Dispatchers.Main) { onAllowed() }
+                    user.credits > 0 -> {
+                        db.userDao().deductCredit(session.userId)
+                        db.creditTransactionDao().insert(
+                            CreditTransactionEntity(
+                                userId = session.userId, type = "USED", amount = -1,
+                                description = "$featureLabel — 1 credit use hua"
+                            )
+                        )
+                        withContext(Dispatchers.Main) { onAllowed() }
+                    }
+                    else -> withContext(Dispatchers.Main) { showPaywall() }
                 }
-                else -> withContext(Dispatchers.Main) { showPaywall() }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) { showError("Credit check mein problem: ${e.message}") }
             }
         }
     }
 
     protected fun saveToHistory(category: String, question: String, answer: String) {
         lifecycleScope.launch {
-            db.historyDao().insert(
-                HistoryEntity(
-                    userId = session.userId,
-                    category = category,
-                    question = question,
-                    answer = answer
+            try {
+                db.historyDao().insert(
+                    HistoryEntity(userId = session.userId, category = category, question = question, answer = answer)
                 )
-            )
+            } catch (_: Exception) { /* history save silently skipped */ }
         }
+    }
+
+    /** Shows a user-friendly error dialog. */
+    protected fun showError(msg: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Oops! 😕")
+            .setMessage(msg)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     /** Refresh credit badge text; pass in the TextView to update */

@@ -46,6 +46,17 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👤"
+                android:textSize="16sp"
+                android:backgroundTint="#33FFFFFF"
+                android:layout_marginEnd="6dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:strokeColor="@android:color/white" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

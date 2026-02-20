@@ -3,8 +3,10 @@ package com.palmreader.astro
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -24,8 +26,10 @@ class ScanActivity : AppCompatActivity() {
             if (photo != null) {
                 capturedBitmap = photo
                 binding.ivPreview.setImageBitmap(photo)
-                binding.btnAnalyze.isEnabled = true
-                binding.tvStatus.text = "Haath scan ho gaya! Ab 'Padho Haath' dabayein"
+                binding.handOverlay.visibility = View.GONE   // hide guide once photo captured
+                checkImageQuality(photo)
+            } else {
+                setStatus("Photo capture nahi hui. Dobara try karo.", isError = true)
             }
         }
     }
@@ -45,18 +49,48 @@ class ScanActivity : AppCompatActivity() {
         }
 
         binding.btnAnalyze.setOnClickListener {
-            val bmp = capturedBitmap
-            if (bmp != null) {
-                binding.tvStatus.text = "Haath padha ja raha hai..."
-                binding.btnAnalyze.isEnabled = false
-                val readings = PalmAnalyzer.analyze(bmp)
-                val intent = Intent(this, ResultActivity::class.java)
-                intent.putParcelableArrayListExtra("readings", ArrayList(readings))
-                startActivity(intent)
-                binding.btnAnalyze.isEnabled = true
-            } else {
+            val bmp = capturedBitmap ?: run {
                 Toast.makeText(this, "Pehle haath ka photo lein", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            // Final quality gate before analysis
+            if (ImageQualityChecker.check(bmp) != ImageQualityChecker.Quality.GOOD) {
+                Toast.makeText(this, "Photo theek karo aur dobara lo 📷", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            setStatus("Haath padha ja raha hai... ✨", isError = false)
+            binding.btnAnalyze.isEnabled = false
+            try {
+                val readings = PalmAnalyzer.analyze(bmp)
+                if (readings.isEmpty()) {
+                    setStatus("🖐️ Haath clearly nahi dikhaa. Seedha haath rakhein.", isError = true)
+                    binding.btnAnalyze.isEnabled = true
+                    return@setOnClickListener
+                }
+                startActivity(Intent(this, ResultActivity::class.java).apply {
+                    putParcelableArrayListExtra("readings", ArrayList(readings))
+                })
+            } catch (e: Exception) {
+                setStatus("Vishleshan mein problem: ${e.message}", isError = true)
+            } finally {
+                binding.btnAnalyze.isEnabled = true
             }
         }
+    }
+
+    private fun checkImageQuality(bmp: Bitmap) {
+        val quality  = ImageQualityChecker.check(bmp)
+        val feedback = ImageQualityChecker.feedback(quality)
+        val isGood   = quality == ImageQualityChecker.Quality.GOOD
+        setStatus(feedback, isError = !isGood)
+        binding.btnAnalyze.isEnabled = isGood
+        binding.btnCamera.text = if (isGood) "📷 Camera Kholo" else "📷 Dobara Lo"
+    }
+
+    private fun setStatus(msg: String, isError: Boolean) {
+        binding.tvStatus.text = msg
+        binding.tvStatus.setTextColor(
+            if (isError) Color.parseColor("#C62828") else Color.parseColor("#2E7D32")
+        )
     }
 }

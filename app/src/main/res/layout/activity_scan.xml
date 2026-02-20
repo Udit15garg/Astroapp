@@ -24,15 +24,28 @@
         android:textColor="@color/text_medium"
         android:layout_marginBottom="24dp" />
 
-    <ImageView
-        android:id="@+id/ivPreview"
+    <!-- Preview area + hand guide overlay -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:scaleType="centerCrop"
-        android:background="@drawable/bg_preview"
-        android:contentDescription="Hand preview"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="24dp">
+
+        <ImageView
+            android:id="@+id/ivPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_preview"
+            android:contentDescription="Hand preview" />
+
+        <!-- Dashed hand-boundary guide; hidden after photo is captured -->
+        <com.palmreader.astro.HandOverlayView
+            android:id="@+id/handOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCamera"

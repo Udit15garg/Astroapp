@@ -29,39 +29,59 @@ class SubscriptionActivity : BaseFeatureActivity() {
     }
 
     private fun setupPlans() {
-        // ₹49 — 3 questions
         binding.btnBuy49.setOnClickListener {
-            simulatePurchase("₹49 ka plan — 3 sawalon ke liye") {
+            simulatePurchase("₹49 — 3 Credits") {
                 lifecycleScope.launch {
-                    db.userDao().addCredits(session.userId, 3)
-                    refreshCredits(binding.tvCurrentCredits)
+                    try {
+                        db.userDao().addCredits(session.userId, 3)
+                        db.creditTransactionDao().insert(CreditTransactionEntity(
+                            userId = session.userId, type = "PURCHASED", amount = 3,
+                            description = "₹49 Starter Pack — 3 credits kharide"
+                        ))
+                        runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
+                    } catch (e: Exception) {
+                        runOnUiThread { showError("Purchase save nahi hua: ${e.message}") }
+                    }
                 }
             }
         }
 
-        // ₹99 — 10 credits / month
         binding.btnBuy99.setOnClickListener {
-            simulatePurchase("₹99 ka plan — 10 credits (1 month)") {
+            simulatePurchase("₹99/month — 10 Credits") {
                 lifecycleScope.launch {
-                    val expiry = System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000
-                    db.userDao().updatePlan(session.userId, 10, "BASIC", expiry)
-                    refreshCredits(binding.tvCurrentCredits)
+                    try {
+                        val expiry = System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000
+                        db.userDao().updatePlan(session.userId, 10, "BASIC", expiry)
+                        db.creditTransactionDao().insert(CreditTransactionEntity(
+                            userId = session.userId, type = "PLAN_ACTIVATED", amount = 10,
+                            description = "₹99 Basic Monthly — 10 credits/month activate"
+                        ))
+                        runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
+                    } catch (e: Exception) {
+                        runOnUiThread { showError("Plan activate nahi hua: ${e.message}") }
+                    }
                 }
             }
         }
 
-        // ₹199 — unlimited / month
         binding.btnBuy199.setOnClickListener {
-            simulatePurchase("₹199 ka plan — Unlimited (1 month)") {
+            simulatePurchase("₹199/month — Unlimited") {
                 lifecycleScope.launch {
-                    val expiry = System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000
-                    db.userDao().updatePlan(session.userId, 999, "UNLIMITED", expiry)
-                    refreshCredits(binding.tvCurrentCredits)
+                    try {
+                        val expiry = System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000
+                        db.userDao().updatePlan(session.userId, 999, "UNLIMITED", expiry)
+                        db.creditTransactionDao().insert(CreditTransactionEntity(
+                            userId = session.userId, type = "PLAN_ACTIVATED", amount = 999,
+                            description = "₹199 Unlimited Monthly — sabse zyada sawaal"
+                        ))
+                        runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
+                    } catch (e: Exception) {
+                        runOnUiThread { showError("Plan activate nahi hua: ${e.message}") }
+                    }
                 }
             }
         }
 
-        // Free trial (already has 1)
         binding.btnFreeTrial.setOnClickListener {
             Toast.makeText(this, "Aapko 1 free question pehle se mila hai. Use karo! 🎁", Toast.LENGTH_LONG).show()
             finish()
