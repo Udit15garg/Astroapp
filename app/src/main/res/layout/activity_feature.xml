@@ -90,7 +90,49 @@
                     android:backgroundTint="@color/secondary"
                     android:layout_marginBottom="16dp" />
 
-                <!-- 3 card buttons -->
+                <!-- Card position labels -->
+                <LinearLayout
+                    android:id="@+id/llCardLabels"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/tarot_past"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_medium"
+                        android:gravity="center"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/tarot_present"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_medium"
+                        android:gravity="center"
+                        android:layout_marginEnd="6dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/tarot_future"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_medium"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- 3 tarot card buttons -->
                 <LinearLayout
                     android:id="@+id/llCards"
                     android:layout_width="match_parent"
@@ -99,34 +141,64 @@
                     android:visibility="gone"
                     android:layout_marginBottom="12dp">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnCard1"
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="?"
-                        android:textSize="28sp"
                         android:layout_marginEnd="6dp"
-                        android:backgroundTint="@color/primary" />
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/brand_navy">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnCard2"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCard1"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:text="?"
+                            android:textSize="28sp"
+                            android:textColor="@color/brand_gold"
+                            android:backgroundTint="@color/brand_navy"
+                            app:cornerRadius="12dp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="?"
-                        android:textSize="28sp"
                         android:layout_marginEnd="6dp"
-                        android:backgroundTint="@color/primary" />
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/brand_navy">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnCard3"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCard2"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:text="?"
+                            android:textSize="28sp"
+                            android:textColor="@color/brand_gold"
+                            android:backgroundTint="@color/brand_navy"
+                            app:cornerRadius="12dp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="?"
-                        android:textSize="28sp"
-                        android:backgroundTint="@color/primary" />
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/brand_navy">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnCard3"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:text="?"
+                            android:textSize="28sp"
+                            android:textColor="@color/brand_gold"
+                            android:backgroundTint="@color/brand_navy"
+                            app:cornerRadius="12dp" />
+                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
                 <!-- Revealed card results -->
@@ -275,8 +347,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp"
-        android:background="@android:color/white"
-        android:elevation="8dp"
+        android:background="@color/surface"
+        android:elevation="4dp"
         android:visibility="gone">
 
         <EditText

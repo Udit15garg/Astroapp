@@ -4,6 +4,8 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
@@ -70,6 +72,7 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.btnDrawCards.setOnClickListener {
             drawnCards = TarotEngine.draw(3)
             revealedCount = 0
+            binding.llCardLabels.visibility = View.VISIBLE
             binding.llCards.visibility = View.VISIBLE
             binding.btnCard1.text = "?"
             binding.btnCard2.text = "?"
@@ -78,6 +81,7 @@ class FeatureActivity : BaseFeatureActivity() {
             binding.llCardResults.visibility = View.GONE
             binding.llQaSection.visibility = View.GONE
             binding.llInputBar.visibility = View.GONE
+            binding.llChat.removeAllViews()
             binding.btnDrawCards.text = getString(R.string.tarot_redraw)
         }
         val positions = listOf(
@@ -317,8 +321,17 @@ class FeatureActivity : BaseFeatureActivity() {
 
     // -- Q&A -------------------------------------------------------------------
 
+    private fun hideKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        currentFocus?.let { imm.hideSoftInputFromWindow(it.windowToken, 0) }
+    }
+
     private fun setupQA() {
+        binding.etQuestion.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) { binding.btnSend.performClick(); true } else false
+        }
         binding.btnSend.setOnClickListener {
+            hideKeyboard()
             val q = binding.etQuestion.text.toString().trim()
             if (q.isEmpty()) return@setOnClickListener
             if (currentResult == null && drawnCards.isEmpty()) {

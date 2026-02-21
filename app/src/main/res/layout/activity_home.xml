@@ -79,11 +79,10 @@
                 android:layout_height="36dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
-                android:text="@string/home_btn_logout"
+                android:text="@string/settings_title"
                 android:textSize="11sp"
                 app:cornerRadius="18dp"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                app:strokeColor="@color/outline" />
+                style="@style/Widget.Material3.Button.TonalButton" />
         </LinearLayout>
     </LinearLayout>
 

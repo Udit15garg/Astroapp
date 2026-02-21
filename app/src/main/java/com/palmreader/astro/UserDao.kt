@@ -21,4 +21,7 @@ interface UserDao {
 
     @Query("UPDATE users SET credits = :credits, planType = :planType, planExpiry = :expiry WHERE id = :userId")
     suspend fun updatePlan(userId: Long, credits: Int, planType: String, expiry: Long)
+
+    @Query("DELETE FROM users WHERE id = :userId")
+    suspend fun deleteById(userId: Long)
 }

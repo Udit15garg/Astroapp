@@ -9,4 +9,7 @@ interface HistoryDao {
 
     @Query("SELECT * FROM history WHERE userId = :userId ORDER BY timestamp DESC LIMIT 100")
     suspend fun getByUser(userId: Long): List<HistoryEntity>
+
+    @Query("DELETE FROM history WHERE userId = :userId")
+    suspend fun deleteByUser(userId: Long)
 }

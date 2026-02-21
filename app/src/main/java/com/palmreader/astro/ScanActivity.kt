@@ -39,6 +39,7 @@ class ScanActivity : AppCompatActivity() {
         binding = ActivityScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.btnBack.setOnClickListener { finish() }
         binding.btnCamera.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             if (intent.resolveActivity(packageManager) != null) {
@@ -90,7 +91,8 @@ class ScanActivity : AppCompatActivity() {
     private fun setStatus(msg: String, isError: Boolean) {
         binding.tvStatus.text = msg
         binding.tvStatus.setTextColor(
-            if (isError) Color.parseColor("#C62828") else Color.parseColor("#2E7D32")
+            if (isError) resources.getColor(R.color.error, null)
+            else resources.getColor(R.color.success, null)
         )
     }
 }

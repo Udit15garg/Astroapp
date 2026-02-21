@@ -1,0 +1,57 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Card background -->
+    <path
+        android:pathData="M8,2L40,2A4,4 0,0 1,44 6L44,42A4,4 0,0 1,40 46L8,46A4,4 0,0 1,4 42L4,6A4,4 0,0 1,8 2Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Card border -->
+    <path
+        android:pathData="M10,4L38,4A4,4 0,0 1,42 8L42,40A4,4 0,0 1,38 44L10,44A4,4 0,0 1,6 40L6,8A4,4 0,0 1,10 4Z"
+        android:strokeColor="#E65100"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Infinity symbol (lemniscate) above -->
+    <path
+        android:pathData="M24,12C24,12 20,8 16,10C12,12 12,16 16,16C20,16 24,12 24,12C24,12 28,8 32,10C36,12 36,16 32,16C28,16 24,12 24,12Z"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000" />
+
+    <!-- Central 8-pointed star -->
+    <path
+        android:pathData="M24,18L25.8,22.2L30,20.5L27,24L30,27.5L25.8,25.8L24,30L22.2,25.8L18,27.5L21,24L18,20.5L22.2,22.2Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Star center dot -->
+    <path
+        android:pathData="M24,22.5A1.5,1.5 0,1 1,24 25.5A1.5,1.5 0,1 1,24 22.5Z"
+        android:fillColor="#E65100" />
+
+    <!-- Vertical wand line below star -->
+    <path
+        android:pathData="M24,30L24,40"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="1.2" />
+
+    <!-- Wand top diamond -->
+    <path
+        android:pathData="M24,29L25.5,31L24,33L22.5,31Z"
+        android:fillColor="#F9A825" />
+
+    <!-- Small sparkle left -->
+    <path
+        android:pathData="M13,24L14,23L15,24L14,25Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Small sparkle right -->
+    <path
+        android:pathData="M33,24L34,23L35,24L34,25Z"
+        android:fillColor="#FFB74D" />
+
+</vector>

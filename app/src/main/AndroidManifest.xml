@@ -49,6 +49,9 @@
         <!-- User profile + transaction history -->
         <activity android:name=".ProfileActivity" android:exported="false" />
 
+        <!-- Settings -->
+        <activity android:name=".SettingsActivity" android:exported="false" />
+
         <!-- Privacy Policy -->
         <activity android:name=".PrivacyPolicyActivity" android:exported="false" />
 

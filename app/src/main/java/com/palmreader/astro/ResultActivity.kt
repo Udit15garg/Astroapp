@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -30,6 +31,7 @@ class ResultActivity : BaseFeatureActivity() {
         @Suppress("DEPRECATION")
         readings = intent.getParcelableArrayListExtra<PalmReading>("readings") ?: emptyList()
 
+        binding.btnBack.setOnClickListener { finish() }
         refreshCredits(binding.tvCredits)
         buildResultCards()
         setupQA()
@@ -65,7 +67,13 @@ class ResultActivity : BaseFeatureActivity() {
         binding.btnSend.setOnClickListener { sendQuestion() }
     }
 
+    private fun hideKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        currentFocus?.let { imm.hideSoftInputFromWindow(it.windowToken, 0) }
+    }
+
     private fun sendQuestion() {
+        hideKeyboard()
         val q = binding.etQuestion.text.toString().trim()
         if (q.isEmpty()) return
 

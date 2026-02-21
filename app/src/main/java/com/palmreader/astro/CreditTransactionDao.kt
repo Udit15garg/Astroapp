@@ -19,4 +19,7 @@ interface CreditTransactionDao {
 
     @Query("SELECT COALESCE(SUM(amount), 0) FROM credit_transactions WHERE userId = :userId AND type = 'BONUS'")
     suspend fun totalBonus(userId: Long): Int
+
+    @Query("DELETE FROM credit_transactions WHERE userId = :userId")
+    suspend fun deleteByUser(userId: Long)
 }

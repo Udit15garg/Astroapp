@@ -75,9 +75,7 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, SubscriptionActivity::class.java))
         }
         binding.btnLogout.setOnClickListener {
-            session.logout()
-            startActivity(Intent(this, AuthActivity::class.java))
-            finish()
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
     }
 

@@ -117,9 +117,9 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
         val tv = TextView(this).apply {
             this.text = getString(R.string.qa_user_prefix, text)
             setTextColor(Color.WHITE)
-            setBackgroundColor(Color.parseColor("#5C35C5"))
+            setBackgroundResource(R.drawable.bg_chat_user)
             setPadding(24, 16, 24, 16)
-            gravity = Gravity.END
+            textSize = 14f
             val lp = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -132,9 +132,10 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
     protected fun addBotBubble(container: LinearLayout, text: String) {
         val tv = TextView(this).apply {
             this.text = text
-            setTextColor(Color.parseColor("#2D1B6E"))
-            setBackgroundColor(Color.parseColor("#EDE7F6"))
+            setTextColor(resources.getColor(R.color.text_dark, null))
+            setBackgroundResource(R.drawable.bg_chat_bot)
             setPadding(24, 16, 24, 16)
+            textSize = 14f
             val lp = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT

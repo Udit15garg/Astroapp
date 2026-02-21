@@ -1,0 +1,66 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Card background -->
+    <path
+        android:pathData="M8,2L40,2A4,4 0,0 1,44 6L44,42A4,4 0,0 1,40 46L8,46A4,4 0,0 1,4 42L4,6A4,4 0,0 1,8 2Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Card border -->
+    <path
+        android:pathData="M10,4L38,4A4,4 0,0 1,42 8L42,40A4,4 0,0 1,38 44L10,44A4,4 0,0 1,6 40L6,8A4,4 0,0 1,10 4Z"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Inner decorative border -->
+    <path
+        android:pathData="M12,7L36,7A3,3 0,0 1,39 10L39,38A3,3 0,0 1,36 41L12,41A3,3 0,0 1,9 38L9,10A3,3 0,0 1,12 7Z"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.4"
+        android:fillColor="#00000000" />
+
+    <!-- Central star - 8-pointed -->
+    <path
+        android:pathData="M24,14L25.5,20.5L32,19L27,23L32,27L25.5,25.5L24,32L22.5,25.5L16,27L21,23L16,19L22.5,20.5Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Central star inner circle -->
+    <path
+        android:pathData="M24,20A3,3 0,1 1,24 26A3,3 0,1 1,24 20Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Moon top-left -->
+    <path
+        android:pathData="M14,11A4,4 0,1 1,14 17A3,3 0,1 0,14 11Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Moon bottom-right -->
+    <path
+        android:pathData="M34,31A4,4 0,1 1,34 37A3,3 0,1 0,34 31Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Corner dots top-left -->
+    <path
+        android:pathData="M11,9A0.8,0.8 0,1 1,11 10.6A0.8,0.8 0,1 1,11 9Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Corner dots top-right -->
+    <path
+        android:pathData="M37,9A0.8,0.8 0,1 1,37 10.6A0.8,0.8 0,1 1,37 9Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Corner dots bottom-left -->
+    <path
+        android:pathData="M11,37A0.8,0.8 0,1 1,11 38.6A0.8,0.8 0,1 1,11 37Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Corner dots bottom-right -->
+    <path
+        android:pathData="M37,37A0.8,0.8 0,1 1,37 38.6A0.8,0.8 0,1 1,37 37Z"
+        android:fillColor="#FFB74D" />
+
+</vector>

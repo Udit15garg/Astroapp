@@ -226,6 +226,23 @@
     <string name="ai_rate_limited">बहुत अधिक अनुरोध। कृपया कुछ क्षण रुकें।</string>
     <string name="ai_timeout">अपेक्षा से अधिक समय लग रहा है। कृपया पुनः प्रयास करें।</string>
 
+    <!-- ── सेटिंग्स ── -->
+    <string name="settings_title">सेटिंग्स</string>
+    <string name="settings_section_account">खाता</string>
+    <string name="settings_section_preferences">प्राथमिकताएं</string>
+    <string name="settings_section_about">जानकारी</string>
+    <string name="settings_section_danger">खतरा क्षेत्र</string>
+    <string name="settings_clear_history">रीडिंग इतिहास मिटाएं</string>
+    <string name="settings_clear_history_title">इतिहास मिटाएं</string>
+    <string name="settings_clear_history_msg">यह आपकी सभी पिछली रीडिंग मिटा देगा। यह क्रिया वापस नहीं की जा सकती।</string>
+    <string name="settings_clear_history_done">इतिहास मिटा दिया गया</string>
+    <string name="settings_logout_title">लॉग आउट</string>
+    <string name="settings_logout_msg">क्या आप लॉग आउट करना चाहते हैं?</string>
+    <string name="settings_delete_title">मेरा डेटा हटाएं</string>
+    <string name="settings_delete_msg">यह आपका खाता और सभी संबंधित डेटा स्थायी रूप से हटा देगा। यह क्रिया वापस नहीं की जा सकती।</string>
+    <string name="settings_delete_confirm">सब कुछ हटाएं</string>
+    <string name="settings_version">एस्ट्रोऐप v%s</string>
+
     <!-- ── सुगम्यता विवरण ── -->
     <string name="cd_app_logo">एस्ट्रोऐप लोगो</string>
     <string name="cd_feature_palmistry">हस्त रेखा फीचर आइकन</string>

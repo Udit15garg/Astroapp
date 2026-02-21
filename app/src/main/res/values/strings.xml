@@ -226,6 +226,23 @@
     <string name="ai_rate_limited">Too many requests. Please wait a moment and try again.</string>
     <string name="ai_timeout">Taking longer than expected. Please try again.</string>
 
+    <!-- ── Settings ── -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_account">Account</string>
+    <string name="settings_section_preferences">Preferences</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_section_danger">Danger Zone</string>
+    <string name="settings_clear_history">Clear Reading History</string>
+    <string name="settings_clear_history_title">Clear History</string>
+    <string name="settings_clear_history_msg">This will delete all your past reading history. This action cannot be undone.</string>
+    <string name="settings_clear_history_done">History cleared</string>
+    <string name="settings_logout_title">Log Out</string>
+    <string name="settings_logout_msg">Are you sure you want to log out?</string>
+    <string name="settings_delete_title">Delete My Data</string>
+    <string name="settings_delete_msg">This will permanently delete your account and all associated data. This action cannot be undone.</string>
+    <string name="settings_delete_confirm">Delete Everything</string>
+    <string name="settings_version">AstroApp v%s</string>
+
     <!-- ── Accessibility content descriptions ── -->
     <string name="cd_app_logo">AstroApp logo</string>
     <string name="cd_feature_palmistry">Palmistry feature icon</string>
