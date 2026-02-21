@@ -91,7 +91,7 @@ class ProfileActivity : BaseFeatureActivity() {
         else             -> type
     }
 
-    private fun showError(msg: String) {
+    override fun showError(msg: String) {
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle("Kuch Gadbad Hui")
             .setMessage(msg)
