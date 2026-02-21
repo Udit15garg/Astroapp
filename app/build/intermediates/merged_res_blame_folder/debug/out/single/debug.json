@@ -1,0 +1,130 @@
+[
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_history.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/activity_history.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_profile.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/activity_profile.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_result.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/activity_result.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_reading.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/item_reading.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_feature.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/activity_feature.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_chat_bot.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/bg_chat_bot.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_chat_user.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/bg_chat_user.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_preview.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/bg_preview.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_input.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/bg_input.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_result_card.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/item_result_card.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_history.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/item_history.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_scan.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/activity_scan.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_auth.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/activity_auth.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_score_track.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/bg_score_track.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_main.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_subscription.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/activity_subscription.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_score_fill.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/bg_score_fill.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_home.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/activity_home.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_credit_transaction.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/item_credit_transaction.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.palmreader.astro.app-main-40:/mipmap-xxxhdpi/ic_launcher.png"
+    }
+]

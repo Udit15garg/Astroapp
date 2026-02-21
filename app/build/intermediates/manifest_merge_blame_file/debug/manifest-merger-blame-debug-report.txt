@@ -1,0 +1,252 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.palmreader.astro"
+4    android:versionCode="3"
+5    android:versionName="3.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.CAMERA" />
+11-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:4:5-65
+11-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:4:22-62
+12    <uses-permission android:name="android.permission.INTERNET" />
+12-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:5:5-67
+12-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:5:22-64
+13
+14    <uses-feature
+14-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:6:5-85
+15        android:name="android.hardware.camera"
+15-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:6:19-57
+16        android:required="false" />
+16-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:6:58-82
+17
+18    <permission
+18-->[androidx.core:core:1.12.0] /Users/uditgarg/.gradle/caches/transforms-3/7b9e4df7753206a15acb9e9561d1013e/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
+19        android:name="com.palmreader.astro.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+19-->[androidx.core:core:1.12.0] /Users/uditgarg/.gradle/caches/transforms-3/7b9e4df7753206a15acb9e9561d1013e/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
+20        android:protectionLevel="signature" />
+20-->[androidx.core:core:1.12.0] /Users/uditgarg/.gradle/caches/transforms-3/7b9e4df7753206a15acb9e9561d1013e/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
+21
+22    <uses-permission android:name="com.palmreader.astro.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+22-->[androidx.core:core:1.12.0] /Users/uditgarg/.gradle/caches/transforms-3/7b9e4df7753206a15acb9e9561d1013e/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
+22-->[androidx.core:core:1.12.0] /Users/uditgarg/.gradle/caches/transforms-3/7b9e4df7753206a15acb9e9561d1013e/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
+23
+24    <application
+24-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:8:5-47:19
+25        android:allowBackup="true"
+25-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:9:9-35
+26        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+26-->[androidx.core:core:1.12.0] /Users/uditgarg/.gradle/caches/transforms-3/7b9e4df7753206a15acb9e9561d1013e/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
+27        android:debuggable="true"
+28        android:extractNativeLibs="true"
+29        android:icon="@mipmap/ic_launcher"
+29-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:10:9-43
+30        android:label="@string/app_name"
+30-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:11:9-41
+31        android:roundIcon="@mipmap/ic_launcher_round"
+31-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:12:9-54
+32        android:supportsRtl="true"
+32-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:13:9-35
+33        android:testOnly="true"
+34        android:theme="@style/Theme.Astroapp" >
+34-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:14:9-46
+35        <activity
+35-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:16:9-23:20
+36            android:name="com.palmreader.astro.MainActivity"
+36-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:17:13-41
+37            android:exported="true" >
+37-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:18:13-36
+38            <intent-filter>
+38-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:19:13-22:29
+39                <action android:name="android.intent.action.MAIN" />
+39-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:20:17-69
+39-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:20:25-66
+40
+41                <category android:name="android.intent.category.LAUNCHER" />
+41-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:21:17-77
+41-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:21:27-74
+42            </intent-filter>
+43        </activity>
+44
+45        <!-- Palm reading flow -->
+46        <activity
+46-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:26:9-75
+47            android:name="com.palmreader.astro.ScanActivity"
+47-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:26:19-47
+48            android:exported="false" />
+48-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:26:48-72
+49        <activity
+49-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:27:9-77
+50            android:name="com.palmreader.astro.ResultActivity"
+50-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:27:19-49
+51            android:exported="false" />
+51-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:27:50-74
+52
+53        <!-- Auth -->
+54        <activity
+54-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:30:9-75
+55            android:name="com.palmreader.astro.AuthActivity"
+55-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:30:19-47
+56            android:exported="false" />
+56-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:30:48-72
+57
+58        <!-- Main dashboard -->
+59        <activity
+59-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:33:9-75
+60            android:name="com.palmreader.astro.HomeActivity"
+60-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:33:19-47
+61            android:exported="false" />
+61-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:33:48-72
+62
+63        <!-- Multi-feature (Tarot / Numerology / Kundli / Sign / SunSign) -->
+64        <activity
+64-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:36:9-78
+65            android:name="com.palmreader.astro.FeatureActivity"
+65-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:36:19-50
+66            android:exported="false" />
+66-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:36:51-75
+67
+68        <!-- Plans and credits -->
+69        <activity
+69-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:39:9-83
+70            android:name="com.palmreader.astro.SubscriptionActivity"
+70-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:39:19-55
+71            android:exported="false" />
+71-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:39:56-80
+72
+73        <!-- Q&A history -->
+74        <activity
+74-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:42:9-78
+75            android:name="com.palmreader.astro.HistoryActivity"
+75-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:42:19-50
+76            android:exported="false" />
+76-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:42:51-75
+77
+78        <!-- User profile + coins history -->
+79        <activity
+79-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:45:9-78
+80            android:name="com.palmreader.astro.ProfileActivity"
+80-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:45:19-50
+81            android:exported="false" />
+81-->/Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:45:51-75
+82
+83        <provider
+83-->[androidx.emoji2:emoji2:1.2.0] /Users/uditgarg/.gradle/caches/transforms-3/81154e57e9e72faebf53069404691a1f/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+84            android:name="androidx.startup.InitializationProvider"
+84-->[androidx.emoji2:emoji2:1.2.0] /Users/uditgarg/.gradle/caches/transforms-3/81154e57e9e72faebf53069404691a1f/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
+85            android:authorities="com.palmreader.astro.androidx-startup"
+85-->[androidx.emoji2:emoji2:1.2.0] /Users/uditgarg/.gradle/caches/transforms-3/81154e57e9e72faebf53069404691a1f/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
+86            android:exported="false" >
+86-->[androidx.emoji2:emoji2:1.2.0] /Users/uditgarg/.gradle/caches/transforms-3/81154e57e9e72faebf53069404691a1f/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
+87            <meta-data
+87-->[androidx.emoji2:emoji2:1.2.0] /Users/uditgarg/.gradle/caches/transforms-3/81154e57e9e72faebf53069404691a1f/transformed/emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+88                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+88-->[androidx.emoji2:emoji2:1.2.0] /Users/uditgarg/.gradle/caches/transforms-3/81154e57e9e72faebf53069404691a1f/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
+89                android:value="androidx.startup" />
+89-->[androidx.emoji2:emoji2:1.2.0] /Users/uditgarg/.gradle/caches/transforms-3/81154e57e9e72faebf53069404691a1f/transformed/emoji2-1.2.0/AndroidManifest.xml:31:17-49
+90            <meta-data
+90-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/uditgarg/.gradle/caches/transforms-3/3817e0cf5fecb3882d8a20cfd4a0b874/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+91                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+91-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/uditgarg/.gradle/caches/transforms-3/3817e0cf5fecb3882d8a20cfd4a0b874/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+92                android:value="androidx.startup" />
+92-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/uditgarg/.gradle/caches/transforms-3/3817e0cf5fecb3882d8a20cfd4a0b874/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+93            <meta-data
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+94                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+95                android:value="androidx.startup" />
+95-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+96        </provider>
+97
+98        <activity
+98-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:23:9-27:75
+99            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+99-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:24:13-93
+100            android:excludeFromRecents="true"
+100-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:25:13-46
+101            android:exported="false"
+101-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:26:13-37
+102            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+102-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:27:13-72
+103        <!--
+104            Service handling Google Sign-In user revocation. For apps that do not integrate with
+105            Google Sign-In, this service will never be started.
+106        -->
+107        <service
+107-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:33:9-37:51
+108            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+108-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:34:13-89
+109            android:exported="true"
+109-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:35:13-36
+110            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION"
+110-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:36:13-107
+111            android:visibleToInstantApps="true" />
+111-->[com.google.android.gms:play-services-auth:21.0.0] /Users/uditgarg/.gradle/caches/transforms-3/41570aaad585fc42ee621574d3ce948c/transformed/play-services-auth-21.0.0/AndroidManifest.xml:37:13-48
+112
+113        <activity
+113-->[com.google.android.gms:play-services-base:18.0.1] /Users/uditgarg/.gradle/caches/transforms-3/2b2a735964110662db3870f5895ca120/transformed/play-services-base-18.0.1/AndroidManifest.xml:20:9-22:45
+114            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+114-->[com.google.android.gms:play-services-base:18.0.1] /Users/uditgarg/.gradle/caches/transforms-3/2b2a735964110662db3870f5895ca120/transformed/play-services-base-18.0.1/AndroidManifest.xml:20:19-85
+115            android:exported="false"
+115-->[com.google.android.gms:play-services-base:18.0.1] /Users/uditgarg/.gradle/caches/transforms-3/2b2a735964110662db3870f5895ca120/transformed/play-services-base-18.0.1/AndroidManifest.xml:22:19-43
+116            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+116-->[com.google.android.gms:play-services-base:18.0.1] /Users/uditgarg/.gradle/caches/transforms-3/2b2a735964110662db3870f5895ca120/transformed/play-services-base-18.0.1/AndroidManifest.xml:21:19-78
+117
+118        <meta-data
+118-->[com.google.android.gms:play-services-basement:18.2.0] /Users/uditgarg/.gradle/caches/transforms-3/b795c60d21ec3972c8640ea05f9683c4/transformed/play-services-basement-18.2.0/AndroidManifest.xml:21:9-23:69
+119            android:name="com.google.android.gms.version"
+119-->[com.google.android.gms:play-services-basement:18.2.0] /Users/uditgarg/.gradle/caches/transforms-3/b795c60d21ec3972c8640ea05f9683c4/transformed/play-services-basement-18.2.0/AndroidManifest.xml:22:13-58
+120            android:value="@integer/google_play_services_version" />
+120-->[com.google.android.gms:play-services-basement:18.2.0] /Users/uditgarg/.gradle/caches/transforms-3/b795c60d21ec3972c8640ea05f9683c4/transformed/play-services-basement-18.2.0/AndroidManifest.xml:23:13-66
+121
+122        <service
+122-->[androidx.room:room-runtime:2.6.1] /Users/uditgarg/.gradle/caches/transforms-3/6d5608a7f84b5df7673321336ec9d200/transformed/room-runtime-2.6.1/AndroidManifest.xml:24:9-28:63
+123            android:name="androidx.room.MultiInstanceInvalidationService"
+123-->[androidx.room:room-runtime:2.6.1] /Users/uditgarg/.gradle/caches/transforms-3/6d5608a7f84b5df7673321336ec9d200/transformed/room-runtime-2.6.1/AndroidManifest.xml:25:13-74
+124            android:directBootAware="true"
+124-->[androidx.room:room-runtime:2.6.1] /Users/uditgarg/.gradle/caches/transforms-3/6d5608a7f84b5df7673321336ec9d200/transformed/room-runtime-2.6.1/AndroidManifest.xml:26:13-43
+125            android:exported="false" />
+125-->[androidx.room:room-runtime:2.6.1] /Users/uditgarg/.gradle/caches/transforms-3/6d5608a7f84b5df7673321336ec9d200/transformed/room-runtime-2.6.1/AndroidManifest.xml:27:13-37
+126
+127        <receiver
+127-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+128            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+128-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+129            android:directBootAware="false"
+129-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+130            android:enabled="true"
+130-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+131            android:exported="true"
+131-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+132            android:permission="android.permission.DUMP" >
+132-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+133            <intent-filter>
+133-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+134                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+134-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+134-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+135            </intent-filter>
+136            <intent-filter>
+136-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+137                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+137-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+137-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+138            </intent-filter>
+139            <intent-filter>
+139-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+140                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+140-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+140-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+141            </intent-filter>
+142            <intent-filter>
+142-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+143                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+143-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+143-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/uditgarg/.gradle/caches/transforms-3/a9ed2558662276548dde2a526a1dbfa7/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+144            </intent-filter>
+145        </receiver>
+146    </application>
+147
+148</manifest>
