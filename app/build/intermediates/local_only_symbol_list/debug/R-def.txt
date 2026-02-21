@@ -397,6 +397,7 @@ style TextAppearance.Astro.TitleLarge
 style TextAppearance.Astro.TitleMedium
 style Theme.Astroapp
 style Theme.Astroapp.Splash
+style Widget.Astro
 style Widget.Astro.AppBar
 style Widget.Astro.Button.Outlined
 style Widget.Astro.Button.Primary

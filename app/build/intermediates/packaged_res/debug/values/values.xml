@@ -163,7 +163,7 @@
     <string name="home_btn_history">History</string>
     <string name="home_btn_logout">Logout</string>
     <string name="home_btn_profile">Profile</string>
-    <string name="home_credits_remaining">%d Credit%s remaining</string>
+    <string name="home_credits_remaining">%1$d Credit%2$s remaining</string>
     <string name="home_greeting">Hello, %s!</string>
     <string name="home_no_credits">No Credits \u2014 Recharge Now</string>
     <string name="home_section_title">What would you like to know?</string>
@@ -364,6 +364,7 @@
         <item name="android:statusBarColor">@color/brand_navy</item>
         <item name="android:navigationBarColor">@color/brand_navy</item>
     </style>
+    <style name="Widget.Astro"/>
     <style name="Widget.Astro.AppBar">
         <item name="android:background">@color/primary</item>
         <item name="android:padding">@dimen/appbar_padding</item>
