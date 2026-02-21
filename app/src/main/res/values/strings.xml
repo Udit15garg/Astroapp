@@ -51,7 +51,7 @@
     <string name="home_greeting">Hello, %s!</string>
     <string name="home_unlimited_plan">Unlimited Plan Active</string>
     <string name="home_basic_plan">%d Credits (Basic)</string>
-    <string name="home_credits_remaining">%d Credit%s remaining</string>
+    <string name="home_credits_remaining">%1$d Credit%2$s remaining</string>
     <string name="home_no_credits">No Credits \u2014 Recharge Now</string>
     <string name="home_section_title">What would you like to know?</string>
     <string name="home_subscription_banner">View Plans \u2014 \u20B949 | \u20B999 | \u20B9199</string>
