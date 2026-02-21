@@ -117,7 +117,7 @@
     <!-- ── Component Styles ── -->
 
     <!-- Base widget namespace -->
-    <style name="Widget.Astro" />
+    <style name="Widget.Astro" parent="android:Widget" />
 
     <!-- Feature Card -->
     <style name="Widget.Astro.FeatureCard" parent="Widget.Material3.CardView.Filled">
