@@ -1,0 +1,130 @@
+package com.palmreader.astro.api
+
+import com.palmreader.astro.BuildConfig
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+
+/**
+ * OpenAI API integration layer using HttpURLConnection (no Retrofit dependency needed).
+ * In production, this should be proxied through a backend server to protect the API key.
+ */
+object OpenAIService {
+
+    private const val BASE_URL = "https://api.openai.com/v1/chat/completions"
+    private const val MODEL = "gpt-4o-mini"
+    private const val TIMEOUT_MS = 30_000L
+
+    sealed class ApiResult<out T> {
+        data class Success<T>(val data: T) : ApiResult<T>()
+        data class Error(val message: String, val code: Int = -1) : ApiResult<Nothing>()
+        data object Loading : ApiResult<Nothing>()
+        data object RateLimited : ApiResult<Nothing>()
+    }
+
+    /**
+     * Send a chat completion request to OpenAI.
+     * @param systemPrompt The system-level instruction for the model
+     * @param userMessage The user's input/question
+     * @param temperature Creativity level (0.0 = deterministic, 1.0 = creative)
+     * @return ApiResult containing the response text or error details
+     */
+    suspend fun chatCompletion(
+        systemPrompt: String,
+        userMessage: String,
+        temperature: Float = 0.7f
+    ): ApiResult<String> = withContext(Dispatchers.IO) {
+        try {
+            val apiKey = try {
+                BuildConfig::class.java.getField("OPENAI_API_KEY").get(null) as? String
+            } catch (_: Exception) { null }
+
+            if (apiKey.isNullOrBlank() || apiKey == "YOUR_API_KEY_HERE") {
+                return@withContext ApiResult.Error(
+                    "API key not configured. Add OPENAI_API_KEY to local.properties."
+                )
+            }
+
+            val result = withTimeoutOrNull(TIMEOUT_MS) {
+                makeRequest(apiKey, systemPrompt, userMessage, temperature)
+            }
+
+            result ?: ApiResult.Error("Request timed out. Please try again.", 408)
+        } catch (e: Exception) {
+            ApiResult.Error("Network error: ${e.message}", -1)
+        }
+    }
+
+    private fun makeRequest(
+        apiKey: String,
+        systemPrompt: String,
+        userMessage: String,
+        temperature: Float
+    ): ApiResult<String> {
+        val requestBody = JSONObject().apply {
+            put("model", MODEL)
+            put("temperature", temperature.toDouble())
+            put("max_tokens", 1024)
+            put("messages", JSONArray().apply {
+                put(JSONObject().apply {
+                    put("role", "system")
+                    put("content", systemPrompt)
+                })
+                put(JSONObject().apply {
+                    put("role", "user")
+                    put("content", userMessage)
+                })
+            })
+        }
+
+        val connection = (URL(BASE_URL).openConnection() as HttpURLConnection).apply {
+            requestMethod = "POST"
+            setRequestProperty("Content-Type", "application/json")
+            setRequestProperty("Authorization", "Bearer $apiKey")
+            connectTimeout = 15_000
+            readTimeout = 30_000
+            doOutput = true
+        }
+
+        return try {
+            connection.outputStream.use { os ->
+                os.write(requestBody.toString().toByteArray(Charsets.UTF_8))
+            }
+
+            val responseCode = connection.responseCode
+
+            when {
+                responseCode == 429 -> ApiResult.RateLimited
+                responseCode !in 200..299 -> {
+                    val errorBody = connection.errorStream?.let { stream ->
+                        BufferedReader(InputStreamReader(stream)).use { it.readText() }
+                    } ?: "Unknown error"
+                    ApiResult.Error("API error ($responseCode): $errorBody", responseCode)
+                }
+                else -> {
+                    val responseBody = BufferedReader(
+                        InputStreamReader(connection.inputStream)
+                    ).use { it.readText() }
+
+                    val json = JSONObject(responseBody)
+                    val content = json
+                        .getJSONArray("choices")
+                        .getJSONObject(0)
+                        .getJSONObject("message")
+                        .getString("content")
+                        .trim()
+
+                    ApiResult.Success(content)
+                }
+            }
+        } finally {
+            connection.disconnect()
+        }
+    }
+}

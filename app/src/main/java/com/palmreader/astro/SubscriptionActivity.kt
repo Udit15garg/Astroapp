@@ -40,7 +40,7 @@ class SubscriptionActivity : BaseFeatureActivity() {
                         ))
                         runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
                     } catch (e: Exception) {
-                        runOnUiThread { showError("Purchase save nahi hua: ${e.message}") }
+                        runOnUiThread { showError(getString(R.string.sub_purchase_error, e.message)) }
                     }
                 }
             }
@@ -58,7 +58,7 @@ class SubscriptionActivity : BaseFeatureActivity() {
                         ))
                         runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
                     } catch (e: Exception) {
-                        runOnUiThread { showError("Plan activate nahi hua: ${e.message}") }
+                        runOnUiThread { showError(getString(R.string.sub_plan_error, e.message)) }
                     }
                 }
             }
@@ -76,14 +76,14 @@ class SubscriptionActivity : BaseFeatureActivity() {
                         ))
                         runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
                     } catch (e: Exception) {
-                        runOnUiThread { showError("Plan activate nahi hua: ${e.message}") }
+                        runOnUiThread { showError(getString(R.string.sub_plan_error, e.message)) }
                     }
                 }
             }
         }
 
         binding.btnFreeTrial.setOnClickListener {
-            Toast.makeText(this, "Aapko 1 free question pehle se mila hai. Use karo! 🎁", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.sub_free_trial_note), Toast.LENGTH_LONG).show()
             finish()
         }
     }
@@ -91,13 +91,13 @@ class SubscriptionActivity : BaseFeatureActivity() {
     private fun simulatePurchase(planName: String, onSuccess: () -> Unit) {
         // Simulated payment — in production integrate Razorpay / PhonePe
         androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Payment Confirm Karo")
-            .setMessage("$planName\n\n⚠️ Yeh demo mode hai. Production mein Razorpay se payment hogi.")
-            .setPositiveButton("✅ Confirm (Mock)") { _, _ ->
+            .setTitle(getString(R.string.sub_payment_title))
+            .setMessage("$planName\n\n${getString(R.string.sub_payment_demo_note)}")
+            .setPositiveButton(getString(R.string.sub_payment_confirm)) { _, _ ->
                 onSuccess()
-                Toast.makeText(this, "Plan activate ho gaya! 🎉", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.sub_plan_activated), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 }

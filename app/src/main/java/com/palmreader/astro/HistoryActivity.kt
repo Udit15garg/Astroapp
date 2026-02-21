@@ -35,7 +35,7 @@ class HistoryActivity : BaseFeatureActivity() {
                 binding.tvEmpty.visibility = View.GONE
                 items.forEach { h ->
                     val card = layoutInflater.inflate(R.layout.item_history, binding.llHistory, false)
-                    card.findViewById<TextView>(R.id.tvCategory).text = "📂 ${h.category}"
+                    card.findViewById<TextView>(R.id.tvCategory).text = h.category
                     card.findViewById<TextView>(R.id.tvQuestion).text = "Q: ${h.question}"
                     card.findViewById<TextView>(R.id.tvAnswer).text = "A: ${h.answer}"
                     card.findViewById<TextView>(R.id.tvDate).text = formatDate(h.timestamp)

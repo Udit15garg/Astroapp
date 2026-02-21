@@ -35,12 +35,12 @@ class HomeActivity : AppCompatActivity() {
             val user = db.userDao().findById(session.userId) ?: return@launch
             val now = System.currentTimeMillis()
             runOnUiThread {
-                binding.tvGreeting.text = "Namasté, ${user.name}! 🙏"
+                binding.tvGreeting.text = getString(R.string.home_greeting, user.name)
                 binding.tvCredits.text = when {
-                    user.planType == "UNLIMITED" && user.planExpiry > now -> "✨ Unlimited Plan Active"
-                    user.planType == "BASIC" && user.planExpiry > now -> "🪙 ${user.credits} Credits (Basic)"
-                    user.credits > 0 -> "🪙 ${user.credits} Credit${if (user.credits > 1) "s" else ""} bache"
-                    else -> "⚠️ Credits Khatam — Recharge Karo"
+                    user.planType == "UNLIMITED" && user.planExpiry > now -> getString(R.string.home_unlimited_plan)
+                    user.planType == "BASIC" && user.planExpiry > now -> getString(R.string.home_basic_plan, user.credits)
+                    user.credits > 0 -> getString(R.string.home_credits_remaining, user.credits, if (user.credits > 1) "s" else "")
+                    else -> getString(R.string.home_no_credits)
                 }
             }
         }
@@ -51,19 +51,19 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, ScanActivity::class.java))
         }
         binding.cardTarot.setOnClickListener {
-            startFeature("TAROT", "🎴 Tarot Reading")
+            startFeature("TAROT", getString(R.string.feature_tarot))
         }
         binding.cardNumerology.setOnClickListener {
-            startFeature("NUMEROLOGY", "🔢 Numerology")
+            startFeature("NUMEROLOGY", getString(R.string.feature_numerology))
         }
         binding.cardKundli.setOnClickListener {
-            startFeature("KUNDLI", "⭐ Kundli")
+            startFeature("KUNDLI", getString(R.string.feature_kundli))
         }
         binding.cardSign.setOnClickListener {
-            startFeature("SIGN", "♈ Rashifal / Sign")
+            startFeature("SIGN", getString(R.string.feature_rashifal))
         }
         binding.cardSunSign.setOnClickListener {
-            startFeature("SUN_SIGN", "☀️ Sun Sign")
+            startFeature("SUN_SIGN", getString(R.string.feature_sunsign))
         }
         binding.btnHistory.setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))

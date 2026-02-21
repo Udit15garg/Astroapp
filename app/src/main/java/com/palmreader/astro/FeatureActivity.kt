@@ -61,14 +61,14 @@ class FeatureActivity : BaseFeatureActivity() {
             binding.llCardResults.visibility = View.GONE
             binding.llQaSection.visibility = View.GONE
             binding.llInputBar.visibility = View.GONE
-            binding.btnDrawCards.text = "🔄 Phir Se Draw Karo"
+            binding.btnDrawCards.text = getString(R.string.tarot_redraw)
         }
         val positions = listOf("Bhoot (Past)", "Vartaman (Present)", "Bhavishya (Future)")
         val buttons = listOf(binding.btnCard1, binding.btnCard2, binding.btnCard3)
         buttons.forEachIndexed { i, btn ->
             btn.setOnClickListener {
                 if (drawnCards.isEmpty()) {
-                    Toast.makeText(this, "Pehle cards draw karo!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.tarot_draw_first), Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
                 if (btn.text == "?") {
@@ -90,7 +90,7 @@ class FeatureActivity : BaseFeatureActivity() {
         val card = layoutInflater.inflate(R.layout.item_result_card, binding.llCardResults, false)
         card.findViewById<TextView>(R.id.tvLabel).text = header
         card.findViewById<TextView>(R.id.tvValue).text = meaning
-        card.findViewById<TextView>(R.id.tvDesc).text = "💡 $advice"
+        card.findViewById<TextView>(R.id.tvDesc).text = getString(R.string.feature_tip_prefix, advice)
         binding.llCardResults.addView(card)
     }
 
@@ -104,7 +104,7 @@ class FeatureActivity : BaseFeatureActivity() {
             val name = binding.etName.text.toString().trim()
             val dob = binding.etDob.text.toString().trim()
             if (name.isEmpty() || dob.isEmpty()) {
-                Toast.makeText(this, "Naam aur DOB bharo", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.numerology_missing_fields), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             lifePathNum = NumerologyEngine.lifePathNumber(dob)
@@ -121,14 +121,14 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.tilPlace.visibility = View.VISIBLE
         binding.etDob.isFocusable = false
         binding.etDob.setOnClickListener { pickDate(binding.etDob) }
-        binding.btnAnalyze.text = "Kundli Banao 🔮"
+        binding.btnAnalyze.text = getString(R.string.kundli_analyze)
         binding.btnAnalyze.setOnClickListener {
             val name = binding.etName.text.toString().trim()
             val dob = binding.etDob.text.toString().trim()
             val time = binding.etTime.text.toString().trim()
             val place = binding.etPlace.text.toString().trim()
             if (name.isEmpty() || dob.isEmpty()) {
-                Toast.makeText(this, "Naam aur DOB zaroor bharo", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.kundli_missing_fields), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             currentResult = KundliEngine.calculate(name, dob, time, place)
@@ -143,11 +143,11 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.etDob.isFocusable = false
         binding.etDob.hint = "DD/MM/YYYY"
         binding.etDob.setOnClickListener { pickDate(binding.etDob) }
-        binding.btnAnalyze.text = "Rashifal Dekho ♈"
+        binding.btnAnalyze.text = getString(R.string.sign_analyze)
         binding.btnAnalyze.setOnClickListener {
             val dob = binding.etDob.text.toString().trim()
             if (dob.isEmpty()) {
-                Toast.makeText(this, "Apni DOB bharo", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.sign_missing_dob), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             currentSign = SignEngine.fromDob(dob)
@@ -184,7 +184,7 @@ class FeatureActivity : BaseFeatureActivity() {
         }
 
         val summaryView = TextView(this).apply {
-            text = "📝 ${result.summary}"
+            text = result.summary
             setTextColor(0xFF555555.toInt())
             textSize = 13f
             setPadding(0, 8, 0, 16)
@@ -201,7 +201,7 @@ class FeatureActivity : BaseFeatureActivity() {
             val q = binding.etQuestion.text.toString().trim()
             if (q.isEmpty()) return@setOnClickListener
             if (currentResult == null && drawnCards.isEmpty()) {
-                Toast.makeText(this, "Pehle apni reading karo", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.qa_no_reading_first), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             binding.etQuestion.setText("")

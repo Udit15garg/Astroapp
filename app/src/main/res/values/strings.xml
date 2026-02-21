@@ -1,20 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- ── App-wide ── -->
     <string name="app_name">AstroApp</string>
-    <string name="app_title">AstroApp 🔮</string>
-    <string name="app_subtitle">Tarot • Kundli • Numerology • Hast Rekha • Rashifal</string>
-    <string name="btn_start">🖐️ Haath Scan Karein</string>
-    <string name="disclaimer">Sirf manoranjan ke liye. Kisi bhi bade nirnay ke liye kisi expert se zaroor milein.</string>
+    <string name="app_title">AstroApp</string>
+    <string name="app_subtitle">Tarot \u2022 Kundli \u2022 Numerology \u2022 Palmistry \u2022 Rashifal</string>
+    <string name="disclaimer">For entertainment purposes only. For important decisions, always consult an expert.</string>
+    <string name="entertainment_disclaimer">This reading is for entertainment purposes only and should not be used for medical, financial, or legal decisions.</string>
 
-    <string name="scan_title">Haath Ka Photo Lein</string>
-    <string name="scan_instruction">Apna seedha haath camera ke saamne rakhein, roshan jagah par photo lein</string>
-    <string name="btn_camera">📷 Camera Kholo</string>
-    <string name="btn_analyze">🔮 Padho Haath</string>
+    <!-- ── Common ── -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="back">Back</string>
+    <string name="send">Send</string>
+    <string name="retry">Retry</string>
+    <string name="loading">Loading\u2026</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="error_no_internet">No internet connection. Please check your network and try again.</string>
+    <string name="error_timeout">Request timed out. Please try again.</string>
+    <string name="error_user_not_found">User data not found. Please log in again.</string>
 
-    <string name="result_title">Aapka Hast Rekha Phal</string>
-    <string name="result_subtitle">Aapke haath ki lines ka vishleshan</string>
+    <!-- ── Splash / Main ── -->
+    <string name="btn_start">Start Palm Scan</string>
+    <string name="splash_loading">Preparing your cosmic journey\u2026</string>
 
-    <string name="qa_title">💬 Sawaal Poochein</string>
-    <string name="qa_hint">Jaise: Mera vivah kab hoga?</string>
-    <string name="btn_send">Poochho</string>
+    <!-- ── Auth ── -->
+    <string name="auth_title_signup">Welcome!\nCreate Account</string>
+    <string name="auth_title_login">Welcome Back!\nLog In</string>
+    <string name="auth_name_hint">Your Name</string>
+    <string name="auth_email_hint">Email</string>
+    <string name="auth_password_hint">Password</string>
+    <string name="auth_signup_button">Sign Up \u2014 1 Free Question!</string>
+    <string name="auth_login_button">Log In</string>
+    <string name="auth_toggle_to_login">Already have an account? Log in</string>
+    <string name="auth_toggle_to_signup">New here? Sign up</string>
+    <string name="auth_google_button">Continue with Google</string>
+    <string name="auth_or_divider">or</string>
+    <string name="auth_email_error">Enter a valid email</string>
+    <string name="auth_password_error">Password must be 4+ characters</string>
+    <string name="auth_email_exists">This email is already registered. Please log in.</string>
+    <string name="auth_invalid_credentials">Invalid email or password. Please try again.</string>
+    <string name="auth_signup_error">Sign up failed: %s</string>
+    <string name="auth_login_error">Login failed: %s</string>
+    <string name="auth_google_error">Google Sign-In failed (code %d).\n\nSetup required:\n1. Create OAuth client in Google Cloud Console\n2. Add your app SHA-1 fingerprint</string>
+    <string name="auth_google_generic_error">Google Sign-In failed: %s</string>
+    <string name="auth_google_cancelled">Google sign-in was cancelled</string>
+    <string name="auth_account_error">Account creation failed: %s</string>
+    <string name="error_dialog_title">Something Went Wrong</string>
+
+    <!-- ── Home ── -->
+    <string name="home_greeting">Hello, %s!</string>
+    <string name="home_unlimited_plan">Unlimited Plan Active</string>
+    <string name="home_basic_plan">%d Credits (Basic)</string>
+    <string name="home_credits_remaining">%d Credit%s remaining</string>
+    <string name="home_no_credits">No Credits \u2014 Recharge Now</string>
+    <string name="home_section_title">What would you like to know?</string>
+    <string name="home_subscription_banner">View Plans \u2014 \u20B949 | \u20B999 | \u20B9199</string>
+    <string name="home_btn_profile">Profile</string>
+    <string name="home_btn_history">History</string>
+    <string name="home_btn_logout">Logout</string>
+
+    <!-- ── Features ── -->
+    <string name="feature_palmistry">Palmistry</string>
+    <string name="feature_palmistry_subtitle">Hast Rekha</string>
+    <string name="feature_tarot">Tarot Reading</string>
+    <string name="feature_numerology">Numerology</string>
+    <string name="feature_kundli">Kundli</string>
+    <string name="feature_rashifal">Rashifal</string>
+    <string name="feature_sunsign">Sun Sign</string>
+    <string name="feature_reading">Reading</string>
+
+    <!-- ── Scan ── -->
+    <string name="scan_title">Take a Palm Photo</string>
+    <string name="scan_instruction">Place your right hand in front of the camera in a well-lit area</string>
+    <string name="btn_camera">Open Camera</string>
+    <string name="btn_camera_retake">Retake Photo</string>
+    <string name="btn_analyze">Analyze Palm</string>
+    <string name="scan_analyzing">Analyzing your palm\u2026</string>
+    <string name="scan_no_photo">Photo capture failed. Please try again.</string>
+    <string name="scan_palm_not_visible">Palm not clearly visible. Place your hand straight.</string>
+    <string name="scan_quality_bad">Please improve photo quality and retake.</string>
+    <string name="scan_quality_dark">Too dark! Move to a well-lit area or turn on the flashlight.</string>
+    <string name="scan_quality_blurry">Photo is blurry! Hold the camera steady and retake.</string>
+    <string name="scan_quality_good">Photo looks good! Tap Analyze Palm.</string>
+    <string name="scan_error">Analysis error: %s</string>
+    <string name="scan_take_photo_first">Take a palm photo first</string>
+    <string name="scan_camera_unavailable">Camera is not available</string>
+    <string name="scan_hand_guide">Place Hand Here</string>
+    <string name="scan_hand_guide_sub">Right hand, well-lit area</string>
+
+    <!-- ── Results ── -->
+    <string name="result_title">Your Palm Reading</string>
+    <string name="result_subtitle">Analysis of your palm lines</string>
+
+    <!-- ── Q&A ── -->
+    <string name="qa_title">Ask a Question</string>
+    <string name="qa_hint">E.g.: When will I get married?</string>
+    <string name="qa_credit_note">Each question costs 1 credit</string>
+    <string name="qa_no_reading_first">Complete your reading first</string>
+    <string name="btn_send">Ask</string>
+    <string name="qa_input_hint">Type your question\u2026</string>
+    <string name="qa_user_prefix">You: %s</string>
+    <string name="qa_bot_prefix">Astrologer: %s</string>
+    <string name="qa_ask_about">Please ask about:\nHealth, Marriage, Education, Career, Children, Mind, or Luck</string>
+
+    <!-- ── Feature Activity ── -->
+    <string name="tarot_instruction">Choose three cards and read your future</string>
+    <string name="tarot_draw">Draw Cards</string>
+    <string name="tarot_redraw">Redraw Cards</string>
+    <string name="tarot_draw_first">Draw cards first!</string>
+    <string name="tarot_past">Past</string>
+    <string name="tarot_present">Present</string>
+    <string name="tarot_future">Future</string>
+    <string name="tarot_result_title">Tarot Card Reading</string>
+    <string name="tarot_summary">Your future has been revealed in three cards.</string>
+
+    <string name="numerology_name_hint">Full Name</string>
+    <string name="numerology_dob_hint">Date of Birth (DD/MM/YYYY)</string>
+    <string name="numerology_missing_fields">Enter your name and date of birth</string>
+    <string name="numerology_result_title">Numerology Reading</string>
+    <string name="numerology_analyze">Analyze</string>
+
+    <string name="kundli_name_hint">Full Name</string>
+    <string name="kundli_dob_hint">Date of Birth (DD/MM/YYYY)</string>
+    <string name="kundli_time_hint">Birth Time (HH:MM)</string>
+    <string name="kundli_place_hint">Birth Place</string>
+    <string name="kundli_missing_fields">Name and Date of Birth are required</string>
+    <string name="kundli_analyze">Generate Kundli</string>
+    <string name="kundli_result_title">Your Kundli</string>
+    <string name="kundli_simplified_note">This is a simplified Vedic reading. For a detailed Kundli, consult an astrologer.</string>
+
+    <string name="sign_dob_hint">DD/MM/YYYY</string>
+    <string name="sign_missing_dob">Enter your date of birth</string>
+    <string name="sign_analyze">View Rashifal</string>
+    <string name="sign_result_prefix">Your Rashifal \u2014 %s</string>
+
+    <string name="feature_analyze">Analyze</string>
+    <string name="feature_tip_prefix">Tip: %s</string>
+    <string name="feature_summary_prefix">Note: %s</string>
+
+    <!-- ── Subscription ── -->
+    <string name="sub_title">Plans &amp; Credits</string>
+    <string name="sub_choose_plan">Choose Your Plan</string>
+    <string name="sub_starter_title">Starter Pack</string>
+    <string name="sub_starter_desc">3 question credits</string>
+    <string name="sub_starter_buy">Buy 3 Credits \u2014 \u20B949</string>
+    <string name="sub_basic_title">Basic Monthly</string>
+    <string name="sub_basic_desc">10 credits \u2014 every month</string>
+    <string name="sub_basic_buy">10 Credits/Month \u2014 \u20B999</string>
+    <string name="sub_basic_badge">POPULAR</string>
+    <string name="sub_unlimited_title">Unlimited Monthly</string>
+    <string name="sub_unlimited_desc">Ask as many questions as you want!</string>
+    <string name="sub_unlimited_buy">Unlimited/Month \u2014 \u20B9199</string>
+    <string name="sub_free_trial">Not now \u2014 Continue with Free Trial (1 Credit)</string>
+    <string name="sub_free_trial_note">You already have 1 free question. Use it!</string>
+    <string name="sub_payment_title">Confirm Payment</string>
+    <string name="sub_payment_demo_note">This is demo mode. In production, payment will be processed via Razorpay.</string>
+    <string name="sub_payment_confirm">Confirm (Mock)</string>
+    <string name="sub_plan_activated">Plan activated!</string>
+    <string name="sub_purchase_error">Purchase failed: %s</string>
+    <string name="sub_plan_error">Plan activation failed: %s</string>
+
+    <!-- ── History ── -->
+    <string name="history_title">Past Readings</string>
+    <string name="history_empty">No readings yet. Try any feature!</string>
+    <string name="history_question_prefix">Q: %s</string>
+    <string name="history_answer_prefix">A: %s</string>
+
+    <!-- ── Profile ── -->
+    <string name="profile_title">My Profile</string>
+    <string name="profile_plan_unlimited">Unlimited \u2014 expires %s</string>
+    <string name="profile_plan_basic">Basic \u2014 expires %s</string>
+    <string name="profile_plan_free">Free</string>
+    <string name="profile_credits_summary">Credits Summary</string>
+    <string name="profile_stat_balance">Balance</string>
+    <string name="profile_stat_purchased">Purchased</string>
+    <string name="profile_stat_used">Used</string>
+    <string name="profile_stat_bonus">Bonus</string>
+    <string name="profile_tx_history">Transaction History</string>
+    <string name="profile_tx_empty">No transactions yet.</string>
+    <string name="profile_tx_bonus">Bonus</string>
+    <string name="profile_tx_purchased">Purchased</string>
+    <string name="profile_tx_used">Used</string>
+    <string name="profile_tx_plan">Plan</string>
+    <string name="profile_data_error">Failed to load data: %s</string>
+    <string name="profile_settings">Settings</string>
+    <string name="profile_language">Language</string>
+    <string name="profile_privacy_policy">Privacy Policy</string>
+    <string name="profile_terms">Terms of Service</string>
+    <string name="profile_delete_data">Delete My Data</string>
+
+    <!-- ── Credits ── -->
+    <string name="credits_format">%d Credits</string>
+    <string name="credits_single">1 Credit</string>
+    <string name="credits_unlimited">Unlimited</string>
+    <string name="credits_check_error">Credit check error: %s</string>
+    <string name="credits_exhausted_title">Credits Exhausted!</string>
+    <string name="credits_exhausted_message">Your free question has been used.\nGet a membership for more questions.</string>
+    <string name="credits_exhausted_cta">View Plans</string>
+    <string name="credits_exhausted_later">Later</string>
+
+    <!-- ── Palm reading categories ── -->
+    <string name="category_health">Health</string>
+    <string name="category_marriage">Marriage</string>
+    <string name="category_education">Education</string>
+    <string name="category_brain">Mind</string>
+    <string name="category_children">Children</string>
+    <string name="category_career">Career</string>
+    <string name="category_luck">Luck</string>
+
+    <!-- ── Privacy ── -->
+    <string name="privacy_title">Privacy Policy</string>
+    <string name="terms_title">Terms of Service</string>
+    <string name="consent_title">Data Processing Consent</string>
+    <string name="consent_message">AstroApp collects your name, email, and reading history to provide personalized readings. Your data is stored locally on your device and is never shared with third parties without your consent.\n\nDo you agree to proceed?</string>
+    <string name="consent_agree">I Agree</string>
+    <string name="consent_decline">Decline</string>
+
+    <!-- ── Language ── -->
+    <string name="language_english">English</string>
+    <string name="language_hindi">Hindi</string>
+
+    <!-- ── Accessibility content descriptions ── -->
+    <string name="cd_app_logo">AstroApp logo</string>
+    <string name="cd_feature_palmistry">Palmistry feature icon</string>
+    <string name="cd_feature_tarot">Tarot reading feature icon</string>
+    <string name="cd_feature_numerology">Numerology feature icon</string>
+    <string name="cd_feature_kundli">Kundli feature icon</string>
+    <string name="cd_feature_rashifal">Rashifal feature icon</string>
+    <string name="cd_feature_sunsign">Sun sign feature icon</string>
+    <string name="cd_hand_preview">Hand preview area</string>
+    <string name="cd_profile_icon">Go to profile</string>
+    <string name="cd_history_icon">View history</string>
+    <string name="cd_back_button">Go back</string>
+    <string name="cd_logout_button">Log out</string>
+    <string name="cd_score_bar">Score indicator</string>
 </resources>

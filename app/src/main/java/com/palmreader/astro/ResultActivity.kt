@@ -32,7 +32,7 @@ class ResultActivity : BaseFeatureActivity() {
                 .inflate(R.layout.item_reading, binding.llReadings, false)
 
             card.findViewById<TextView>(R.id.tvCategory).text =
-                "${reading.emoji} ${reading.categoryHindi} / ${reading.category}"
+                "${reading.categoryHindi} / ${reading.category}"
             card.findViewById<TextView>(R.id.tvScore).text = "${reading.score}/10"
 
             val bar = card.findViewById<LinearLayout>(R.id.scoreBar)

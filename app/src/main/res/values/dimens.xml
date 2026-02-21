@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ── Spacing tokens (4dp base grid) ── -->
+    <dimen name="spacing_xxs">2dp</dimen>
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">12dp</dimen>
+    <dimen name="spacing_lg">16dp</dimen>
+    <dimen name="spacing_xl">24dp</dimen>
+    <dimen name="spacing_xxl">32dp</dimen>
+    <dimen name="spacing_xxxl">48dp</dimen>
+
+    <!-- ── Corner radius ── -->
+    <dimen name="radius_sm">8dp</dimen>
+    <dimen name="radius_md">12dp</dimen>
+    <dimen name="radius_lg">16dp</dimen>
+    <dimen name="radius_xl">24dp</dimen>
+    <dimen name="radius_full">50dp</dimen>
+
+    <!-- ── Elevation ── -->
+    <dimen name="elevation_none">0dp</dimen>
+    <dimen name="elevation_low">2dp</dimen>
+    <dimen name="elevation_medium">4dp</dimen>
+    <dimen name="elevation_high">8dp</dimen>
+
+    <!-- ── Touch targets ── -->
+    <dimen name="touch_target_min">48dp</dimen>
+
+    <!-- ── Card ── -->
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+
+    <!-- ── Feature card ── -->
+    <dimen name="feature_card_height">120dp</dimen>
+    <dimen name="feature_icon_size">40dp</dimen>
+
+    <!-- ── Input ── -->
+    <dimen name="input_corner_radius">24dp</dimen>
+
+    <!-- ── App bar ── -->
+    <dimen name="appbar_padding">16dp</dimen>
+
+    <!-- ── Screen padding ── -->
+    <dimen name="screen_padding_horizontal">16dp</dimen>
+    <dimen name="screen_padding_vertical">16dp</dimen>
+</resources>

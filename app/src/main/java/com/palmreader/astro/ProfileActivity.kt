@@ -44,10 +44,10 @@ class ProfileActivity : BaseFeatureActivity() {
                     // Plan badge
                     val planText = when {
                         user.planType == "UNLIMITED" && user.planExpiry > now ->
-                            "✨ Unlimited — expires ${formatDate(user.planExpiry)}"
+                            getString(R.string.profile_plan_unlimited, formatDate(user.planExpiry))
                         user.planType == "BASIC" && user.planExpiry > now ->
-                            "🌟 Basic — expires ${formatDate(user.planExpiry)}"
-                        else -> "🆓 Free"
+                            getString(R.string.profile_plan_basic, formatDate(user.planExpiry))
+                        else -> getString(R.string.profile_plan_free)
                     }
                     binding.tvPlan.text = planText
 
@@ -78,24 +78,24 @@ class ProfileActivity : BaseFeatureActivity() {
                     }
                 }
             } catch (e: Exception) {
-                runOnUiThread { showError("Data load karne mein problem: ${e.message}") }
+                runOnUiThread { showError(getString(R.string.profile_data_error, e.message)) }
             }
         }
     }
 
     private fun typeLabel(type: String) = when (type) {
-        "BONUS"          -> "🎁 Bonus"
-        "PURCHASED"      -> "🛒 Purchased"
-        "USED"           -> "💬 Used"
-        "PLAN_ACTIVATED" -> "⭐ Plan"
+        "BONUS"          -> getString(R.string.profile_tx_bonus)
+        "PURCHASED"      -> getString(R.string.profile_tx_purchased)
+        "USED"           -> getString(R.string.profile_tx_used)
+        "PLAN_ACTIVATED" -> getString(R.string.profile_tx_plan)
         else             -> type
     }
 
     override fun showError(msg: String) {
         androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Kuch Gadbad Hui")
+            .setTitle(getString(R.string.error_dialog_title))
             .setMessage(msg)
-            .setPositiveButton("OK", null)
+            .setPositiveButton(getString(R.string.ok), null)
             .show()
     }
 }

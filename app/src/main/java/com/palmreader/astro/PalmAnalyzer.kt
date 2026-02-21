@@ -9,13 +9,13 @@ object PalmAnalyzer {
         val seed = getImageSeed(bitmap)
         val random = Random(seed)
         return listOf(
-            makeReading("Health", "Swasthya", "❤️", random, healthMsgs),
-            makeReading("Marriage", "Vivah", "💍", random, marriageMsgs),
-            makeReading("Education", "Shiksha", "📚", random, educationMsgs),
-            makeReading("Brain", "Buddhi", "🧠", random, brainMsgs),
-            makeReading("Children", "Santaan", "👶", random, childrenMsgs),
-            makeReading("Career", "Career", "💼", random, careerMsgs),
-            makeReading("Luck", "Kismat", "🌟", random, luckMsgs)
+            makeReading("Health", "Swasthya", "Health", random, healthMsgs),
+            makeReading("Marriage", "Vivah", "Marriage", random, marriageMsgs),
+            makeReading("Education", "Shiksha", "Education", random, educationMsgs),
+            makeReading("Brain", "Buddhi", "Brain", random, brainMsgs),
+            makeReading("Children", "Santaan", "Children", random, childrenMsgs),
+            makeReading("Career", "Career", "Career", random, careerMsgs),
+            makeReading("Luck", "Kismat", "Luck", random, luckMsgs)
         )
     }
 
@@ -76,7 +76,7 @@ object PalmAnalyzer {
         }
 
         return if (reading != null) {
-            "${reading.emoji} ${reading.categoryHindi} (${reading.category}): ${reading.score}/10\n\n${reading.interpretation}"
+            "${reading.categoryHindi} (${reading.category}): ${reading.score}/10\n\n${reading.interpretation}"
         } else {
             "Kripya apna sawaal in mein se kisi baare mein poochein:\n" +
             "Sehat, Vivah, Padhai, Career, Bacche, Dimag, ya Kismat"

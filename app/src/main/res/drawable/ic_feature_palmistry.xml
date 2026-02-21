@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stylized open palm with line markings -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Palm shape -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M32,8 C32,8 24,8 24,16 L24,36 C24,36 16,36 16,42 C16,42 16,50 24,50
+                         L24,56 C24,56 24,60 32,60 C40,60 40,56 40,56 L40,50 C48,50 48,42 48,42
+                         C48,36 40,36 40,36 L40,16 C40,8 32,8 32,8 Z" />
+    <!-- Palm lines -->
+    <path
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:pathData="M22,38 Q32,42 42,38" />
+    <path
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000"
+        android:pathData="M24,44 Q32,47 40,44" />
+    <path
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="1"
+        android:fillColor="#00000000"
+        android:pathData="M32,36 L32,52" />
+</vector>

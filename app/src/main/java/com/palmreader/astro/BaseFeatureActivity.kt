@@ -44,7 +44,7 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val user = db.userDao().findById(session.userId)
-                    ?: run { withContext(Dispatchers.Main) { showError("User data nahi mila. Wapas login karo.") }; return@launch }
+                    ?: run { withContext(Dispatchers.Main) { showError(getString(R.string.error_user_not_found)) }; return@launch }
                 val now = System.currentTimeMillis()
                 val isUnlimited = user.planType == "UNLIMITED" && user.planExpiry > now
                 when {
@@ -62,7 +62,7 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
                     else -> withContext(Dispatchers.Main) { showPaywall() }
                 }
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) { showError("Credit check mein problem: ${e.message}") }
+                withContext(Dispatchers.Main) { showError(getString(R.string.credits_check_error, e.message)) }
             }
         }
     }
@@ -80,9 +80,9 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
     /** Shows a user-friendly error dialog. */
     protected open fun showError(msg: String) {
         AlertDialog.Builder(this)
-            .setTitle("Oops! 😕")
+            .setTitle(getString(R.string.error_dialog_title))
             .setMessage(msg)
-            .setPositiveButton("OK", null)
+            .setPositiveButton(getString(R.string.ok), null)
             .show()
     }
 
@@ -93,8 +93,8 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 val now = System.currentTimeMillis()
                 badge.text = when {
-                    user.planType == "UNLIMITED" && user.planExpiry > now -> "∞ Unlimited"
-                    else -> "🪙 ${user.credits} Credits"
+                    user.planType == "UNLIMITED" && user.planExpiry > now -> getString(R.string.credits_unlimited)
+                    else -> getString(R.string.credits_format, user.credits)
                 }
             }
         }
@@ -102,12 +102,12 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
 
     private fun showPaywall() {
         AlertDialog.Builder(this)
-            .setTitle("Credits Khatam! 😔")
-            .setMessage("Aapka free question use ho gaya.\nAur sawalon ke liye membership lo.")
-            .setPositiveButton("Plans Dekho") { _, _ ->
+            .setTitle(getString(R.string.credits_exhausted_title))
+            .setMessage(getString(R.string.credits_exhausted_message))
+            .setPositiveButton(getString(R.string.credits_exhausted_cta)) { _, _ ->
                 startActivity(Intent(this, SubscriptionActivity::class.java))
             }
-            .setNegativeButton("Baad Mein", null)
+            .setNegativeButton(getString(R.string.credits_exhausted_later), null)
             .show()
     }
 
@@ -115,7 +115,7 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
 
     protected fun addUserBubble(container: LinearLayout, text: String) {
         val tv = TextView(this).apply {
-            this.text = "Aap: $text"
+            this.text = getString(R.string.qa_user_prefix, text)
             setTextColor(Color.WHITE)
             setBackgroundColor(Color.parseColor("#5C35C5"))
             setPadding(24, 16, 24, 16)
@@ -131,7 +131,7 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
 
     protected fun addBotBubble(container: LinearLayout, text: String) {
         val tv = TextView(this).apply {
-            this.text = "🔮 $text"
+            this.text = text
             setTextColor(Color.parseColor("#2D1B6E"))
             setBackgroundColor(Color.parseColor("#EDE7F6"))
             setPadding(24, 16, 24, 16)

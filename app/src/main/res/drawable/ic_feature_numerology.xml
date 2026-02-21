@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stylized numbers in cosmic arrangement -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Outer circle -->
+    <path
+        android:strokeColor="#E65100"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:pathData="M32,4 A28,28 0,1 1,31.99,4" />
+    <!-- Inner circle -->
+    <path
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="1"
+        android:fillColor="#00000000"
+        android:pathData="M32,12 A20,20 0,1 1,31.99,12" />
+    <!-- Number 1 -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M24,26 L26,24 L28,24 L28,38 L26,38 L26,28 L24,30 Z" />
+    <!-- Number 7 -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M34,24 L42,24 L42,26 L38,38 L36,38 L40,26 L34,26 Z" />
+    <!-- Dots -->
+    <path
+        android:fillColor="#FFB74D"
+        android:fillAlpha="0.6"
+        android:pathData="M20,44 m-2,0 a2,2 0,1 1,4 0 a2,2 0,1 1,-4 0" />
+    <path
+        android:fillColor="#FFB74D"
+        android:fillAlpha="0.6"
+        android:pathData="M32,48 m-2,0 a2,2 0,1 1,4 0 a2,2 0,1 1,-4 0" />
+    <path
+        android:fillColor="#FFB74D"
+        android:fillAlpha="0.6"
+        android:pathData="M44,44 m-2,0 a2,2 0,1 1,4 0 a2,2 0,1 1,-4 0" />
+</vector>

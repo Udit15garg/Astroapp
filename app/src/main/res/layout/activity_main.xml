@@ -7,11 +7,11 @@
     android:padding="32dp"
     android:background="@color/bg_warm">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🖐️"
-        android:textSize="80sp"
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_app_logo"
+        android:contentDescription="@string/cd_app_logo"
         android:layout_marginBottom="8dp" />
 
     <TextView

@@ -95,7 +95,7 @@ class HandOverlayView @JvmOverloads constructor(
         canvas.drawPath(handPath, strokePaint)
 
         // Instruction label
-        canvas.drawText("🖐️  Haath Yahan Rakhein", width / 2f, height * 0.12f, labelPaint)
-        canvas.drawText("Seedha haath, roshan jagah", width / 2f, height * 0.92f, subLabelPaint)
+        canvas.drawText("Place Hand Here", width / 2f, height * 0.12f, labelPaint)
+        canvas.drawText("Right hand, well-lit area", width / 2f, height * 0.92f, subLabelPaint)
     }
 }

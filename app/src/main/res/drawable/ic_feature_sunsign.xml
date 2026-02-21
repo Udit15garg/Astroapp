@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stylized sun with zodiac ring -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Sun rays -->
+    <path
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:pathData="M32,4 L32,12 M32,52 L32,60
+                         M4,32 L12,32 M52,32 L60,32
+                         M12.2,12.2 L18,18 M46,46 L51.8,51.8
+                         M51.8,12.2 L46,18 M18,46 L12.2,51.8" />
+    <!-- Sun circle outer -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M32,14 A18,18 0,1 1,31.99,14" />
+    <!-- Sun circle inner -->
+    <path
+        android:fillColor="#FFB74D"
+        android:pathData="M32,20 A12,12 0,1 1,31.99,20" />
+    <!-- Center dot -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M32,32 m-4,0 a4,4 0,1 1,8 0 a4,4 0,1 1,-8 0" />
+</vector>

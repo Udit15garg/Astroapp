@@ -44,26 +44,26 @@ class ScanActivity : AppCompatActivity() {
             if (intent.resolveActivity(packageManager) != null) {
                 cameraLauncher.launch(intent)
             } else {
-                Toast.makeText(this, "Camera available nahi hai", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.scan_camera_unavailable), Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.btnAnalyze.setOnClickListener {
             val bmp = capturedBitmap ?: run {
-                Toast.makeText(this, "Pehle haath ka photo lein", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.scan_take_photo_first), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             // Final quality gate before analysis
             if (ImageQualityChecker.check(bmp) != ImageQualityChecker.Quality.GOOD) {
-                Toast.makeText(this, "Photo theek karo aur dobara lo 📷", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.scan_quality_bad), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            setStatus("Haath padha ja raha hai... ✨", isError = false)
+            setStatus(getString(R.string.scan_analyzing), isError = false)
             binding.btnAnalyze.isEnabled = false
             try {
                 val readings = PalmAnalyzer.analyze(bmp)
                 if (readings.isEmpty()) {
-                    setStatus("🖐️ Haath clearly nahi dikhaa. Seedha haath rakhein.", isError = true)
+                    setStatus(getString(R.string.scan_palm_not_visible), isError = true)
                     binding.btnAnalyze.isEnabled = true
                     return@setOnClickListener
                 }
@@ -84,7 +84,7 @@ class ScanActivity : AppCompatActivity() {
         val isGood   = quality == ImageQualityChecker.Quality.GOOD
         setStatus(feedback, isError = !isGood)
         binding.btnAnalyze.isEnabled = isGood
-        binding.btnCamera.text = if (isGood) "📷 Camera Kholo" else "📷 Dobara Lo"
+        binding.btnCamera.text = if (isGood) getString(R.string.btn_camera) else getString(R.string.btn_camera_retake)
     }
 
     private fun setStatus(msg: String, isError: Boolean) {

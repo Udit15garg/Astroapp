@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ── ऐप-व्यापी ── -->
+    <string name="app_name">एस्ट्रोऐप</string>
+    <string name="app_title">एस्ट्रोऐप</string>
+    <string name="app_subtitle">टैरो \u2022 कुंडली \u2022 अंक ज्योतिष \u2022 हस्त रेखा \u2022 राशिफल</string>
+    <string name="disclaimer">सिर्फ मनोरंजन के लिए। किसी भी बड़े निर्णय के लिए किसी विशेषज्ञ से ज़रूर मिलें।</string>
+    <string name="entertainment_disclaimer">यह रीडिंग सिर्फ मनोरंजन के लिए है और इसका उपयोग चिकित्सा, वित्तीय, या कानूनी निर्णयों के लिए नहीं किया जाना चाहिए।</string>
+
+    <!-- ── सामान्य ── -->
+    <string name="ok">ठीक है</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="back">वापस</string>
+    <string name="send">भेजें</string>
+    <string name="retry">पुनः प्रयास करें</string>
+    <string name="loading">लोड हो रहा है\u2026</string>
+    <string name="error_generic">कुछ गड़बड़ हुई। कृपया पुनः प्रयास करें।</string>
+    <string name="error_no_internet">इंटरनेट कनेक्शन नहीं है। कृपया अपना नेटवर्क जांचें और पुनः प्रयास करें।</string>
+    <string name="error_timeout">अनुरोध का समय समाप्त हो गया। कृपया पुनः प्रयास करें।</string>
+    <string name="error_user_not_found">उपयोगकर्ता डेटा नहीं मिला। कृपया फिर से लॉग इन करें।</string>
+
+    <!-- ── स्प्लैश / मुख्य ── -->
+    <string name="btn_start">हाथ स्कैन करें</string>
+    <string name="splash_loading">आपकी ब्रह्मांडीय यात्रा तैयार हो रही है\u2026</string>
+
+    <!-- ── प्रमाणीकरण ── -->
+    <string name="auth_title_signup">नमस्ते!\nखाता बनाएं</string>
+    <string name="auth_title_login">वापस आए!\nलॉग इन करें</string>
+    <string name="auth_name_hint">आपका नाम</string>
+    <string name="auth_email_hint">ईमेल</string>
+    <string name="auth_password_hint">पासवर्ड</string>
+    <string name="auth_signup_button">साइन अप \u2014 1 मुफ्त प्रश्न!</string>
+    <string name="auth_login_button">लॉग इन</string>
+    <string name="auth_toggle_to_login">पहले से खाता है? लॉग इन करें</string>
+    <string name="auth_toggle_to_signup">नए हैं? साइन अप करें</string>
+    <string name="auth_google_button">Google से जारी रखें</string>
+    <string name="auth_or_divider">या</string>
+    <string name="auth_email_error">वैध ईमेल दर्ज करें</string>
+    <string name="auth_password_error">पासवर्ड 4+ अक्षरों का होना चाहिए</string>
+    <string name="auth_email_exists">यह ईमेल पहले से पंजीकृत है। कृपया लॉग इन करें।</string>
+    <string name="auth_invalid_credentials">ईमेल या पासवर्ड गलत है। पुनः प्रयास करें।</string>
+    <string name="auth_signup_error">साइन अप में समस्या: %s</string>
+    <string name="auth_login_error">लॉग इन में समस्या: %s</string>
+    <string name="auth_google_error">Google साइन-इन विफल (कोड %d)।\n\nसेटअप आवश्यक:\n1. Google Cloud Console में OAuth क्लाइंट बनाएं\n2. ऐप का SHA-1 फिंगरप्रिंट जोड़ें</string>
+    <string name="auth_google_generic_error">Google साइन-इन विफल: %s</string>
+    <string name="auth_google_cancelled">Google साइन-इन रद्द किया गया</string>
+    <string name="auth_account_error">खाता बनाने में समस्या: %s</string>
+    <string name="error_dialog_title">कुछ गड़बड़ हुई</string>
+
+    <!-- ── होम ── -->
+    <string name="home_greeting">नमस्ते, %s!</string>
+    <string name="home_unlimited_plan">अनलिमिटेड प्लान सक्रिय</string>
+    <string name="home_basic_plan">%d क्रेडिट (बेसिक)</string>
+    <string name="home_credits_remaining">%d क्रेडिट शेष</string>
+    <string name="home_no_credits">क्रेडिट समाप्त \u2014 रिचार्ज करें</string>
+    <string name="home_section_title">आप क्या जानना चाहेंगे?</string>
+    <string name="home_subscription_banner">प्लान देखें \u2014 \u20B949 | \u20B999 | \u20B9199</string>
+    <string name="home_btn_profile">प्रोफ़ाइल</string>
+    <string name="home_btn_history">इतिहास</string>
+    <string name="home_btn_logout">लॉग आउट</string>
+
+    <!-- ── फ़ीचर्स ── -->
+    <string name="feature_palmistry">हस्त रेखा</string>
+    <string name="feature_palmistry_subtitle">पामिस्ट्री</string>
+    <string name="feature_tarot">टैरो रीडिंग</string>
+    <string name="feature_numerology">अंक ज्योतिष</string>
+    <string name="feature_kundli">कुंडली</string>
+    <string name="feature_rashifal">राशिफल</string>
+    <string name="feature_sunsign">सूर्य राशि</string>
+    <string name="feature_reading">रीडिंग</string>
+
+    <!-- ── स्कैन ── -->
+    <string name="scan_title">हाथ का फोटो लें</string>
+    <string name="scan_instruction">अपना सीधा हाथ कैमरे के सामने रखें, रोशन जगह पर फोटो लें</string>
+    <string name="btn_camera">कैमरा खोलें</string>
+    <string name="btn_camera_retake">दोबारा फोटो लें</string>
+    <string name="btn_analyze">हाथ पढ़ें</string>
+    <string name="scan_analyzing">हाथ पढ़ा जा रहा है\u2026</string>
+    <string name="scan_no_photo">फोटो कैप्चर नहीं हुई। दोबारा प्रयास करें।</string>
+    <string name="scan_palm_not_visible">हाथ स्पष्ट नहीं दिखा। सीधा हाथ रखें।</string>
+    <string name="scan_quality_bad">फोटो की गुणवत्ता सुधारें और दोबारा लें।</string>
+    <string name="scan_quality_dark">बहुत अंधेरा! रोशन जगह पर जाएं या टॉर्च जलाएं।</string>
+    <string name="scan_quality_blurry">फोटो धुंधली है! कैमरा स्थिर रखें और दोबारा लें।</string>
+    <string name="scan_quality_good">फोटो अच्छी है! अब \"हाथ पढ़ें\" दबाएं।</string>
+    <string name="scan_error">विश्लेषण में समस्या: %s</string>
+    <string name="scan_take_photo_first">पहले हाथ का फोटो लें</string>
+    <string name="scan_camera_unavailable">कैमरा उपलब्ध नहीं है</string>
+    <string name="scan_hand_guide">हाथ यहां रखें</string>
+    <string name="scan_hand_guide_sub">सीधा हाथ, रोशन जगह</string>
+
+    <!-- ── परिणाम ── -->
+    <string name="result_title">आपका हस्त रेखा फल</string>
+    <string name="result_subtitle">आपके हाथ की रेखाओं का विश्लेषण</string>
+
+    <!-- ── प्रश्नोत्तर ── -->
+    <string name="qa_title">सवाल पूछें</string>
+    <string name="qa_hint">जैसे: मेरा विवाह कब होगा?</string>
+    <string name="qa_credit_note">हर सवाल 1 क्रेडिट लेता है</string>
+    <string name="qa_no_reading_first">पहले अपनी रीडिंग पूरी करें</string>
+    <string name="btn_send">पूछें</string>
+    <string name="qa_input_hint">अपना सवाल लिखें\u2026</string>
+    <string name="qa_user_prefix">आप: %s</string>
+    <string name="qa_bot_prefix">ज्योतिषी: %s</string>
+    <string name="qa_ask_about">कृपया इनमें से किसी विषय पर पूछें:\nस्वास्थ्य, विवाह, शिक्षा, करियर, संतान, बुद्धि, या किस्मत</string>
+
+    <!-- ── फ़ीचर गतिविधि ── -->
+    <string name="tarot_instruction">तीन पत्ते चुनें और भविष्य पढ़ें</string>
+    <string name="tarot_draw">पत्ते निकालें</string>
+    <string name="tarot_redraw">फिर से निकालें</string>
+    <string name="tarot_draw_first">पहले पत्ते निकालें!</string>
+    <string name="tarot_past">भूत (अतीत)</string>
+    <string name="tarot_present">वर्तमान</string>
+    <string name="tarot_future">भविष्य</string>
+    <string name="tarot_result_title">टैरो कार्ड रीडिंग</string>
+    <string name="tarot_summary">तीन पत्तों में आपका भविष्य प्रकट हुआ है।</string>
+
+    <string name="numerology_name_hint">पूरा नाम</string>
+    <string name="numerology_dob_hint">जन्म तिथि (DD/MM/YYYY)</string>
+    <string name="numerology_missing_fields">नाम और जन्म तिथि भरें</string>
+    <string name="numerology_result_title">अंक ज्योतिष रीडिंग</string>
+    <string name="numerology_analyze">विश्लेषण करें</string>
+
+    <string name="kundli_name_hint">पूरा नाम</string>
+    <string name="kundli_dob_hint">जन्म तिथि (DD/MM/YYYY)</string>
+    <string name="kundli_time_hint">जन्म समय (HH:MM)</string>
+    <string name="kundli_place_hint">जन्म स्थान</string>
+    <string name="kundli_missing_fields">नाम और जन्म तिथि ज़रूरी हैं</string>
+    <string name="kundli_analyze">कुंडली बनाएं</string>
+    <string name="kundli_result_title">आपकी कुंडली</string>
+    <string name="kundli_simplified_note">यह एक सरलीकृत वैदिक रीडिंग है। विस्तृत कुंडली के लिए ज्योतिषी से मिलें।</string>
+
+    <string name="sign_dob_hint">DD/MM/YYYY</string>
+    <string name="sign_missing_dob">अपनी जन्म तिथि भरें</string>
+    <string name="sign_analyze">राशिफल देखें</string>
+    <string name="sign_result_prefix">आपका राशिफल \u2014 %s</string>
+
+    <string name="feature_analyze">विश्लेषण करें</string>
+    <string name="feature_tip_prefix">सुझाव: %s</string>
+    <string name="feature_summary_prefix">नोट: %s</string>
+
+    <!-- ── सदस्यता ── -->
+    <string name="sub_title">प्लान और क्रेडिट</string>
+    <string name="sub_choose_plan">अपना प्लान चुनें</string>
+    <string name="sub_starter_title">स्टार्टर पैक</string>
+    <string name="sub_starter_desc">3 सवालों के क्रेडिट</string>
+    <string name="sub_starter_buy">3 क्रेडिट खरीदें \u2014 \u20B949</string>
+    <string name="sub_basic_title">बेसिक मंथली</string>
+    <string name="sub_basic_desc">10 क्रेडिट \u2014 हर महीने</string>
+    <string name="sub_basic_buy">10 क्रेडिट/माह \u2014 \u20B999</string>
+    <string name="sub_basic_badge">लोकप्रिय</string>
+    <string name="sub_unlimited_title">अनलिमिटेड मंथली</string>
+    <string name="sub_unlimited_desc">जितने चाहो उतने सवाल पूछो!</string>
+    <string name="sub_unlimited_buy">अनलिमिटेड/माह \u2014 \u20B9199</string>
+    <string name="sub_free_trial">अभी नहीं \u2014 फ्री ट्रायल जारी रखें (1 क्रेडिट)</string>
+    <string name="sub_free_trial_note">आपको 1 मुफ्त सवाल पहले से मिला है। इसे उपयोग करें!</string>
+    <string name="sub_payment_title">भुगतान पुष्टि करें</string>
+    <string name="sub_payment_demo_note">यह डेमो मोड है। प्रोडक्शन में Razorpay से भुगतान होगा।</string>
+    <string name="sub_payment_confirm">पुष्टि करें (मॉक)</string>
+    <string name="sub_plan_activated">प्लान सक्रिय हो गया!</string>
+    <string name="sub_purchase_error">खरीद विफल: %s</string>
+    <string name="sub_plan_error">प्लान सक्रिय नहीं हुआ: %s</string>
+
+    <!-- ── इतिहास ── -->
+    <string name="history_title">पुरानी रीडिंग्स</string>
+    <string name="history_empty">अभी कोई रीडिंग नहीं। कोई भी फीचर आज़माएं!</string>
+    <string name="history_question_prefix">प्रश्न: %s</string>
+    <string name="history_answer_prefix">उत्तर: %s</string>
+
+    <!-- ── प्रोफ़ाइल ── -->
+    <string name="profile_title">मेरी प्रोफ़ाइल</string>
+    <string name="profile_plan_unlimited">अनलिमिटेड \u2014 समाप्ति %s</string>
+    <string name="profile_plan_basic">बेसिक \u2014 समाप्ति %s</string>
+    <string name="profile_plan_free">मुफ्त</string>
+    <string name="profile_credits_summary">क्रेडिट सारांश</string>
+    <string name="profile_stat_balance">शेष</string>
+    <string name="profile_stat_purchased">खरीदे</string>
+    <string name="profile_stat_used">उपयोग किए</string>
+    <string name="profile_stat_bonus">बोनस</string>
+    <string name="profile_tx_history">लेनदेन इतिहास</string>
+    <string name="profile_tx_empty">अभी कोई लेनदेन नहीं।</string>
+    <string name="profile_tx_bonus">बोनस</string>
+    <string name="profile_tx_purchased">खरीदा</string>
+    <string name="profile_tx_used">उपयोग</string>
+    <string name="profile_tx_plan">प्लान</string>
+    <string name="profile_data_error">डेटा लोड करने में समस्या: %s</string>
+    <string name="profile_settings">सेटिंग्स</string>
+    <string name="profile_language">भाषा</string>
+    <string name="profile_privacy_policy">गोपनीयता नीति</string>
+    <string name="profile_terms">सेवा की शर्तें</string>
+    <string name="profile_delete_data">मेरा डेटा हटाएं</string>
+
+    <!-- ── क्रेडिट ── -->
+    <string name="credits_format">%d क्रेडिट</string>
+    <string name="credits_single">1 क्रेडिट</string>
+    <string name="credits_unlimited">अनलिमिटेड</string>
+    <string name="credits_check_error">क्रेडिट जांच में समस्या: %s</string>
+    <string name="credits_exhausted_title">क्रेडिट समाप्त!</string>
+    <string name="credits_exhausted_message">आपका मुफ्त सवाल उपयोग हो गया।\nऔर सवालों के लिए मेंबरशिप लें।</string>
+    <string name="credits_exhausted_cta">प्लान देखें</string>
+    <string name="credits_exhausted_later">बाद में</string>
+
+    <!-- ── हस्त रेखा श्रेणियां ── -->
+    <string name="category_health">स्वास्थ्य</string>
+    <string name="category_marriage">विवाह</string>
+    <string name="category_education">शिक्षा</string>
+    <string name="category_brain">बुद्धि</string>
+    <string name="category_children">संतान</string>
+    <string name="category_career">करियर</string>
+    <string name="category_luck">किस्मत</string>
+
+    <!-- ── गोपनीयता ── -->
+    <string name="privacy_title">गोपनीयता नीति</string>
+    <string name="terms_title">सेवा की शर्तें</string>
+    <string name="consent_title">डेटा प्रोसेसिंग सहमति</string>
+    <string name="consent_message">एस्ट्रोऐप व्यक्तिगत रीडिंग प्रदान करने के लिए आपका नाम, ईमेल, और रीडिंग इतिहास एकत्र करता है। आपका डेटा आपके डिवाइस पर स्थानीय रूप से संग्रहीत होता है और आपकी सहमति के बिना तीसरे पक्ष के साथ साझा नहीं किया जाता।\n\nक्या आप सहमत हैं?</string>
+    <string name="consent_agree">मैं सहमत हूं</string>
+    <string name="consent_decline">अस्वीकार करें</string>
+
+    <!-- ── भाषा ── -->
+    <string name="language_english">अंग्रेजी</string>
+    <string name="language_hindi">हिंदी</string>
+
+    <!-- ── सुगम्यता विवरण ── -->
+    <string name="cd_app_logo">एस्ट्रोऐप लोगो</string>
+    <string name="cd_feature_palmistry">हस्त रेखा फीचर आइकन</string>
+    <string name="cd_feature_tarot">टैरो रीडिंग फीचर आइकन</string>
+    <string name="cd_feature_numerology">अंक ज्योतिष फीचर आइकन</string>
+    <string name="cd_feature_kundli">कुंडली फीचर आइकन</string>
+    <string name="cd_feature_rashifal">राशिफल फीचर आइकन</string>
+    <string name="cd_feature_sunsign">सूर्य राशि फीचर आइकन</string>
+    <string name="cd_hand_preview">हाथ का प्रीव्यू क्षेत्र</string>
+    <string name="cd_profile_icon">प्रोफ़ाइल पर जाएं</string>
+    <string name="cd_history_icon">इतिहास देखें</string>
+    <string name="cd_back_button">वापस जाएं</string>
+    <string name="cd_logout_button">लॉग आउट करें</string>
+    <string name="cd_score_bar">स्कोर सूचक</string>
+</resources>

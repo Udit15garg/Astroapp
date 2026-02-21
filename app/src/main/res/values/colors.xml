@@ -1,14 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- ── Material Design 3: Warm Saffron/Gold Palette ── -->
+
+    <!-- Primary -->
     <color name="primary">#E65100</color>
     <color name="primary_dark">#BF360C</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="primary_container">#FFDBCF</color>
+    <color name="on_primary_container">#3A0B00</color>
+
+    <!-- Secondary -->
     <color name="secondary">#F9A825</color>
+    <color name="secondary_dark">#C17900</color>
+    <color name="on_secondary">#FFFFFF</color>
+    <color name="secondary_container">#FFDEA6</color>
+    <color name="on_secondary_container">#2B1700</color>
+
+    <!-- Tertiary -->
+    <color name="tertiary">#7B5800</color>
+    <color name="on_tertiary">#FFFFFF</color>
+    <color name="tertiary_container">#FFDEAC</color>
+    <color name="on_tertiary_container">#271900</color>
+
+    <!-- Error -->
+    <color name="error">#BA1A1A</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="error_container">#FFDAD6</color>
+    <color name="on_error_container">#410002</color>
+
+    <!-- Surface / Background -->
     <color name="bg_warm">#FFF8F0</color>
+    <color name="surface">#FFF8F0</color>
+    <color name="on_surface">#2D1B00</color>
+    <color name="surface_variant">#F5DED2</color>
+    <color name="on_surface_variant">#53433C</color>
+    <color name="surface_container">#FFEEE3</color>
+    <color name="surface_container_high">#FFE4D6</color>
+    <color name="surface_container_low">#FFF3EC</color>
+
+    <!-- Outline -->
+    <color name="outline">#87746B</color>
+    <color name="outline_variant">#D8C2B7</color>
+
+    <!-- Text -->
     <color name="text_dark">#2D1B00</color>
     <color name="text_medium">#6D4C41</color>
+    <color name="text_light">#A08979</color>
+
+    <!-- Chat -->
     <color name="chat_user_bg">#E65100</color>
     <color name="chat_bot_bg">#FFF3E0</color>
+
+    <!-- Score bar -->
     <color name="score_track">#FFCCBC</color>
     <color name="score_fill">#E65100</color>
+
+    <!-- Divider -->
     <color name="divider">#E0D0C8</color>
+
+    <!-- Feature card backgrounds -->
+    <color name="card_palmistry">#F3E5F5</color>
+    <color name="card_tarot">#FCE4EC</color>
+    <color name="card_numerology">#E8F5E9</color>
+    <color name="card_kundli">#FFF8E1</color>
+    <color name="card_rashifal">#E3F2FD</color>
+    <color name="card_sunsign">#FFF3E0</color>
+
+    <!-- Status colors -->
+    <color name="success">#2E7D32</color>
+    <color name="warning">#F57F17</color>
+    <color name="info">#1565C0</color>
+
+    <!-- Splash/brand -->
+    <color name="brand_navy">#1A1A2E</color>
+    <color name="brand_gold">#FFB74D</color>
 </resources>

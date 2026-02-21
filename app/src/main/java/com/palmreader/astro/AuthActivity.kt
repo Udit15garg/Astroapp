@@ -29,17 +29,17 @@ class AuthActivity : AppCompatActivity() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account  = task.getResult(ApiException::class.java)
-                val email    = account.email ?: throw Exception("Email nahi mila")
+                val email    = account.email ?: throw Exception("Email not found")
                 val name     = account.displayName ?: "AstroUser"
                 val googleId = "google_${account.id}"
                 handleGoogleUser(name, email, googleId)
             } catch (e: ApiException) {
-                showError("Google Sign-In fail hua (code ${e.statusCode}).\n\nSetup ke liye:\n1. Google Cloud Console mein OAuth client banao\n2. App ka SHA-1 add karo")
+                showError(getString(R.string.auth_google_error, e.statusCode))
             } catch (e: Exception) {
-                showError("Google Sign-In fail: ${e.message}")
+                showError(getString(R.string.auth_google_generic_error, e.message))
             }
         } else {
-            Toast.makeText(this, "Google sign-in cancel ho gaya", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.auth_google_cancelled), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -86,10 +86,10 @@ class AuthActivity : AppCompatActivity() {
     private fun validate(email: String, pass: String): Boolean {
         var ok = true
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.tilEmail.error = "Valid email bharo"; ok = false
+            binding.tilEmail.error = getString(R.string.auth_email_error); ok = false
         } else { binding.tilEmail.error = null }
         if (pass.length < 4) {
-            binding.tilPassword.error = "Password 4+ characters ka ho"; ok = false
+            binding.tilPassword.error = getString(R.string.auth_password_error); ok = false
         } else { binding.tilPassword.error = null }
         return ok
     }
@@ -102,24 +102,24 @@ class AuthActivity : AppCompatActivity() {
 
     private fun updateMode() {
         if (isSignUp) {
-            binding.tvTitle.text       = "Namasté! 🙏\nAccount Banao"
+            binding.tvTitle.text       = getString(R.string.auth_title_signup)
             binding.tilName.visibility = View.VISIBLE
-            binding.btnSubmit.text     = "Sign Up — 1 Free Question!"
-            binding.tvToggle.text      = "Pehle se account hai? Login karo →"
+            binding.btnSubmit.text     = getString(R.string.auth_signup_button)
+            binding.tvToggle.text      = getString(R.string.auth_toggle_to_login)
         } else {
-            binding.tvTitle.text       = "Wapas Aaye! ✨\nLogin Karo"
+            binding.tvTitle.text       = getString(R.string.auth_title_login)
             binding.tilName.visibility = View.GONE
-            binding.btnSubmit.text     = "Login"
-            binding.tvToggle.text      = "Naya account? Sign Up karo →"
+            binding.btnSubmit.text     = getString(R.string.auth_login_button)
+            binding.tvToggle.text      = getString(R.string.auth_toggle_to_signup)
         }
     }
 
     private fun showError(msg: String) = runOnUiThread {
         setLoading(false)
         AlertDialog.Builder(this)
-            .setTitle("Kuch Gadbad Hui 😕")
+            .setTitle(getString(R.string.error_dialog_title))
             .setMessage(msg)
-            .setPositiveButton("OK", null)
+            .setPositiveButton(getString(R.string.ok), null)
             .show()
     }
 
@@ -129,7 +129,7 @@ class AuthActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 if (db.userDao().findByEmail(email) != null) {
-                    showError("Yeh email pehle se registered hai. Login karo."); return@launch
+                    showError(getString(R.string.auth_email_exists)); return@launch
                 }
                 val userId = db.userDao().insert(
                     UserEntity(name = name, email = email, passwordHash = pass.hashCode().toString(), credits = 1)
@@ -140,7 +140,7 @@ class AuthActivity : AppCompatActivity() {
                 session.userId = userId
                 runOnUiThread { goHome() }
             } catch (e: Exception) {
-                showError("Sign-up mein problem aayi: ${e.message}")
+                showError(getString(R.string.auth_signup_error, e.message))
             }
         }
     }
@@ -150,12 +150,12 @@ class AuthActivity : AppCompatActivity() {
             try {
                 val user = db.userDao().findByEmail(email)
                 if (user == null || user.passwordHash != pass.hashCode().toString()) {
-                    showError("Email ya password galat hai. Dobara try karo."); return@launch
+                    showError(getString(R.string.auth_invalid_credentials)); return@launch
                 }
                 session.userId = user.id
                 runOnUiThread { goHome() }
             } catch (e: Exception) {
-                showError("Login mein problem aayi: ${e.message}")
+                showError(getString(R.string.auth_login_error, e.message))
             }
         }
     }
@@ -177,7 +177,7 @@ class AuthActivity : AppCompatActivity() {
                 }
                 runOnUiThread { goHome() }
             } catch (e: Exception) {
-                showError("Account banana mein problem: ${e.message}")
+                showError(getString(R.string.auth_account_error, e.message))
             }
         }
     }

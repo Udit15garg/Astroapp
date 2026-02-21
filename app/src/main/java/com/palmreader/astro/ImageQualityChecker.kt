@@ -49,8 +49,8 @@ object ImageQualityChecker {
 
     /** Human-readable feedback in Hinglish. */
     fun feedback(quality: Quality): String = when (quality) {
-        Quality.TOO_DARK -> "⚠️ Andhera zyada hai! Roshan jagah par jaayein ya torch jalayein."
-        Quality.BLURRY   -> "⚠️ Photo blurry hai! Camera ko stable rakhein aur dobara lo."
-        Quality.GOOD     -> "✅ Photo acchi hai! Ab 'Padho Haath' dabayein."
+        Quality.TOO_DARK -> "Andhera zyada hai! Roshan jagah par jaayein ya torch jalayein."
+        Quality.BLURRY   -> "Photo blurry hai! Camera ko stable rakhein aur dobara lo."
+        Quality.GOOD     -> "Photo acchi hai! Ab 'Padho Haath' dabayein."
     }
 }
