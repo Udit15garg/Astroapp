@@ -78,7 +78,7 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
     }
 
     /** Shows a user-friendly error dialog. */
-    protected fun showError(msg: String) {
+    protected open fun showError(msg: String) {
         AlertDialog.Builder(this)
             .setTitle("Oops! 😕")
             .setMessage(msg)
