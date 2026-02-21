@@ -364,7 +364,7 @@
         <item name="android:statusBarColor">@color/brand_navy</item>
         <item name="android:navigationBarColor">@color/brand_navy</item>
     </style>
-    <style name="Widget.Astro"/>
+    <style name="Widget.Astro" parent="android:Widget"/>
     <style name="Widget.Astro.AppBar">
         <item name="android:background">@color/primary</item>
         <item name="android:padding">@dimen/appbar_padding</item>

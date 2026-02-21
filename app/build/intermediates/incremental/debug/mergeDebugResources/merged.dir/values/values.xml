@@ -7546,7 +7546,7 @@
     <style name="Widget.AppCompat.TextView.SpinnerItem" parent="Base.Widget.AppCompat.TextView.SpinnerItem"/>
     <style name="Widget.AppCompat.Toolbar" parent="Base.Widget.AppCompat.Toolbar"/>
     <style name="Widget.AppCompat.Toolbar.Button.Navigation" parent="Base.Widget.AppCompat.Toolbar.Button.Navigation"/>
-    <style name="Widget.Astro"/>
+    <style name="Widget.Astro" parent="android:Widget"/>
     <style name="Widget.Astro.AppBar">
         <item name="android:background">@color/primary</item>
         <item name="android:padding">@dimen/appbar_padding</item>
