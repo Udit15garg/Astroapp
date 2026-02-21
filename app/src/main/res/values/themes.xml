@@ -116,6 +116,9 @@
 
     <!-- ── Component Styles ── -->
 
+    <!-- Base widget namespace -->
+    <style name="Widget.Astro" />
+
     <!-- Feature Card -->
     <style name="Widget.Astro.FeatureCard" parent="Widget.Material3.CardView.Filled">
         <item name="cardCornerRadius">@dimen/card_corner_radius</item>
