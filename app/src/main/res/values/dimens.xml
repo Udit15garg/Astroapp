@@ -27,13 +27,14 @@
     <dimen name="touch_target_min">48dp</dimen>
 
     <!-- ── Card ── -->
-    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_corner_radius">20dp</dimen>
     <dimen name="card_padding">16dp</dimen>
     <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_inner_padding">20dp</dimen>
 
     <!-- ── Feature card ── -->
-    <dimen name="feature_card_height">120dp</dimen>
-    <dimen name="feature_icon_size">40dp</dimen>
+    <dimen name="feature_card_height">140dp</dimen>
+    <dimen name="feature_icon_size">48dp</dimen>
 
     <!-- ── Input ── -->
     <dimen name="input_corner_radius">24dp</dimen>

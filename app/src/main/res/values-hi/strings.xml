@@ -220,6 +220,12 @@
     <string name="language_english">अंग्रेजी</string>
     <string name="language_hindi">हिंदी</string>
 
+    <!-- ── AI एकीकरण ── -->
+    <string name="ai_loading">सितारों से सलाह ली जा रही है\u2026</string>
+    <string name="ai_reading_error">रीडिंग तैयार नहीं हो सकी। कृपया पुनः प्रयास करें।</string>
+    <string name="ai_rate_limited">बहुत अधिक अनुरोध। कृपया कुछ क्षण रुकें।</string>
+    <string name="ai_timeout">अपेक्षा से अधिक समय लग रहा है। कृपया पुनः प्रयास करें।</string>
+
     <!-- ── सुगम्यता विवरण ── -->
     <string name="cd_app_logo">एस्ट्रोऐप लोगो</string>
     <string name="cd_feature_palmistry">हस्त रेखा फीचर आइकन</string>

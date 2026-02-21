@@ -26,7 +26,7 @@ class ProfileActivity : BaseFeatureActivity() {
         lifecycleScope.launch {
             try {
                 val user = db.userDao().findById(session.userId) ?: run {
-                    runOnUiThread { showError("User data nahi mila.") }
+                    runOnUiThread { showError(getString(R.string.error_user_not_found)) }
                     return@launch
                 }
                 val txDao = db.creditTransactionDao()

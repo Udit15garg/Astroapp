@@ -11,22 +11,33 @@ package com.palmreader.astro.api
 object PromptTemplates {
 
     private fun languageInstruction(locale: String): String = when (locale) {
-        "hi" -> "IMPORTANT: Respond entirely in Hindi using Devanagari script (हिंदी)."
+        "hi" -> "IMPORTANT: Respond entirely in Hindi using Devanagari script."
         else -> "Respond in English."
     }
+
+    private const val DISCLAIMER = "Keep the tone warm, insightful, and encouraging. This reading is for entertainment and self-reflection purposes."
 
     fun kundli(name: String, dob: String, time: String, place: String, locale: String = "en"): Pair<String, String> {
         val system = """
 You are an expert Vedic astrologer providing a Kundli (birth chart) reading.
 ${languageInstruction(locale)}
 
+Given birth details, provide a detailed Kundli reading with these sections:
+1. **Summary** - A brief overview of the native's chart
+2. **Rashi (Moon Sign)** - The moon sign and its significance
+3. **Lagna (Ascendant)** - The rising sign and first impression
+4. **Nakshatra** - Birth star and its qualities
+5. **Planetary Influences** - Key planetary positions and their effects
+6. **Dosha Analysis** - Any notable doshas (Mangal, Kaal Sarp, etc.) if applicable
+7. **Remedies** - Suggested remedies or gemstones
+8. **Lucky Elements** - Lucky color, number, day, and gemstone
+
 Guidelines:
-- Provide a structured reading with sections: Rashi (Moon Sign), Lagna (Ascendant), Nakshatra, favorable planet, and general personality traits.
 - Be insightful, encouraging, and specific to the birth details provided.
 - Do NOT make specific medical or financial predictions.
-- End with a note that this is for entertainment and a detailed Kundli should be prepared by a professional Jyotishi.
+- Note that this is a simplified reading for entertainment purposes.
 
-Keep the response under 500 words.
+$DISCLAIMER
         """.trimIndent()
 
         val user = "Name: $name\nDate of Birth: $dob\nTime of Birth: $time\nPlace of Birth: $place"
@@ -35,16 +46,25 @@ Keep the response under 500 words.
 
     fun rashifal(signName: String, period: String = "daily", locale: String = "en"): Pair<String, String> {
         val system = """
-You are an experienced astrologer providing a $period horoscope (Rashifal) reading.
+You are an experienced astrologer providing a $period horoscope (Rashifal) reading for $signName.
 ${languageInstruction(locale)}
 
+Structure the reading with these sections:
+1. **Overall** - General outlook for the period
+2. **Love & Relationships** - Romantic and interpersonal insights
+3. **Career & Finance** - Professional and financial guidance
+4. **Health & Wellness** - Physical and mental wellbeing advice
+5. **Lucky Number** - A lucky number for the period
+6. **Lucky Color** - A lucky color for the period
+7. **Rating** - Overall rating out of 5 stars
+8. **Advice** - Key takeaway or mantra for the period
+
 Guidelines:
-- Structure the reading with sections: Overall, Love & Relationships, Career & Finance, Health & Wellness, Lucky Number, Lucky Color.
 - Be positive and encouraging while being realistic.
 - Do NOT make specific medical or financial predictions.
 - Keep tone warm and supportive.
 
-Keep the response under 400 words.
+$DISCLAIMER
         """.trimIndent()
 
         val user = "Zodiac Sign: $signName\nPeriod: $period\nDate: today"
@@ -56,14 +76,25 @@ Keep the response under 400 words.
 You are a numerology expert providing a personalized reading.
 ${languageInstruction(locale)}
 
+Calculate and interpret:
+1. **Life Path Number** - The number, its meaning, and personality traits
+2. **Expression/Destiny Number** - Calculated from the full name
+3. **Soul Urge Number** - Inner desires and motivations
+4. **Personal Year** - Current year's theme and energy
+5. **Compatibility** - Which life path numbers are most compatible
+
+For each number, provide:
+- The calculated number
+- Its core meaning
+- Key personality traits
+- Practical advice
+
 Guidelines:
-- Calculate and explain: Life Path Number, Expression/Destiny Number, Soul Urge Number.
-- Provide lucky color, lucky day, and personality insights for each number.
+- Provide lucky color, lucky day, and personality insights.
 - Be encouraging and insightful.
 - Do NOT make specific medical or financial predictions.
-- This is for entertainment purposes.
 
-Keep the response under 500 words.
+$DISCLAIMER
         """.trimIndent()
 
         val user = "Full Name: $name\nDate of Birth: $dob"
@@ -75,35 +106,52 @@ Keep the response under 500 words.
 You are a skilled tarot reader interpreting a three-card spread (Past, Present, Future).
 ${languageInstruction(locale)}
 
+Cards drawn:
+- Past: ${cardNames.getOrElse(0) { "The Fool" }}
+- Present: ${cardNames.getOrElse(1) { "The Magician" }}
+- Future: ${cardNames.getOrElse(2) { "The Star" }}
+
+Provide your reading with:
+1. **Card Interpretations** - For each card:
+   - Card name and position
+   - Its interpretation in this context
+   - Key keywords
+2. **Overall Reading** - How the three cards connect into a narrative
+3. **Guidance** - Actionable advice based on the spread
+4. **Warning** - Any cautions or things to be mindful of
+
 Guidelines:
-- Interpret each card in its position (Past, Present, Future).
 - Connect the three cards into a cohesive narrative.
-- Provide actionable advice based on the reading.
 - Be mystical yet grounded in your interpretation.
 - Do NOT make specific medical or financial predictions.
-- This is for entertainment purposes.
 
-Keep the response under 500 words.
+$DISCLAIMER
         """.trimIndent()
 
-        val user = "Question: $question\nCards drawn:\n1. Past: ${cardNames.getOrElse(0) { "The Fool" }}\n2. Present: ${cardNames.getOrElse(1) { "The Magician" }}\n3. Future: ${cardNames.getOrElse(2) { "The Star" }}"
+        val user = "Question: $question"
         return system to user
     }
 
     fun palmistry(answers: Map<String, String>, locale: String = "en"): Pair<String, String> {
         val system = """
-You are an expert palmist providing a detailed palm reading based on the user's description of their palm lines.
+You are an expert palmist providing a detailed palm reading based on the described palm features.
 ${languageInstruction(locale)}
 
+Provide readings for these areas:
+1. **Life Line** - Vitality, health, and life changes
+2. **Heart Line** - Emotional life, relationships, and love
+3. **Head Line** - Intellect, learning style, and decision-making
+4. **Fate Line** - Career path and life direction
+5. **Overall Reading** - Summary of the palm's story
+6. **Health Indications** - General wellness insights
+7. **Career Path** - Professional inclinations
+8. **Love Life** - Relationship patterns
+
 Guidelines:
-- Analyze the described palm features: heart line, head line, life line, fate line.
-- Provide readings for: Health, Marriage, Education, Career, Children, Mind/Intelligence, Luck.
-- Give each category a score out of 10 and an interpretation.
 - Be encouraging and positive.
 - Do NOT make specific medical or financial predictions.
-- This is for entertainment purposes.
 
-Keep the response under 600 words.
+$DISCLAIMER
         """.trimIndent()
 
         val user = answers.entries.joinToString("\n") { "${it.key}: ${it.value}" }
@@ -115,14 +163,21 @@ Keep the response under 600 words.
 You are an astrologer providing a sun sign personality analysis.
 ${languageInstruction(locale)}
 
+Determine the sun sign from the date of birth and provide:
+1. **Sign & Element** - The sun sign and its element
+2. **Ruling Planet** - The governing planet and its influence
+3. **Personality** - Core personality traits and characteristics
+4. **Strengths** - Key strengths and positive qualities
+5. **Weaknesses** - Areas for growth and challenges
+6. **Compatibility** - Best and challenging matches with other signs
+7. **Current Transit Effect** - How current planetary positions affect them
+8. **Monthly Outlook** - Brief forecast for the current period
+
 Guidelines:
-- Determine the sun sign from the date of birth.
-- Provide: personality traits, strengths, weaknesses, compatibility with other signs, current transit effects.
 - Be insightful and personalized.
 - Do NOT make specific medical or financial predictions.
-- This is for entertainment purposes.
 
-Keep the response under 400 words.
+$DISCLAIMER
         """.trimIndent()
 
         val user = "Date of Birth: $dob"
@@ -144,9 +199,10 @@ $context
 
 Guidelines:
 - Answer the specific question based on the reading context.
-- Be concise but insightful (2-3 sentences).
+- Be concise but insightful (2-4 sentences).
 - Do NOT make specific medical or financial predictions.
-- This is for entertainment purposes.
+
+$DISCLAIMER
         """.trimIndent()
 
         return system to question

@@ -1,22 +1,31 @@
 package com.palmreader.astro
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
+import com.palmreader.astro.api.OpenAIService
+import com.palmreader.astro.api.PromptTemplates
 import com.palmreader.astro.databinding.ActivityResultBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ResultActivity : BaseFeatureActivity() {
 
     private lateinit var binding: ActivityResultBinding
     private lateinit var readings: List<PalmReading>
+    private val gibberishTracker = GibberishTracker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityResultBinding.inflate(layoutInflater)
-        setContentView(binding.root)   // BaseFeatureActivity initialises db & session here
+        setContentView(binding.root)
 
         @Suppress("DEPRECATION")
         readings = intent.getParcelableArrayListExtra<PalmReading>("readings") ?: emptyList()
@@ -32,7 +41,7 @@ class ResultActivity : BaseFeatureActivity() {
                 .inflate(R.layout.item_reading, binding.llReadings, false)
 
             card.findViewById<TextView>(R.id.tvCategory).text =
-                "${reading.categoryHindi} / ${reading.category}"
+                "${reading.category}"
             card.findViewById<TextView>(R.id.tvScore).text = "${reading.score}/10"
 
             val bar = card.findViewById<LinearLayout>(R.id.scoreBar)
@@ -59,15 +68,73 @@ class ResultActivity : BaseFeatureActivity() {
     private fun sendQuestion() {
         val q = binding.etQuestion.text.toString().trim()
         if (q.isEmpty()) return
+
+        // Check for gibberish BEFORE spending a credit
+        when (val gibResult = gibberishTracker.check(q)) {
+            is GibberishTracker.Result.Warning -> {
+                Snackbar.make(binding.root, gibResult.message, Snackbar.LENGTH_LONG)
+                    .setBackgroundTint(resources.getColor(R.color.warning, null))
+                    .show()
+                return
+            }
+            is GibberishTracker.Result.CreditDeducted -> {
+                useCredit("Gibberish") {
+                    Snackbar.make(binding.root, gibResult.message, Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(resources.getColor(R.color.error, null))
+                        .show()
+                    refreshCredits(binding.tvCredits)
+                }
+                return
+            }
+            is GibberishTracker.Result.Valid -> { /* proceed */ }
+        }
+
         binding.etQuestion.setText("")
 
-        useCredit {
-            appendChat("Aap: $q", isUser = true)
-            val answer = PalmAnalyzer.answerQuestion(q, readings)
-            appendChat("Jyotishi: $answer", isUser = false)
-            saveToHistory("Hast Rekha", q, answer)
-            refreshCredits(binding.tvCredits)
-            binding.scrollView.post { binding.scrollView.fullScroll(android.view.View.FOCUS_DOWN) }
+        useCredit("Palmistry Q&A") {
+            appendChat(getString(R.string.qa_user_prefix, q), isUser = true)
+
+            lifecycleScope.launch {
+                val context = readings.joinToString("\n") {
+                    "${it.category}: ${it.score}/10 - ${it.interpretation}"
+                }
+
+                val locale = LanguageManager.getCurrentLocale(this@ResultActivity)
+                val prompts = PromptTemplates.followUpQuestion(
+                    "Palmistry", context, q, locale
+                )
+
+                Log.d("AstroAI", "Calling OpenAI for palm Q&A: $q")
+                val result = OpenAIService.chatCompletion(
+                    systemPrompt = prompts.first,
+                    userMessage = prompts.second,
+                    temperature = 0.7f
+                )
+
+                withContext(Dispatchers.Main) {
+                    when (result) {
+                        is OpenAIService.ApiResult.Success -> {
+                            Log.d("AstroAI", "AI palm answer received")
+                            appendChat(result.data, isUser = false)
+                            saveToHistory("Palmistry", q, result.data)
+                        }
+                        is OpenAIService.ApiResult.Error -> {
+                            Log.e("AstroAI", "AI palm error: ${result.message}")
+                            val fallback = PalmAnalyzer.answerQuestion(q, readings)
+                            appendChat(fallback, isUser = false)
+                            saveToHistory("Palmistry", q, fallback)
+                        }
+                        is OpenAIService.ApiResult.RateLimited -> {
+                            appendChat(getString(R.string.ai_rate_limited), isUser = false)
+                        }
+                        else -> {}
+                    }
+                    refreshCredits(binding.tvCredits)
+                    binding.scrollView.post {
+                        binding.scrollView.fullScroll(android.view.View.FOCUS_DOWN)
+                    }
+                }
+            }
         }
     }
 

@@ -2,10 +2,18 @@ package com.palmreader.astro
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
+import com.palmreader.astro.api.OpenAIService
+import com.palmreader.astro.api.PromptTemplates
 import com.palmreader.astro.databinding.ActivityFeatureBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class FeatureActivity : BaseFeatureActivity() {
@@ -23,6 +31,15 @@ class FeatureActivity : BaseFeatureActivity() {
     private var currentSign: SignEngine.ZodiacSign? = null
     private var kundliRashi = ""
 
+    // AI reading context for follow-up questions
+    private var aiReadingContext = ""
+
+    // Gibberish tracker per session
+    private val gibberishTracker = GibberishTracker()
+
+    private val locale: String
+        get() = LanguageManager.getCurrentLocale(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFeatureBinding.inflate(layoutInflater)
@@ -37,7 +54,7 @@ class FeatureActivity : BaseFeatureActivity() {
         setupQA()
     }
 
-    // ── Feature setup ─────────────────────────────────────────────────────────
+    // -- Feature setup --------------------------------------------------------
 
     private fun setupFeature() {
         when (featureType) {
@@ -63,7 +80,11 @@ class FeatureActivity : BaseFeatureActivity() {
             binding.llInputBar.visibility = View.GONE
             binding.btnDrawCards.text = getString(R.string.tarot_redraw)
         }
-        val positions = listOf("Bhoot (Past)", "Vartaman (Present)", "Bhavishya (Future)")
+        val positions = listOf(
+            getString(R.string.tarot_past),
+            getString(R.string.tarot_present),
+            getString(R.string.tarot_future)
+        )
         val buttons = listOf(binding.btnCard1, binding.btnCard2, binding.btnCard3)
         buttons.forEachIndexed { i, btn ->
             btn.setOnClickListener {
@@ -73,25 +94,16 @@ class FeatureActivity : BaseFeatureActivity() {
                 }
                 if (btn.text == "?") {
                     val card = drawnCards[i]
-                    btn.text = "${card.emoji}\n${card.name}"
+                    btn.text = card.name
                     addCardResult("${positions[i]}: ${card.name}", card.meaning, card.advice)
                     revealedCount++
                     if (revealedCount == 3) {
                         currentResult = TarotEngine.toFeatureResult(drawnCards)
-                        showQASection()
+                        callOpenAIForReading()
                     }
                 }
             }
         }
-    }
-
-    private fun addCardResult(header: String, meaning: String, advice: String) {
-        binding.llCardResults.visibility = View.VISIBLE
-        val card = layoutInflater.inflate(R.layout.item_result_card, binding.llCardResults, false)
-        card.findViewById<TextView>(R.id.tvLabel).text = header
-        card.findViewById<TextView>(R.id.tvValue).text = meaning
-        card.findViewById<TextView>(R.id.tvDesc).text = getString(R.string.feature_tip_prefix, advice)
-        binding.llCardResults.addView(card)
     }
 
     private fun setupNumerology() {
@@ -110,6 +122,7 @@ class FeatureActivity : BaseFeatureActivity() {
             lifePathNum = NumerologyEngine.lifePathNumber(dob)
             currentResult = NumerologyEngine.calculate(name, dob)
             showResults(currentResult!!)
+            callOpenAIForReading()
         }
     }
 
@@ -134,6 +147,7 @@ class FeatureActivity : BaseFeatureActivity() {
             currentResult = KundliEngine.calculate(name, dob, time, place)
             kundliRashi = currentResult!!.items.firstOrNull()?.value ?: ""
             showResults(currentResult!!)
+            callOpenAIForReading()
         }
     }
 
@@ -153,7 +167,116 @@ class FeatureActivity : BaseFeatureActivity() {
             currentSign = SignEngine.fromDob(dob)
             currentResult = SignEngine.getResult(currentSign!!)
             showResults(currentResult!!)
+            callOpenAIForReading()
         }
+    }
+
+    /**
+     * Calls OpenAI API for an AI-enhanced reading based on the feature type.
+     * Uses 1 credit and shows the AI response below the local results.
+     */
+    private fun callOpenAIForReading() {
+        useCredit(featureType) {
+            lifecycleScope.launch {
+                showLoading(true)
+                val prompts = buildPromptForFeature()
+                if (prompts == null) {
+                    showLoading(false)
+                    showQASection()
+                    return@launch
+                }
+
+                Log.d("AstroAI", "Calling OpenAI for $featureType reading...")
+                val result = OpenAIService.chatCompletion(
+                    systemPrompt = prompts.first,
+                    userMessage = prompts.second,
+                    temperature = 0.8f
+                )
+
+                withContext(Dispatchers.Main) {
+                    showLoading(false)
+                    when (result) {
+                        is OpenAIService.ApiResult.Success -> {
+                            Log.d("AstroAI", "AI reading received: ${result.data.take(100)}...")
+                            aiReadingContext = result.data
+                            addAIReadingBubble(result.data)
+                            saveToHistory(featureType, "AI Reading", result.data)
+                        }
+                        is OpenAIService.ApiResult.Error -> {
+                            Log.e("AstroAI", "AI error: ${result.message}")
+                            showError(getString(R.string.ai_reading_error))
+                            aiReadingContext = currentResult?.items?.joinToString("\n") {
+                                "${it.label}: ${it.value} - ${it.description}"
+                            } ?: ""
+                        }
+                        is OpenAIService.ApiResult.RateLimited -> {
+                            showError(getString(R.string.ai_rate_limited))
+                            aiReadingContext = currentResult?.items?.joinToString("\n") {
+                                "${it.label}: ${it.value} - ${it.description}"
+                            } ?: ""
+                        }
+                        else -> {}
+                    }
+                    showQASection()
+                    refreshCredits(binding.tvCredits)
+                }
+            }
+        }
+    }
+
+    private fun buildPromptForFeature(): Pair<String, String>? {
+        return when (featureType) {
+            "TAROT" -> {
+                val cardNames = drawnCards.map { it.name }
+                PromptTemplates.tarot("General reading", cardNames, locale)
+            }
+            "NUMEROLOGY" -> {
+                val name = binding.etName.text.toString().trim()
+                val dob = binding.etDob.text.toString().trim()
+                PromptTemplates.numerology(name, dob, locale)
+            }
+            "KUNDLI" -> {
+                val name = binding.etName.text.toString().trim()
+                val dob = binding.etDob.text.toString().trim()
+                val time = binding.etTime.text.toString().trim().ifEmpty { "unknown" }
+                val place = binding.etPlace.text.toString().trim().ifEmpty { "unknown" }
+                PromptTemplates.kundli(name, dob, time, place, locale)
+            }
+            "SIGN", "SUN_SIGN" -> {
+                val dob = binding.etDob.text.toString().trim()
+                if (featureType == "SIGN" && currentSign != null) {
+                    PromptTemplates.rashifal(currentSign!!.name, "daily", locale)
+                } else {
+                    PromptTemplates.sunSign(dob, locale)
+                }
+            }
+            else -> null
+        }
+    }
+
+    private fun addAIReadingBubble(text: String) {
+        addBotBubble(binding.llChat, text)
+        binding.llChat.visibility = View.VISIBLE
+        scrollToBottom()
+    }
+
+    private fun showLoading(show: Boolean) {
+        binding.btnAnalyze.isEnabled = !show
+        binding.btnDrawCards.isEnabled = !show
+        if (show) {
+            addBotBubble(binding.llChat, getString(R.string.ai_loading))
+            binding.llChat.visibility = View.VISIBLE
+            scrollToBottom()
+        }
+    }
+
+    private fun addCardResult(header: String, meaning: String, advice: String) {
+        binding.llCardResults.visibility = View.VISIBLE
+        val card = layoutInflater.inflate(R.layout.item_result_card, binding.llCardResults, false)
+        card.findViewById<TextView>(R.id.tvLabel).text = header
+        card.findViewById<TextView>(R.id.tvValue).text = meaning
+        card.findViewById<TextView>(R.id.tvDesc).text = getString(R.string.feature_tip_prefix, advice)
+        binding.llCardResults.addView(card)
     }
 
     private fun pickDate(target: EditText) {
@@ -190,11 +313,9 @@ class FeatureActivity : BaseFeatureActivity() {
             setPadding(0, 8, 0, 16)
         }
         binding.llResults.addView(summaryView)
-
-        showQASection()
     }
 
-    // ── Q&A ───────────────────────────────────────────────────────────────────
+    // -- Q&A -------------------------------------------------------------------
 
     private fun setupQA() {
         binding.btnSend.setOnClickListener {
@@ -204,14 +325,78 @@ class FeatureActivity : BaseFeatureActivity() {
                 Toast.makeText(this, getString(R.string.qa_no_reading_first), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            // Check for gibberish BEFORE spending a credit
+            when (val gibResult = gibberishTracker.check(q)) {
+                is GibberishTracker.Result.Warning -> {
+                    Snackbar.make(binding.root, gibResult.message, Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(resources.getColor(R.color.warning, null))
+                        .show()
+                    return@setOnClickListener
+                }
+                is GibberishTracker.Result.CreditDeducted -> {
+                    useCredit("Gibberish") {
+                        Snackbar.make(binding.root, gibResult.message, Snackbar.LENGTH_LONG)
+                            .setBackgroundTint(resources.getColor(R.color.error, null))
+                            .show()
+                        refreshCredits(binding.tvCredits)
+                    }
+                    return@setOnClickListener
+                }
+                is GibberishTracker.Result.Valid -> { /* proceed */ }
+            }
+
             binding.etQuestion.setText("")
-            useCredit {
+            useCredit("Question") {
                 addUserBubble(binding.llChat, q)
-                val answer = generateAnswer(q)
-                addBotBubble(binding.llChat, answer)
-                saveToHistory(featureType.lowercase().replaceFirstChar { it.uppercase() }, q, answer)
-                refreshCredits(binding.tvCredits)
                 scrollToBottom()
+
+                lifecycleScope.launch {
+                    val context = aiReadingContext.ifEmpty {
+                        currentResult?.items?.joinToString("\n") {
+                            "${it.label}: ${it.value} - ${it.description}"
+                        } ?: ""
+                    }
+
+                    Log.d("AstroAI", "Calling OpenAI for follow-up: $q")
+                    val prompts = PromptTemplates.followUpQuestion(
+                        featureType, context, q, locale
+                    )
+
+                    val result = OpenAIService.chatCompletion(
+                        systemPrompt = prompts.first,
+                        userMessage = prompts.second,
+                        temperature = 0.7f
+                    )
+
+                    withContext(Dispatchers.Main) {
+                        when (result) {
+                            is OpenAIService.ApiResult.Success -> {
+                                Log.d("AstroAI", "AI answer received")
+                                addBotBubble(binding.llChat, result.data)
+                                saveToHistory(
+                                    featureType.lowercase().replaceFirstChar { it.uppercase() },
+                                    q, result.data
+                                )
+                            }
+                            is OpenAIService.ApiResult.Error -> {
+                                Log.e("AstroAI", "AI follow-up error: ${result.message}")
+                                val fallback = generateLocalAnswer(q)
+                                addBotBubble(binding.llChat, fallback)
+                                saveToHistory(
+                                    featureType.lowercase().replaceFirstChar { it.uppercase() },
+                                    q, fallback
+                                )
+                            }
+                            is OpenAIService.ApiResult.RateLimited -> {
+                                addBotBubble(binding.llChat, getString(R.string.ai_rate_limited))
+                            }
+                            else -> {}
+                        }
+                        refreshCredits(binding.tvCredits)
+                        scrollToBottom()
+                    }
+                }
             }
         }
     }
@@ -222,13 +407,16 @@ class FeatureActivity : BaseFeatureActivity() {
         scrollToBottom()
     }
 
-    private fun generateAnswer(question: String): String {
+    /** Fallback to local engines if OpenAI is unavailable */
+    private fun generateLocalAnswer(question: String): String {
         return when (featureType) {
-            "TAROT" -> if (drawnCards.isNotEmpty()) TarotEngine.answer(question, drawnCards) else "Pehle cards draw karo."
+            "TAROT" -> if (drawnCards.isNotEmpty()) TarotEngine.answer(question, drawnCards)
+                else getString(R.string.tarot_draw_first)
             "NUMEROLOGY" -> NumerologyEngine.answer(question, lifePathNum)
             "KUNDLI" -> KundliEngine.answer(question, kundliRashi)
-            "SIGN", "SUN_SIGN" -> currentSign?.let { SignEngine.answer(question, it) } ?: "Sign select karo."
-            else -> "Aapka sawaal mila. Soch ke jawab do — andar ki aawaaz suno."
+            "SIGN", "SUN_SIGN" -> currentSign?.let { SignEngine.answer(question, it) }
+                ?: getString(R.string.sign_missing_dob)
+            else -> getString(R.string.error_generic)
         }
     }
 

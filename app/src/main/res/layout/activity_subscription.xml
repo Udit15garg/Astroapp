@@ -10,21 +10,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary"
+        android:background="@color/surface"
+        android:elevation="2dp"
         android:padding="16dp"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
             android:text="@string/back"
-            android:textSize="18sp"
-            android:backgroundTint="#33FFFFFF"
+            android:textSize="12sp"
+            app:cornerRadius="20dp"
             android:layout_marginEnd="12dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:strokeColor="@android:color/white" />
+            style="@style/Widget.Material3.Button.TonalButton" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -38,7 +40,7 @@
                 android:text="@string/sub_title"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/text_dark" />
 
             <TextView
                 android:id="@+id/tvCurrentCredits"
@@ -46,8 +48,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/credits_single"
                 android:textSize="13sp"
-                android:textColor="@android:color/white"
-                android:alpha="0.9" />
+                android:textColor="@color/text_medium" />
         </LinearLayout>
     </LinearLayout>
 
@@ -76,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="4dp">
 
                 <LinearLayout
@@ -116,7 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="#F3E5F5">
 
@@ -159,7 +160,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="4dp"
                 app:cardBackgroundColor="#E8F5E9">
 

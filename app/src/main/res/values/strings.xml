@@ -220,6 +220,12 @@
     <string name="language_english">English</string>
     <string name="language_hindi">Hindi</string>
 
+    <!-- ── AI Integration ── -->
+    <string name="ai_loading">Consulting the stars\u2026</string>
+    <string name="ai_reading_error">Could not generate your reading. Please try again.</string>
+    <string name="ai_rate_limited">Too many requests. Please wait a moment and try again.</string>
+    <string name="ai_timeout">Taking longer than expected. Please try again.</string>
+
     <!-- ── Accessibility content descriptions ── -->
     <string name="cd_app_logo">AstroApp logo</string>
     <string name="cd_feature_palmistry">Palmistry feature icon</string>

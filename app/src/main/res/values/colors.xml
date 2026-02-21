@@ -29,9 +29,9 @@
     <color name="on_error_container">#410002</color>
 
     <!-- Surface / Background -->
-    <color name="bg_warm">#FFF8F0</color>
-    <color name="surface">#FFF8F0</color>
-    <color name="on_surface">#2D1B00</color>
+    <color name="bg_warm">#FAFAFA</color>
+    <color name="surface">#FAFAFA</color>
+    <color name="on_surface">#1A1A2E</color>
     <color name="surface_variant">#F5DED2</color>
     <color name="on_surface_variant">#53433C</color>
     <color name="surface_container">#FFEEE3</color>
@@ -43,9 +43,9 @@
     <color name="outline_variant">#D8C2B7</color>
 
     <!-- Text -->
-    <color name="text_dark">#2D1B00</color>
-    <color name="text_medium">#6D4C41</color>
-    <color name="text_light">#A08979</color>
+    <color name="text_dark">#1A1A2E</color>
+    <color name="text_medium">#555555</color>
+    <color name="text_light">#888888</color>
 
     <!-- Chat -->
     <color name="chat_user_bg">#E65100</color>
@@ -59,12 +59,16 @@
     <color name="divider">#E0D0C8</color>
 
     <!-- Feature card backgrounds -->
-    <color name="card_palmistry">#F3E5F5</color>
+    <color name="card_palmistry">#FFF3E0</color>
     <color name="card_tarot">#FCE4EC</color>
-    <color name="card_numerology">#E8F5E9</color>
+    <color name="card_numerology">#E0F2F1</color>
     <color name="card_kundli">#FFF8E1</color>
-    <color name="card_rashifal">#E3F2FD</color>
+    <color name="card_rashifal">#E8EAF6</color>
     <color name="card_sunsign">#FFF3E0</color>
+
+    <!-- Card text -->
+    <color name="card_text_title">#1A1A2E</color>
+    <color name="card_text_subtitle">#666666</color>
 
     <!-- Status colors -->
     <color name="success">#2E7D32</color>

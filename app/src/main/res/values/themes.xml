@@ -34,7 +34,8 @@
         <item name="colorOutline">@color/outline</item>
 
         <item name="android:windowBackground">@color/surface</item>
-        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:statusBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/surface</item>
 
         <!-- Shape -->
@@ -154,7 +155,7 @@
 
     <!-- App Header -->
     <style name="Widget.Astro.AppBar">
-        <item name="android:background">@color/primary</item>
+        <item name="android:background">@color/surface</item>
         <item name="android:padding">@dimen/appbar_padding</item>
     </style>
 

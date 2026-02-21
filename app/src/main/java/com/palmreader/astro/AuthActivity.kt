@@ -34,8 +34,10 @@ class AuthActivity : AppCompatActivity() {
                 val googleId = "google_${account.id}"
                 handleGoogleUser(name, email, googleId)
             } catch (e: ApiException) {
+                android.util.Log.e("AstroAuth", "Google Sign-In failed: status=${e.statusCode}, message=${e.message}", e)
                 showError(getString(R.string.auth_google_error, e.statusCode))
             } catch (e: Exception) {
+                android.util.Log.e("AstroAuth", "Google Sign-In error: ${e.message}", e)
                 showError(getString(R.string.auth_google_generic_error, e.message))
             }
         } else {
@@ -70,10 +72,18 @@ class AuthActivity : AppCompatActivity() {
         // Google Sign-In setup (requires OAuth client configured in Google Cloud Console)
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
+            .requestId()
             .build()
         val googleClient = GoogleSignIn.getClient(this, gso)
 
         binding.btnGoogle.setOnClickListener {
+            // Verify Google Play Services availability
+            val availability = com.google.android.gms.common.GoogleApiAvailability.getInstance()
+            val status = availability.isGooglePlayServicesAvailable(this)
+            if (status != com.google.android.gms.common.ConnectionResult.SUCCESS) {
+                availability.getErrorDialog(this, status, 1001)?.show()
+                return@setOnClickListener
+            }
             setLoading(true)
             googleClient.signOut().addOnCompleteListener {
                 googleLauncher.launch(googleClient.signInIntent)

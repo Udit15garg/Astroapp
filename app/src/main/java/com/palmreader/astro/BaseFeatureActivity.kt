@@ -54,7 +54,7 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
                         db.creditTransactionDao().insert(
                             CreditTransactionEntity(
                                 userId = session.userId, type = "USED", amount = -1,
-                                description = "$featureLabel — 1 credit use hua"
+                                description = "$featureLabel — 1 credit used"
                             )
                         )
                         withContext(Dispatchers.Main) { onAllowed() }

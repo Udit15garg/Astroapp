@@ -19,51 +19,51 @@ data class FeatureResult(val title: String, val items: List<ReadingItem>, val su
 
 object TarotEngine {
     private val deck = listOf(
-        TarotCard("The Fool", "🃏", "Naye raaste aur nayi shuruaat", "Darr chhodo, aage badho bina soche samjhe."),
-        TarotCard("The Magician", "🎩", "Aapke paas har zaruri tool hai", "Apni kaabiliyat par bharosa karo."),
-        TarotCard("The High Priestess", "🌙", "Antarmaan ki sunein", "Andar ki awaaz bahut kuch jaanti hai."),
-        TarotCard("The Empress", "👸", "Upjaushakti aur samriddhi", "Prakriti se judo, abundance aa raha hai."),
-        TarotCard("The Emperor", "👑", "Satta aur niyantran", "Discipline se apna raaj sthaapit karo."),
-        TarotCard("The Hierophant", "⛪", "Parampara aur margdarshan", "Kisi gurujana ki salah lo."),
-        TarotCard("The Lovers", "💑", "Prem aur chunaav", "Dil se chunaav karo, pachtaoge nahi."),
-        TarotCard("The Chariot", "🏇", "Jeet aur niyantrith shakti", "Hausla rakho, lakshya door nahi."),
-        TarotCard("Strength", "🦁", "Andar ki taqat aur sabar", "Komal hathon se bhi sher ko kabu kiya ja sakta hai."),
-        TarotCard("The Hermit", "🕯️", "Ekant aur aatmamanthan", "Kuch waqt akele bitao, jawab milega."),
-        TarotCard("Wheel of Fortune", "☸️", "Bhagya ka chakkar", "Jo bura tha, woh badlega. Accha waqt aata hai."),
-        TarotCard("Justice", "⚖️", "Nyay aur satya", "Jo kiya hai, wahi milega. Sach ki jeet hogi."),
-        TarotCard("The Hanged Man", "🙃", "Ruko aur naye nazariye se dekho", "Kuch samay rukna hi samajhdaari hai."),
-        TarotCard("Death", "💀", "Ant nahi, parivartan hai", "Ek chapter khatam ho raha hai, naya shuru hoga."),
-        TarotCard("Temperance", "🌊", "Santulan aur sabar", "Beech ka raasta sabse accha hai."),
-        TarotCard("The Devil", "😈", "Bandhan aur lalach", "Jo cheez aapko rok rahi hai, usski zanjeer todo."),
-        TarotCard("The Tower", "⚡", "Achanak badlaav", "Purani neenv toot rahi hai, naya banana hoga."),
-        TarotCard("The Star", "⭐", "Asha aur naveenikaran", "Andheron ke baad roshni zaroor aati hai."),
-        TarotCard("The Moon", "🌕", "Bhram aur anishchitata", "Sab kuch jo dikhta hai, woh sach nahi. Dhyan se chalo."),
-        TarotCard("The Sun", "☀️", "Khushi aur saphalata", "Bahut accha waqt aa raha hai. Jashn manao!"),
-        TarotCard("Judgement", "📯", "Jagran aur naya mauqa", "Apne aap ko maafi do aur naya jiwan shuru karo."),
-        TarotCard("The World", "🌍", "Poornata aur safalta", "Aapka ek safar poora hua. Badhai ho!")
+        TarotCard("The Fool", "", "New paths and fresh beginnings", "Let go of fear and move forward without overthinking."),
+        TarotCard("The Magician", "", "You have every tool you need", "Trust in your own abilities."),
+        TarotCard("The High Priestess", "", "Listen to your inner voice", "Your intuition knows a great deal."),
+        TarotCard("The Empress", "", "Fertility and abundance", "Connect with nature, abundance is coming."),
+        TarotCard("The Emperor", "", "Authority and control", "Establish your reign through discipline."),
+        TarotCard("The Hierophant", "", "Tradition and guidance", "Seek advice from a mentor or elder."),
+        TarotCard("The Lovers", "", "Love and choices", "Choose with your heart, you will not regret it."),
+        TarotCard("The Chariot", "", "Victory and controlled strength", "Stay determined, the goal is not far."),
+        TarotCard("Strength", "", "Inner strength and patience", "Even gentle hands can tame a lion."),
+        TarotCard("The Hermit", "", "Solitude and introspection", "Spend some time alone, the answer will come."),
+        TarotCard("Wheel of Fortune", "", "The wheel of fate", "What was bad will change. Good times are coming."),
+        TarotCard("Justice", "", "Justice and truth", "You will reap what you have sown. Truth will prevail."),
+        TarotCard("The Hanged Man", "", "Pause and see from a new perspective", "Sometimes pausing is the wisest choice."),
+        TarotCard("Death", "", "Not an end, but a transformation", "One chapter is closing, a new one will begin."),
+        TarotCard("Temperance", "", "Balance and patience", "The middle path is the best path."),
+        TarotCard("The Devil", "", "Bondage and temptation", "Break the chains of whatever is holding you back."),
+        TarotCard("The Tower", "", "Sudden upheaval", "Old foundations are crumbling, you must build anew."),
+        TarotCard("The Star", "", "Hope and renewal", "After the darkness, light always returns."),
+        TarotCard("The Moon", "", "Illusion and uncertainty", "Not everything that appears is true. Tread carefully."),
+        TarotCard("The Sun", "", "Joy and success", "A wonderful time is coming. Celebrate!"),
+        TarotCard("Judgement", "", "Awakening and a new opportunity", "Forgive yourself and begin a new life."),
+        TarotCard("The World", "", "Completion and accomplishment", "Your journey is complete. Congratulations!")
     )
 
     fun draw(count: Int = 3): List<TarotCard> = deck.shuffled().take(count)
 
     fun toFeatureResult(cards: List<TarotCard>): FeatureResult {
-        val positions = listOf("Bhoot (Past)", "Vartaman (Present)", "Bhavishya (Future)")
+        val positions = listOf("Past", "Present", "Future")
         val items = cards.mapIndexed { i, c ->
-            ReadingItem(positions[i], "${c.emoji} ${c.name}", "${c.meaning}\n💡 ${c.advice}")
+            ReadingItem(positions[i], "${c.emoji} ${c.name}", "${c.meaning}\n${c.advice}")
         }
         return FeatureResult(
             title = "Tarot Card Reading",
             items = items,
-            summary = "Teen patto mein aapka bhavishya pragatit hua hai."
+            summary = "Your future has been revealed through three cards."
         )
     }
 
     fun answer(question: String, cards: List<TarotCard>): String {
         val pool = listOf(
-            "Aapke cards kehte hain: '${cards.random().advice}'",
-            "${cards.random().emoji} ${cards.random().name} aapko sandesh deta hai: ${cards.random().meaning}.",
-            "Is sawaal ka jawab chhupa hai ${cards.random().name} mein — ${cards.random().advice}",
-            "Tarot kehta hai: Sabr rakho. ${cards.random().meaning}.",
-            "Aapka ${cards.random().name} card is sawaal ka jawab deta hai: ${cards.random().advice}"
+            "Your cards say: '${cards.random().advice}'",
+            "${cards.random().name} sends you a message: ${cards.random().meaning}.",
+            "The answer to this question is hidden in ${cards.random().name} — ${cards.random().advice}",
+            "The Tarot says: Be patient. ${cards.random().meaning}.",
+            "Your ${cards.random().name} card answers this question: ${cards.random().advice}"
         )
         return pool.random()
     }
@@ -98,44 +98,44 @@ object NumerologyEngine {
     }
 
     private val meanings = mapOf(
-        1 to "Neta aur pioneer. Aap apni duniya khud banate ho.",
-        2 to "Diplomat aur saathi. Aap rishton mein vishwas rakhte ho.",
-        3 to "Rachnakar aur kalakar. Aap khushi failate ho.",
-        4 to "Mehnat aur stability. Aap mazboot neenv banate ho.",
-        5 to "Azaad aur adventurous. Aap badlaav se darte nahi.",
-        6 to "Poshak aur zimmedaar. Aap doosron ki parwah karte ho.",
-        7 to "Rahasya khojne wale. Aap gehri soch rakhte ho.",
-        8 to "Shakti aur success. Aap kaamyaabi ke liye bane ho.",
-        9 to "Manav seva. Aap duniya ko behtar banana chahte ho.",
-        11 to "Master Number: Aatmik gyan aur prerna. Bahut special ho aap.",
-        22 to "Master Number: Sapnon ka nirman. Aap bade kaam kar sakte ho.",
-        33 to "Master Number: Parampara ka prakaash. Aap logo ko raah dikhate ho."
+        1 to "Leader and pioneer. You create your own world.",
+        2 to "Diplomat and partner. You believe in relationships.",
+        3 to "Creator and artist. You spread joy.",
+        4 to "Hard work and stability. You build strong foundations.",
+        5 to "Free and adventurous. You are not afraid of change.",
+        6 to "Nurturing and responsible. You care for others.",
+        7 to "Seeker of mysteries. You think deeply.",
+        8 to "Power and success. You are destined for achievement.",
+        9 to "Service to humanity. You want to make the world better.",
+        11 to "Master Number: Spiritual wisdom and inspiration. You are very special.",
+        22 to "Master Number: Builder of dreams. You can accomplish great things.",
+        33 to "Master Number: Light of tradition. You show people the way."
     )
 
-    private val luckyColors = listOf("Laal", "Neela", "Hara", "Peela", "Narangi", "Safed", "Violet", "Gulaabi", "Brown")
-    private val luckyDays = listOf("Somvar", "Mangalvar", "Budhvar", "Guruvar", "Shukravar", "Shanivar", "Ravivar")
+    private val luckyColors = listOf("Red", "Blue", "Green", "Yellow", "Orange", "White", "Violet", "Pink", "Brown")
+    private val luckyDays = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
     fun calculate(name: String, dob: String): FeatureResult {
         val lp = lifePathNumber(dob)
         val dn = destinyNumber(name)
         val sn = soulNumber(name)
         val items = listOf(
-            ReadingItem("Life Path Number", "$lp", meanings[lp] ?: "Aap ek anokhi aatma ho."),
-            ReadingItem("Destiny Number", "$dn", meanings[dn] ?: "Aapki takdeer khud aapke haath mein hai."),
-            ReadingItem("Soul Number", "$sn", meanings[sn] ?: "Aapki rooh ka raaz chhupa hai is number mein."),
-            ReadingItem("Lucky Color", luckyColors[(lp + dn) % luckyColors.size], "Yeh rang aapke liye shubh hai."),
-            ReadingItem("Lucky Day", luckyDays[lp % 7], "Is din ke kaam mein zyada barkat hogi.")
+            ReadingItem("Life Path Number", "$lp", meanings[lp] ?: "You are a unique soul."),
+            ReadingItem("Destiny Number", "$dn", meanings[dn] ?: "Your destiny is in your own hands."),
+            ReadingItem("Soul Number", "$sn", meanings[sn] ?: "The secret of your soul is hidden in this number."),
+            ReadingItem("Lucky Color", luckyColors[(lp + dn) % luckyColors.size], "This color is auspicious for you."),
+            ReadingItem("Lucky Day", luckyDays[lp % 7], "Work done on this day will bring greater blessings.")
         )
-        return FeatureResult("Numerology Reading", items, "Inhe apni zindagi mein dhyan mein rakho.")
+        return FeatureResult("Numerology Reading", items, "Keep these insights in mind as you navigate your life.")
     }
 
     fun answer(question: String, lp: Int): String {
         val answers = listOf(
-            "Aapka Life Path Number $lp kehta hai: ${meanings[lp] ?: "Aap bahut khaas ho."}",
-            "Numerology ke anusar is sawaal ka jawab hai: Apne andar jhaanko.",
-            "Number $lp ki energy iske peechhe hai. Vishwas karo apne aap par.",
-            "Aapki destiny number ki shaki se yeh sambhav hai. Himmat rakho.",
-            "Grah aur ankh dono kehte hain: Sahi waqt par sahi nirnay lena."
+            "Your Life Path Number $lp says: ${meanings[lp] ?: "You are very special."}",
+            "According to numerology, the answer to this question is: Look within yourself.",
+            "The energy of number $lp is behind this. Believe in yourself.",
+            "Through the power of your destiny number, this is possible. Stay courageous.",
+            "Both the planets and the numbers say: Make the right decision at the right time."
         )
         return answers.random()
     }
@@ -164,18 +164,18 @@ object KundliEngine {
     )
 
     private val rashiTraits = mapOf(
-        "Mesh (Aries)" to "Ceshatian, saahasi aur jazbaati. Aap hamesha pehle rehna chahte ho.",
-        "Vrishabh (Taurus)" to "Sthir, mehnat kash aur bhojan ke shaukin. Aap anand mein vishwas rakhte ho.",
-        "Mithun (Gemini)" to "Charming, chatty aur curious. Aap dono pehluon ko samajhte ho.",
-        "Kark (Cancer)" to "Caring, bhavuk aur ghar-premi. Aap doosron ki parwah karte ho.",
-        "Simha (Leo)" to "Raajsi, generous aur attention-loving. Aap duniya ke kendra rehna chahte ho.",
-        "Kanya (Virgo)" to "Vyavharik, meticulous aur helpful. Aap details mein kho jaate ho.",
-        "Tula (Libra)" to "Sundar, insaafi aur relationship-loving. Aap balance mein vishwas rakhte ho.",
-        "Vrishchik (Scorpio)" to "Gehre, passionate aur rahasymay. Aap sach jaanna chahte ho.",
-        "Dhanu (Sagittarius)" to "Azaad, philo aur seeker. Aap gyan ki khoj mein rehte ho.",
-        "Makar (Capricorn)" to "Ambitious, practical aur disciplined. Aap success ke liye kuch bhi karoge.",
-        "Kumbh (Aquarius)" to "Innovative, independent aur humanitarian. Aap duniya badalna chahte ho.",
-        "Meen (Pisces)" to "Sapneela, empath aur creative. Aap doosron ki feelings feel karte ho."
+        "Mesh (Aries)" to "Courageous, brave and emotional. You always want to be first.",
+        "Vrishabh (Taurus)" to "Steady, hardworking and fond of good food. You believe in enjoyment.",
+        "Mithun (Gemini)" to "Charming, chatty and curious. You understand both sides of every issue.",
+        "Kark (Cancer)" to "Caring, emotional and home-loving. You look after others.",
+        "Simha (Leo)" to "Regal, generous and attention-loving. You want to be the center of the world.",
+        "Kanya (Virgo)" to "Practical, meticulous and helpful. You get lost in the details.",
+        "Tula (Libra)" to "Graceful, fair-minded and relationship-loving. You believe in balance.",
+        "Vrishchik (Scorpio)" to "Deep, passionate and mysterious. You want to uncover the truth.",
+        "Dhanu (Sagittarius)" to "Free, philosophical and a seeker. You are always in pursuit of knowledge.",
+        "Makar (Capricorn)" to "Ambitious, practical and disciplined. You will do whatever it takes to succeed.",
+        "Kumbh (Aquarius)" to "Innovative, independent and humanitarian. You want to change the world.",
+        "Meen (Pisces)" to "Dreamy, empathetic and creative. You feel the emotions of others."
     )
 
     fun calculate(name: String, dob: String, time: String, place: String): FeatureResult {
@@ -187,26 +187,26 @@ object KundliEngine {
         val rashi = rashis[rashiIndex]
         val lagna = rashis[lagnaIndex]
         val nakshatra = nakshatras[nakshatraIndex]
-        val trait = rashiTraits[rashi] ?: "Aap ek vishesh vyaktitva rakhte ho."
+        val trait = rashiTraits[rashi] ?: "You have a unique personality."
 
         val items = listOf(
             ReadingItem("Rashi (Moon Sign)", rashi, trait),
-            ReadingItem("Lagna (Ascendant)", lagna, "Aapka pehla bhaav — logo ko aap aise dikhte ho."),
-            ReadingItem("Nakshatra", nakshatra, "Aapka janam nakshatra aapke andar ki shakti batata hai."),
-            ReadingItem("Naam Akshar", name.firstOrNull()?.uppercase() ?: "A", "Pehla akshar aapke rashi se mel khaata hai."),
-            ReadingItem("Shubh Graha", listOf("Mangal", "Shukra", "Guru", "Shani", "Surya")[rashiIndex % 5], "Yeh graha aapke pakshdhar hai.")
+            ReadingItem("Lagna (Ascendant)", lagna, "Your first house — this is how others perceive you."),
+            ReadingItem("Nakshatra", nakshatra, "Your birth nakshatra reveals the inner power within you."),
+            ReadingItem("Name Initial", name.firstOrNull()?.uppercase() ?: "A", "The first letter corresponds to your rashi."),
+            ReadingItem("Favorable Planet", listOf("Mars", "Venus", "Jupiter", "Saturn", "Sun")[rashiIndex % 5], "This planet is your benefactor.")
         )
-        return FeatureResult("Aapki Kundli", items, "Yeh ek simplified Vedic reading hai. Vistrit kundli ke liye Jyotishi se milein.")
+        return FeatureResult("Your Kundli", items, "This is a simplified Vedic reading. For a detailed kundli, consult an astrologer.")
     }
 
     fun answer(question: String, rashi: String): String {
         val trait = rashiTraits.values.toList().random()
         return listOf(
-            "Aapki $rashi rashi ke anusar: $trait",
-            "Graha gochaar bata raha hai — patience rakho. Sab theek hoga.",
-            "Aapke lagna ki shakti kehti hai: Dil ki suno, dimag bhi sahi hai.",
-            "Jyotish shastra kehta hai: Is sawaal ka jawab aapke andar hi chhupa hai.",
-            "Shubh muhurat dhundo aur is kaam ko shuru karo. Safalta zaroor milegi."
+            "According to your $rashi rashi: $trait",
+            "The planetary transit indicates — be patient. Everything will be fine.",
+            "The power of your lagna says: Listen to your heart, your mind is also right.",
+            "Vedic astrology says: The answer to this question is hidden within you.",
+            "Find an auspicious moment and begin this work. Success will surely come."
         ).random()
     }
 }
@@ -225,18 +225,18 @@ object SignEngine {
     )
 
     val signs = listOf(
-        ZodiacSign("Mesh (Aries)", "♈", "21 Mar – 19 Apr", "Agni", "Mangal", "Saahasi, jazbaati, leader", "Simha, Dhanu", 9, "Laal"),
-        ZodiacSign("Vrishabh (Taurus)", "♉", "20 Apr – 20 May", "Prithvi", "Shukra", "Sthir, bharosemand, anand-premi", "Kanya, Makar", 6, "Hara"),
-        ZodiacSign("Mithun (Gemini)", "♊", "21 May – 20 Jun", "Vaayu", "Budha", "Charming, smart, dubidhagrasth", "Tula, Kumbh", 5, "Peela"),
-        ZodiacSign("Kark (Cancer)", "♋", "21 Jun – 22 Jul", "Jal", "Chandra", "Caring, sensitive, ghar-premi", "Vrishchik, Meen", 2, "Safed"),
-        ZodiacSign("Simha (Leo)", "♌", "23 Jul – 22 Aug", "Agni", "Surya", "Generous, bold, royal", "Mesh, Dhanu", 1, "Sona"),
-        ZodiacSign("Kanya (Virgo)", "♍", "23 Aug – 22 Sep", "Prithvi", "Budha", "Practical, detail-oriented, helpful", "Vrishabh, Makar", 5, "Neela"),
-        ZodiacSign("Tula (Libra)", "♎", "23 Sep – 22 Oct", "Vaayu", "Shukra", "Fair, loving, social", "Mithun, Kumbh", 6, "Gulaabi"),
-        ZodiacSign("Vrishchik (Scorpio)", "♏", "23 Oct – 21 Nov", "Jal", "Mangal", "Intense, secretive, powerful", "Kark, Meen", 8, "Kala"),
-        ZodiacSign("Dhanu (Sagittarius)", "♐", "22 Nov – 21 Dec", "Agni", "Guru", "Free-spirited, optimistic, seeker", "Mesh, Simha", 3, "Narangi"),
-        ZodiacSign("Makar (Capricorn)", "♑", "22 Dec – 19 Jan", "Prithvi", "Shani", "Ambitious, responsible, practical", "Vrishabh, Kanya", 8, "Bhoora"),
-        ZodiacSign("Kumbh (Aquarius)", "♒", "20 Jan – 18 Feb", "Vaayu", "Shani", "Innovative, independent, humanitarian", "Mithun, Tula", 4, "Neela"),
-        ZodiacSign("Meen (Pisces)", "♓", "19 Feb – 20 Mar", "Jal", "Guru", "Dreamy, empathic, artistic", "Kark, Vrishchik", 7, "Violet")
+        ZodiacSign("Mesh (Aries)", "♈", "21 Mar – 19 Apr", "Fire", "Mars", "Brave, emotional, leader", "Simha, Dhanu", 9, "Red"),
+        ZodiacSign("Vrishabh (Taurus)", "♉", "20 Apr – 20 May", "Earth", "Venus", "Steady, reliable, pleasure-loving", "Kanya, Makar", 6, "Green"),
+        ZodiacSign("Mithun (Gemini)", "♊", "21 May – 20 Jun", "Air", "Mercury", "Charming, smart, indecisive", "Tula, Kumbh", 5, "Yellow"),
+        ZodiacSign("Kark (Cancer)", "♋", "21 Jun – 22 Jul", "Water", "Moon", "Caring, sensitive, home-loving", "Vrishchik, Meen", 2, "White"),
+        ZodiacSign("Simha (Leo)", "♌", "23 Jul – 22 Aug", "Fire", "Sun", "Generous, bold, royal", "Mesh, Dhanu", 1, "Gold"),
+        ZodiacSign("Kanya (Virgo)", "♍", "23 Aug – 22 Sep", "Earth", "Mercury", "Practical, detail-oriented, helpful", "Vrishabh, Makar", 5, "Blue"),
+        ZodiacSign("Tula (Libra)", "♎", "23 Sep – 22 Oct", "Air", "Venus", "Fair, loving, social", "Mithun, Kumbh", 6, "Pink"),
+        ZodiacSign("Vrishchik (Scorpio)", "♏", "23 Oct – 21 Nov", "Water", "Mars", "Intense, secretive, powerful", "Kark, Meen", 8, "Black"),
+        ZodiacSign("Dhanu (Sagittarius)", "♐", "22 Nov – 21 Dec", "Fire", "Jupiter", "Free-spirited, optimistic, seeker", "Mesh, Simha", 3, "Orange"),
+        ZodiacSign("Makar (Capricorn)", "♑", "22 Dec – 19 Jan", "Earth", "Saturn", "Ambitious, responsible, practical", "Vrishabh, Kanya", 8, "Brown"),
+        ZodiacSign("Kumbh (Aquarius)", "♒", "20 Jan – 18 Feb", "Air", "Saturn", "Innovative, independent, humanitarian", "Mithun, Tula", 4, "Blue"),
+        ZodiacSign("Meen (Pisces)", "♓", "19 Feb – 20 Mar", "Water", "Jupiter", "Dreamy, empathic, artistic", "Kark, Vrishchik", 7, "Violet")
     )
 
     fun fromDob(dobDdMmYyyy: String): ZodiacSign {
@@ -262,32 +262,32 @@ object SignEngine {
     }
 
     private val dailyHoroscopes = mapOf(
-        "Agni" to listOf("Aaj aapki energy bahut tez hai. Naye kaam shuru karo.", "Aaj kisi se narazgi na rakho, maafi do."),
-        "Prithvi" to listOf("Aaj finances par dhyan do. Sochke kharch karo.", "Aaj mehnat rang laegi. Lage raho."),
-        "Vaayu" to listOf("Aaj communication mein magic hai. Baat karo, rishte bane.", "Aaj koi naya idea aayega. Likh lo."),
-        "Jal" to listOf("Aaj dil ki suno. Intuition bahut strong hai.", "Aaj kisi zarooratmand ki madad karo. Barkat milegi.")
+        "Fire" to listOf("Your energy is very strong today. Start new ventures.", "Do not hold grudges against anyone today, forgive and move on."),
+        "Earth" to listOf("Focus on your finances today. Spend wisely.", "Your hard work will pay off today. Keep going."),
+        "Air" to listOf("There is magic in communication today. Talk to people and build connections.", "A new idea will come to you today. Write it down."),
+        "Water" to listOf("Listen to your heart today. Your intuition is very strong.", "Help someone in need today. Blessings will follow.")
     )
 
     fun getResult(sign: ZodiacSign): FeatureResult {
-        val horoscope = dailyHoroscopes[sign.element]?.random() ?: "Aaj ek accha din hai."
+        val horoscope = dailyHoroscopes[sign.element]?.random() ?: "Today is a good day."
         val items = listOf(
-            ReadingItem("Rashifal", sign.name, "${sign.emoji} ${sign.traits}"),
-            ReadingItem("Element", sign.element, "Aapka tatva aapke mizaaj ko define karta hai."),
-            ReadingItem("Ruling Planet", sign.ruling, "Yeh graha aapke jeevan par zyada prabhav daalta hai."),
-            ReadingItem("Compatible Signs", sign.compatible, "In rashiyon ke saath aapki chemistry acchi rahti hai."),
-            ReadingItem("Lucky Details", "No. ${sign.luckyNumber} | ${sign.luckyColor}", "Shubh rang aur shubh ank aapke liye."),
-            ReadingItem("Aaj Ka Rashifal", "Aaj", horoscope)
+            ReadingItem("Horoscope", sign.name, "${sign.emoji} ${sign.traits}"),
+            ReadingItem("Element", sign.element, "Your element defines your temperament."),
+            ReadingItem("Ruling Planet", sign.ruling, "This planet has the greatest influence on your life."),
+            ReadingItem("Compatible Signs", sign.compatible, "You share great chemistry with these signs."),
+            ReadingItem("Lucky Details", "No. ${sign.luckyNumber} | ${sign.luckyColor}", "Your lucky color and lucky number."),
+            ReadingItem("Today's Horoscope", "Today", horoscope)
         )
-        return FeatureResult("Aapka Rashifal — ${sign.name}", items, "Graha gochaar se yeh rashifal taiyaar kiya gaya hai.")
+        return FeatureResult("Your Horoscope — ${sign.name}", items, "This horoscope has been prepared based on planetary transits.")
     }
 
     fun answer(question: String, sign: ZodiacSign): String {
         val pool = listOf(
-            "${sign.emoji} ${sign.name} ke liye: ${dailyHoroscopes[sign.element]?.random()}",
-            "Aapka ruling planet ${sign.ruling} keh raha hai — sabr rakho, badlaav aa raha hai.",
-            "${sign.traits.split(",").random().trim()} hone ki wajah se aap is sawaal ka jawab jante ho.",
-            "Lucky number ${sign.luckyNumber} aur ${sign.luckyColor} rang aaj aapke saath hai.",
-            "Aapke compatible sign se milne ki koshish karo — nayi roshni milegi."
+            "${sign.emoji} For ${sign.name}: ${dailyHoroscopes[sign.element]?.random()}",
+            "Your ruling planet ${sign.ruling} says — be patient, change is coming.",
+            "Because you are ${sign.traits.split(",").random().trim()}, you already know the answer to this question.",
+            "Lucky number ${sign.luckyNumber} and the color ${sign.luckyColor} are with you today.",
+            "Try connecting with your compatible sign — new light will emerge."
         )
         return pool.random()
     }

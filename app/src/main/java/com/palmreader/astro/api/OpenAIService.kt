@@ -70,7 +70,7 @@ object OpenAIService {
         val requestBody = JSONObject().apply {
             put("model", MODEL)
             put("temperature", temperature.toDouble())
-            put("max_tokens", 1024)
+            put("max_tokens", 1500)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
                     put("role", "system")

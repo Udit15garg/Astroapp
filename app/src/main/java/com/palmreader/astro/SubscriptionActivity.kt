@@ -36,7 +36,7 @@ class SubscriptionActivity : BaseFeatureActivity() {
                         db.userDao().addCredits(session.userId, 3)
                         db.creditTransactionDao().insert(CreditTransactionEntity(
                             userId = session.userId, type = "PURCHASED", amount = 3,
-                            description = "₹49 Starter Pack — 3 credits kharide"
+                            description = "₹49 Starter Pack — 3 credits purchased"
                         ))
                         runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
                     } catch (e: Exception) {
@@ -54,7 +54,7 @@ class SubscriptionActivity : BaseFeatureActivity() {
                         db.userDao().updatePlan(session.userId, 10, "BASIC", expiry)
                         db.creditTransactionDao().insert(CreditTransactionEntity(
                             userId = session.userId, type = "PLAN_ACTIVATED", amount = 10,
-                            description = "₹99 Basic Monthly — 10 credits/month activate"
+                            description = "₹99 Basic Monthly — 10 credits/month activated"
                         ))
                         runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
                     } catch (e: Exception) {
@@ -72,7 +72,7 @@ class SubscriptionActivity : BaseFeatureActivity() {
                         db.userDao().updatePlan(session.userId, 999, "UNLIMITED", expiry)
                         db.creditTransactionDao().insert(CreditTransactionEntity(
                             userId = session.userId, type = "PLAN_ACTIVATED", amount = 999,
-                            description = "₹199 Unlimited Monthly — sabse zyada sawaal"
+                            description = "₹199 Unlimited Monthly — unlimited questions"
                         ))
                         runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
                     } catch (e: Exception) {

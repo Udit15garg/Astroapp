@@ -29,7 +29,7 @@ class ScanActivity : AppCompatActivity() {
                 binding.handOverlay.visibility = View.GONE   // hide guide once photo captured
                 checkImageQuality(photo)
             } else {
-                setStatus("Photo capture nahi hui. Dobara try karo.", isError = true)
+                setStatus(getString(R.string.scan_no_photo), isError = true)
             }
         }
     }
@@ -71,7 +71,7 @@ class ScanActivity : AppCompatActivity() {
                     putParcelableArrayListExtra("readings", ArrayList(readings))
                 })
             } catch (e: Exception) {
-                setStatus("Vishleshan mein problem: ${e.message}", isError = true)
+                setStatus(getString(R.string.scan_error, e.message), isError = true)
             } finally {
                 binding.btnAnalyze.isEnabled = true
             }

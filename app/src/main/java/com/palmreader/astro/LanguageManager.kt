@@ -32,6 +32,8 @@ object LanguageManager {
         AppCompatDelegate.setApplicationLocales(localeList)
     }
 
+    fun getCurrentLocale(context: Context): String = getCurrentLanguage(context)
+
     fun isHindi(context: Context): Boolean = getCurrentLanguage(context) == HINDI
 
     fun toggleLanguage(context: Context) {
