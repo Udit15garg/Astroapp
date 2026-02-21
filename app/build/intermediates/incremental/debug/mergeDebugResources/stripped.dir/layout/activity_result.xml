@@ -39,7 +39,7 @@
                 android:id="@+id/tvCredits"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🪙 1 Credit"
+                android:text="@string/credits_single"
                 android:textSize="13sp"
                 android:textColor="@android:color/white"
                 android:background="#33FFFFFF"

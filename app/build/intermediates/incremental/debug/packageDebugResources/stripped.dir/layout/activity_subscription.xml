@@ -19,7 +19,7 @@
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="←"
+            android:text="@string/back"
             android:textSize="18sp"
             android:backgroundTint="#33FFFFFF"
             android:layout_marginEnd="12dp"
@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="💎 Plans &amp; Credits"
+                android:text="@string/sub_title"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/white" />
@@ -44,7 +44,7 @@
                 android:id="@+id/tvCurrentCredits"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🪙 1 Credit"
+                android:text="@string/credits_single"
                 android:textSize="13sp"
                 android:textColor="@android:color/white"
                 android:alpha="0.9" />
@@ -65,13 +65,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apna plan chunein 🌟"
+                android:text="@string/sub_choose_plan"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Plan 1: ₹49 / 3 questions -->
+            <!-- Plan 1: Starter Pack -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -91,27 +91,27 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🎯" android:textSize="32sp" android:layout_marginEnd="12dp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textSize="32sp" android:textStyle="bold" android:textColor="@color/primary" android:layout_marginEnd="12dp" />
 
                         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Starter Pack" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3 sawalon ke credits" android:textSize="13sp" android:textColor="@color/text_medium" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_starter_title" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_starter_desc" android:textSize="13sp" android:textColor="@color/text_medium" />
                         </LinearLayout>
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹49" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="\u20B949" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnBuy49"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="3 Credits Kharido — ₹49"
+                        android:text="@string/sub_starter_buy"
                         android:backgroundTint="@color/secondary"
                         android:layout_marginTop="12dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Plan 2: ₹99 / 10 credits per month -->
+            <!-- Plan 2: Basic Monthly -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⭐ POPULAR" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/secondary" android:layout_marginBottom="4dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_basic_badge" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/secondary" android:layout_marginBottom="4dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -134,27 +134,27 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🌟" android:textSize="32sp" android:layout_marginEnd="12dp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textSize="32sp" android:textStyle="bold" android:textColor="@color/primary" android:layout_marginEnd="12dp" />
 
                         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Basic Monthly" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="10 credits — har mahine" android:textSize="13sp" android:textColor="@color/text_medium" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_basic_title" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_basic_desc" android:textSize="13sp" android:textColor="@color/text_medium" />
                         </LinearLayout>
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹99" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="\u20B999" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnBuy99"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="10 Credits/Month — ₹99"
+                        android:text="@string/sub_basic_buy"
                         android:backgroundTint="@color/primary"
                         android:layout_marginTop="12dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Plan 3: ₹199 / unlimited per month -->
+            <!-- Plan 3: Unlimited Monthly -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -175,21 +175,21 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="♾️" android:textSize="32sp" android:layout_marginEnd="12dp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textSize="32sp" android:textStyle="bold" android:textColor="@color/primary" android:layout_marginEnd="12dp" />
 
                         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Unlimited Monthly" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jitne chaaho utne sawaal!" android:textSize="13sp" android:textColor="@color/text_medium" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_unlimited_title" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_unlimited_desc" android:textSize="13sp" android:textColor="@color/text_medium" />
                         </LinearLayout>
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹199" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="\u20B9199" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
                     </LinearLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnBuy199"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Unlimited/Month — ₹199"
+                        android:text="@string/sub_unlimited_buy"
                         android:backgroundTint="#2E7D32"
                         android:layout_marginTop="12dp" />
                 </LinearLayout>
@@ -203,7 +203,7 @@
                 android:id="@+id/btnFreeTrial"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Abhi nahi — Free Trial se chalao (1 Credit)"
+                android:text="@string/sub_free_trial"
                 android:backgroundTint="@color/text_medium"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 app:strokeColor="@color/text_medium" />

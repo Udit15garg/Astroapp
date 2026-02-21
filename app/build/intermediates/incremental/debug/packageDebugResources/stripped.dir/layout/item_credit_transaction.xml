@@ -20,7 +20,7 @@
             android:id="@+id/tvTxType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🎁 Bonus"
+            android:text="Bonus"
             android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="@color/primary"

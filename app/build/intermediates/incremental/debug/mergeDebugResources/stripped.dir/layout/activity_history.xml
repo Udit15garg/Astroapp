@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📜 Purani Readings"
+            android:text="@string/history_title"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@android:color/white" />
@@ -40,7 +40,7 @@
         android:id="@+id/tvEmpty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Abhi koi sawaal nahi. Koi bhi feature try karo!"
+        android:text="@string/history_empty"
         android:textSize="15sp"
         android:textColor="@color/text_medium"
         android:gravity="center"

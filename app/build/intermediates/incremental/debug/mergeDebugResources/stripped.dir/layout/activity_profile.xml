@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="👤 Mera Profile"
+            android:text="@string/profile_title"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@android:color/white" />
@@ -83,7 +83,7 @@
                         android:id="@+id/tvPlan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🆓 Free"
+                        android:text="@string/profile_plan_free"
                         android:textSize="14sp"
                         android:textColor="@color/secondary"
                         android:textStyle="bold" />
@@ -94,7 +94,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🪙 Credits Summary"
+                android:text="@string/profile_credits_summary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary"
@@ -117,7 +117,7 @@
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="vertical" android:padding="12dp" android:gravity="center">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Balance" android:textSize="11sp" android:textColor="@color/text_medium" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_stat_balance" android:textSize="11sp" android:textColor="@color/text_medium" />
                         <TextView android:id="@+id/tvStatBalance" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/primary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -133,7 +133,7 @@
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="vertical" android:padding="12dp" android:gravity="center">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Khareed" android:textSize="11sp" android:textColor="@color/text_medium" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_stat_purchased" android:textSize="11sp" android:textColor="@color/text_medium" />
                         <TextView android:id="@+id/tvStatPurchased" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="24sp" android:textStyle="bold" android:textColor="#2E7D32" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -149,7 +149,7 @@
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="vertical" android:padding="12dp" android:gravity="center">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Use Kiye" android:textSize="11sp" android:textColor="@color/text_medium" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_stat_used" android:textSize="11sp" android:textColor="@color/text_medium" />
                         <TextView android:id="@+id/tvStatUsed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="24sp" android:textStyle="bold" android:textColor="#C62828" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -164,7 +164,7 @@
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="vertical" android:padding="12dp" android:gravity="center">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Bonus" android:textSize="11sp" android:textColor="@color/text_medium" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_stat_bonus" android:textSize="11sp" android:textColor="@color/text_medium" />
                         <TextView android:id="@+id/tvStatBonus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/secondary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -174,7 +174,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📋 Coins History"
+                android:text="@string/profile_tx_history"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary"
@@ -184,7 +184,7 @@
                 android:id="@+id/tvTxEmpty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Abhi koi transaction nahi."
+                android:text="@string/profile_tx_empty"
                 android:textSize="14sp"
                 android:textColor="@color/text_medium"
                 android:gravity="center"

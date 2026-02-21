@@ -1,5 +1,17 @@
 [
     {
+        "merged": "com.palmreader.astro.app-merged_res-38:/xml_data_extraction_rules.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/xml/data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_rashifal.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/ic_feature_rashifal.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_palmistry.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/ic_feature_palmistry.xml"
+    },
+    {
         "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-hdpi_ic_launcher_round.png.flat",
         "source": "com.palmreader.astro.app-main-40:/mipmap-hdpi/ic_launcher_round.png"
     },
@@ -28,6 +40,14 @@
         "source": "com.palmreader.astro.app-main-40:/layout/activity_result.xml"
     },
     {
+        "merged": "com.palmreader.astro.app-merged_res-38:/xml_locales_config.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/xml/locales_config.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/xml_backup_rules.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/xml/backup_rules.xml"
+    },
+    {
         "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_reading.xml.flat",
         "source": "com.palmreader.astro.app-main-40:/layout/item_reading.xml"
     },
@@ -38,6 +58,10 @@
     {
         "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_feature.xml.flat",
         "source": "com.palmreader.astro.app-main-40:/layout/activity_feature.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_sunsign.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/ic_feature_sunsign.xml"
     },
     {
         "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
@@ -54,6 +78,14 @@
     {
         "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-mdpi_ic_launcher.png.flat",
         "source": "com.palmreader.astro.app-main-40:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_kundli.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/ic_feature_kundli.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_numerology.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/ic_feature_numerology.xml"
     },
     {
         "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_chat_user.xml.flat",
@@ -80,6 +112,14 @@
         "source": "com.palmreader.astro.app-main-40:/layout/item_result_card.xml"
     },
     {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_app_logo.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/ic_app_logo.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_tarot.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/ic_feature_tarot.xml"
+    },
+    {
         "merged": "com.palmreader.astro.app-merged_res-38:/mipmap-mdpi_ic_launcher_round.png.flat",
         "source": "com.palmreader.astro.app-main-40:/mipmap-mdpi/ic_launcher_round.png"
     },
@@ -90,6 +130,10 @@
     {
         "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_scan.xml.flat",
         "source": "com.palmreader.astro.app-main-40:/layout/activity_scan.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/ic_launcher_background.xml"
     },
     {
         "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_auth.xml.flat",

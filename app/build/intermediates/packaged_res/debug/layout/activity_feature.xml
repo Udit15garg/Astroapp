@@ -40,7 +40,7 @@
             android:id="@+id/tvCredits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🪙 1"
+            android:text="@string/credits_single"
             android:textSize="13sp"
             android:textColor="@android:color/white"
             android:background="#33FFFFFF"
@@ -75,7 +75,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Teen patte chunein aur bhavishya padhein 🎴"
+                    android:text="@string/tarot_instruction"
                     android:textSize="15sp"
                     android:textColor="@color/text_dark"
                     android:layout_marginBottom="12dp" />
@@ -84,7 +84,7 @@
                     android:id="@+id/btnDrawCards"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🔮 Patte Draw Karo"
+                    android:text="@string/tarot_draw"
                     android:backgroundTint="@color/secondary"
                     android:layout_marginBottom="16dp" />
 
@@ -148,7 +148,7 @@
                     android:id="@+id/tilName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Poora Naam"
+                    android:hint="@string/numerology_name_hint"
                     android:layout_marginBottom="12dp"
                     android:visibility="gone"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -165,7 +165,7 @@
                     android:id="@+id/tilDob"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Janm Tithi (DD/MM/YYYY)"
+                    android:hint="@string/kundli_dob_hint"
                     android:layout_marginBottom="12dp"
                     android:visibility="gone"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -182,7 +182,7 @@
                     android:id="@+id/tilTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Janm Samay (HH:MM)"
+                    android:hint="@string/kundli_time_hint"
                     android:layout_marginBottom="12dp"
                     android:visibility="gone"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -199,7 +199,7 @@
                     android:id="@+id/tilPlace"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Janm Sthan"
+                    android:hint="@string/kundli_place_hint"
                     android:layout_marginBottom="16dp"
                     android:visibility="gone"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -216,7 +216,7 @@
                     android:id="@+id/btnAnalyze"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Vishleshan Karein 🔮"
+                    android:text="@string/feature_analyze"
                     android:backgroundTint="@color/primary"
                     android:layout_marginBottom="8dp" />
             </LinearLayout>
@@ -242,7 +242,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="💬 Sawaal Poochein"
+                    android:text="@string/qa_title"
                     android:textSize="17sp"
                     android:textStyle="bold"
                     android:textColor="@color/primary"
@@ -251,7 +251,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Har sawaal 1 credit leta hai"
+                    android:text="@string/qa_credit_note"
                     android:textSize="12sp"
                     android:textColor="@color/text_medium"
                     android:layout_marginBottom="12dp" />
@@ -282,7 +282,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Apna sawaal likhein..."
+            android:hint="@string/qa_input_hint"
             android:textSize="14sp"
             android:imeOptions="actionSend"
             android:inputType="text"
@@ -298,7 +298,7 @@
             android:id="@+id/btnSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bhejo"
+            android:text="@string/btn_send"
             android:backgroundTint="@color/primary" />
     </LinearLayout>
 </LinearLayout>

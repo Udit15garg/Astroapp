@@ -8,11 +8,11 @@
     android:gravity="center">
 
     <!-- Logo / branding -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🔮"
-        android:textSize="64sp"
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_app_logo"
+        android:contentDescription="@string/cd_app_logo"
         android:layout_marginBottom="8dp" />
 
     <TextView
@@ -43,7 +43,7 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Namasté! 🙏\nAccount Banao"
+                android:text="@string/auth_title_signup"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary"
@@ -54,7 +54,7 @@
                 android:id="@+id/tilName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Aapka Naam"
+                android:hint="@string/auth_name_hint"
                 android:layout_marginBottom="12dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -113,7 +113,7 @@
                 android:id="@+id/btnSubmit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sign Up — 1 Free Question!"
+                android:text="@string/auth_signup_button"
                 android:textSize="15sp"
                 android:backgroundTint="@color/primary"
                 android:layout_marginBottom="12dp" />
@@ -126,7 +126,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginBottom="12dp">
                 <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="@color/divider" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="  ya  " android:textSize="13sp" android:textColor="@color/text_medium" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auth_or_divider" android:textSize="13sp" android:textColor="@color/text_medium" android:paddingStart="8dp" android:paddingEnd="8dp" />
                 <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="@color/divider" />
             </LinearLayout>
 
@@ -135,7 +135,7 @@
                 android:id="@+id/btnGoogle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="🔵  Google se Login / Sign Up"
+                android:text="@string/auth_google_button"
                 android:textSize="14sp"
                 android:backgroundTint="#FFFFFF"
                 android:textColor="@color/text_dark"
@@ -148,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Pehle se account hai? Login karo →"
+                android:text="@string/auth_toggle_to_login"
                 android:textColor="@color/secondary"
                 android:textSize="14sp"
                 android:padding="8dp" />

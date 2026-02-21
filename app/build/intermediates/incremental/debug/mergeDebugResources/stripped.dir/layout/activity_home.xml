@@ -30,7 +30,7 @@
                     android:id="@+id/tvGreeting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Namasté! 🙏"
+                    android:text="@string/home_greeting"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@android:color/white" />
@@ -39,7 +39,7 @@
                     android:id="@+id/tvCredits"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🪙 1 Credit"
+                    android:text="@string/credits_single"
                     android:textSize="13sp"
                     android:textColor="@android:color/white"
                     android:alpha="0.9" />
@@ -49,8 +49,8 @@
                 android:id="@+id/btnProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="👤"
-                android:textSize="16sp"
+                android:text="@string/home_btn_profile"
+                android:textSize="12sp"
                 android:backgroundTint="#33FFFFFF"
                 android:layout_marginEnd="6dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -60,7 +60,7 @@
                 android:id="@+id/btnHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📜 History"
+                android:text="@string/home_btn_history"
                 android:textSize="12sp"
                 android:backgroundTint="#33FFFFFF"
                 android:layout_marginEnd="8dp"
@@ -71,8 +71,8 @@
                 android:id="@+id/btnLogout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="↩"
-                android:textSize="16sp"
+                android:text="@string/home_btn_logout"
+                android:textSize="12sp"
                 android:backgroundTint="#33FFFFFF"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 app:strokeColor="@android:color/white" />
@@ -84,7 +84,7 @@
         android:id="@+id/btnSubscription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="✨ Plans Dekho — ₹49 | ₹99 | ₹199"
+        android:text="@string/home_subscription_banner"
         android:textSize="13sp"
         android:backgroundTint="@color/secondary"
         android:layout_margin="0dp" />
@@ -104,7 +104,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kya jaanna chahte ho? 🌟"
+                android:text="@string/home_section_title"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary"
@@ -136,8 +136,12 @@
                         android:gravity="center"
                         android:padding="12dp">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🖐️" android:textSize="36sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hast Rekha" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" />
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_palmistry"
+                            android:contentDescription="@string/cd_feature_palmistry" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/feature_palmistry" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -160,8 +164,12 @@
                         android:gravity="center"
                         android:padding="12dp">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🎴" android:textSize="36sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tarot Reading" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" />
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_tarot"
+                            android:contentDescription="@string/cd_feature_tarot" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/feature_tarot" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -192,8 +200,12 @@
                         android:gravity="center"
                         android:padding="12dp">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔢" android:textSize="36sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Numerology" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" />
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_numerology"
+                            android:contentDescription="@string/cd_feature_numerology" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/feature_numerology" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -216,8 +228,12 @@
                         android:gravity="center"
                         android:padding="12dp">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⭐" android:textSize="36sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Kundli" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" />
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_kundli"
+                            android:contentDescription="@string/cd_feature_kundli" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/feature_kundli" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -248,8 +264,12 @@
                         android:gravity="center"
                         android:padding="12dp">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="♈" android:textSize="36sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rashifal" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" />
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_rashifal"
+                            android:contentDescription="@string/cd_feature_rashifal" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/feature_rashifal" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -272,8 +292,12 @@
                         android:gravity="center"
                         android:padding="12dp">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="☀️" android:textSize="36sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sun Sign" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" />
+                        <ImageView
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_sunsign"
+                            android:contentDescription="@string/cd_feature_sunsign" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/feature_sunsign" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/primary" android:gravity="center" android:layout_marginTop="4dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>

@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-48:12
-INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-48:12
-INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-48:12
-INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-48:12
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-56:12
+INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-56:12
+INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-56:12
+INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-56:12
 MERGED from [androidx.databinding:viewbinding:8.2.2] /Users/uditgarg/.gradle/caches/transforms-3/cd3924747fa6dd0a9ff13a3e867a60aa/transformed/viewbinding-8.2.2/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.11.0] /Users/uditgarg/.gradle/caches/transforms-3/1e2a6a94e36be799e6f3bf05aa4fef8f/transformed/material-1.11.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/uditgarg/.gradle/caches/transforms-3/0741f97d845aa1d3e8c29afad75f7851/transformed/constraintlayout-2.1.4/AndroidManifest.xml:2:1-11:12
@@ -80,8 +80,8 @@ ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:6:5-85
 	android:name
 		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:6:19-57
 application
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:8:5-47:19
-INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:8:5-47:19
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:8:5-55:19
+INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:8:5-55:19
 MERGED from [com.google.android.material:material:1.11.0] /Users/uditgarg/.gradle/caches/transforms-3/1e2a6a94e36be799e6f3bf05aa4fef8f/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] /Users/uditgarg/.gradle/caches/transforms-3/1e2a6a94e36be799e6f3bf05aa4fef8f/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/uditgarg/.gradle/caches/transforms-3/0741f97d845aa1d3e8c29afad75f7851/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
@@ -112,12 +112,16 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/uditgarg/.gradle/cac
 MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/uditgarg/.gradle/caches/transforms-3/1da5fa4e6178f89a36dbc80229e5af0b/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
 	android:extractNativeLibs
 		INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml
+	android:localeConfig
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:17:9-51
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.12.0] /Users/uditgarg/.gradle/caches/transforms-3/7b9e4df7753206a15acb9e9561d1013e/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
 	android:supportsRtl
 		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:13:9-35
 	android:label
 		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:11:9-41
+	android:fullBackupContent
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:16:9-54
 	android:roundIcon
 		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:12:9-54
 	android:icon
@@ -126,70 +130,80 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/uditgarg/.gradle/cac
 		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:9:9-35
 	android:theme
 		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:14:9-46
+	android:dataExtractionRules
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:15:9-65
 activity#com.palmreader.astro.MainActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:16:9-23:20
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:20:9-28:20
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:18:13-36
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:22:13-36
+	android:theme
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:23:13-57
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:17:13-41
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:21:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:19:13-22:29
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:24:13-27:29
 action#android.intent.action.MAIN
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:20:17-69
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:25:17-69
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:20:25-66
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:25:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:21:17-77
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:26:17-77
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:21:27-74
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:26:27-74
 activity#com.palmreader.astro.ScanActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:26:9-75
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:31:9-75
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:26:48-72
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:31:48-72
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:26:19-47
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:31:19-47
 activity#com.palmreader.astro.ResultActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:27:9-77
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:32:9-77
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:27:50-74
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:32:50-74
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:27:19-49
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:32:19-49
 activity#com.palmreader.astro.AuthActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:30:9-75
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:35:9-75
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:30:48-72
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:35:48-72
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:30:19-47
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:35:19-47
 activity#com.palmreader.astro.HomeActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:33:9-75
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:38:9-75
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:33:48-72
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:38:48-72
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:33:19-47
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:38:19-47
 activity#com.palmreader.astro.FeatureActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:36:9-78
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:41:9-78
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:36:51-75
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:41:51-75
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:36:19-50
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:41:19-50
 activity#com.palmreader.astro.SubscriptionActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:39:9-83
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:44:9-83
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:39:56-80
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:44:56-80
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:39:19-55
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:44:19-55
 activity#com.palmreader.astro.HistoryActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:42:9-78
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:47:9-78
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:42:51-75
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:47:51-75
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:42:19-50
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:47:19-50
 activity#com.palmreader.astro.ProfileActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:45:9-78
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:50:9-78
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:45:51-75
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:50:51-75
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:45:19-50
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:50:19-50
+activity#com.palmreader.astro.PrivacyPolicyActivity
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:53:9-84
+	android:exported
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:53:57-81
+	android:name
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:53:19-56
 uses-sdk
 INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml

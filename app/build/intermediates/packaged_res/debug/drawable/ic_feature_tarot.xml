@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tarot card with star -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Card outline -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M16,6 L48,6 Q52,6 52,10 L52,54 Q52,58 48,58 L16,58 Q12,58 12,54 L12,10 Q12,6 16,6 Z" />
+    <!-- Card inner border -->
+    <path
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="1"
+        android:fillColor="#00000000"
+        android:pathData="M18,10 L46,10 Q48,10 48,12 L48,52 Q48,54 46,54 L18,54 Q16,54 16,52 L16,12 Q16,10 18,10 Z" />
+    <!-- Star on card -->
+    <path
+        android:fillColor="#FFB74D"
+        android:pathData="M32,18 L34.5,26 L43,27 L36.5,33 L38.5,41 L32,37 L25.5,41 L27.5,33 L21,27 L29.5,26 Z" />
+    <!-- Bottom decoration -->
+    <path
+        android:fillColor="#FFB74D"
+        android:fillAlpha="0.5"
+        android:pathData="M26,46 L38,46 L38,48 L26,48 Z" />
+</vector>
