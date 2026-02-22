@@ -312,7 +312,7 @@ class FeatureActivity : BaseFeatureActivity() {
 
         val summaryView = TextView(this).apply {
             text = result.summary
-            setTextColor(0xFF555555.toInt())
+            setTextColor(resources.getColor(R.color.text_medium, null))
             textSize = 13f
             setPadding(0, 8, 0, 16)
         }

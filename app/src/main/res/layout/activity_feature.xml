@@ -45,7 +45,7 @@
             android:text="@string/credits_single"
             android:textSize="13sp"
             android:textColor="@color/text_medium"
-            android:background="#33FFFFFF"
+            android:background="@color/surface_container_low"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:paddingTop="4dp"

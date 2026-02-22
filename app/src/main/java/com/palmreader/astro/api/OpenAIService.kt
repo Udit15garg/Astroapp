@@ -7,6 +7,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
@@ -19,7 +20,7 @@ object OpenAIService {
 
     private const val BASE_URL = "https://api.openai.com/v1/chat/completions"
     private const val MODEL = "gpt-4o-mini"
-    private const val TIMEOUT_MS = 30_000L
+    private const val TIMEOUT_MS = 60_000L
 
     sealed class ApiResult<out T> {
         data class Success<T>(val data: T) : ApiResult<T>()
@@ -41,9 +42,7 @@ object OpenAIService {
         temperature: Float = 0.7f
     ): ApiResult<String> = withContext(Dispatchers.IO) {
         try {
-            val apiKey = try {
-                BuildConfig::class.java.getField("OPENAI_API_KEY").get(null) as? String
-            } catch (_: Exception) { null }
+            val apiKey: String? = BuildConfig.OPENAI_API_KEY
 
             if (apiKey.isNullOrBlank() || apiKey == "YOUR_API_KEY_HERE") {
                 return@withContext ApiResult.Error(
@@ -57,6 +56,7 @@ object OpenAIService {
 
             result ?: ApiResult.Error("Request timed out. Please try again.", 408)
         } catch (e: Exception) {
+            Log.e("OpenAIService", "API call failed: ${e::class.simpleName}: ${e.message}", e)
             ApiResult.Error("Network error: ${e.message}", -1)
         }
     }
@@ -88,7 +88,7 @@ object OpenAIService {
             setRequestProperty("Content-Type", "application/json")
             setRequestProperty("Authorization", "Bearer $apiKey")
             connectTimeout = 15_000
-            readTimeout = 30_000
+            readTimeout = 60_000
             doOutput = true
         }
 
