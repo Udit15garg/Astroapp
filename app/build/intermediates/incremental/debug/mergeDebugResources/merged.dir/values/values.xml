@@ -638,7 +638,7 @@
     <color name="background_floating_material_light">@android:color/white</color>
     <color name="background_material_dark">@color/material_grey_850</color>
     <color name="background_material_light">@color/material_grey_50</color>
-    <color name="bg_warm">#FFF8F0</color>
+    <color name="bg_warm">#FAFAFA</color>
     <color name="brand_gold">#FFB74D</color>
     <color name="brand_navy">#1A1A2E</color>
     <color name="bright_foreground_disabled_material_dark">#80ffffff</color>
@@ -652,11 +652,13 @@
     <color name="call_notification_answer_color">#1d873b</color>
     <color name="call_notification_decline_color">#d93025</color>
     <color name="card_kundli">#FFF8E1</color>
-    <color name="card_numerology">#E8F5E9</color>
-    <color name="card_palmistry">#F3E5F5</color>
-    <color name="card_rashifal">#E3F2FD</color>
+    <color name="card_numerology">#E0F2F1</color>
+    <color name="card_palmistry">#FFF3E0</color>
+    <color name="card_rashifal">#E8EAF6</color>
     <color name="card_sunsign">#FFF3E0</color>
     <color name="card_tarot">#FCE4EC</color>
+    <color name="card_text_subtitle">#666666</color>
+    <color name="card_text_title">#1A1A2E</color>
     <color name="cardview_dark_background">#FF424242</color>
     <color name="cardview_light_background">#FFFFFFFF</color>
     <color name="cardview_shadow_end_color">#03000000</color>
@@ -965,7 +967,7 @@
     <color name="on_primary_container">#3A0B00</color>
     <color name="on_secondary">#FFFFFF</color>
     <color name="on_secondary_container">#2B1700</color>
-    <color name="on_surface">#2D1B00</color>
+    <color name="on_surface">#1A1A2E</color>
     <color name="on_surface_variant">#53433C</color>
     <color name="on_tertiary">#FFFFFF</color>
     <color name="on_tertiary_container">#271900</color>
@@ -994,7 +996,7 @@
     <color name="secondary_text_disabled_material_dark">#36ffffff</color>
     <color name="secondary_text_disabled_material_light">#24000000</color>
     <color name="success">#2E7D32</color>
-    <color name="surface">#FFF8F0</color>
+    <color name="surface">#FAFAFA</color>
     <color name="surface_container">#FFEEE3</color>
     <color name="surface_container_high">#FFE4D6</color>
     <color name="surface_container_low">#FFF3EC</color>
@@ -1005,9 +1007,9 @@
     <color name="switch_thumb_normal_material_light">#fff1f1f1</color>
     <color name="tertiary">#7B5800</color>
     <color name="tertiary_container">#FFDEAC</color>
-    <color name="text_dark">#2D1B00</color>
-    <color name="text_light">#A08979</color>
-    <color name="text_medium">#6D4C41</color>
+    <color name="text_dark">#1A1A2E</color>
+    <color name="text_light">#888888</color>
+    <color name="text_medium">#555555</color>
     <color name="tooltip_background_dark">#e6616161</color>
     <color name="tooltip_background_light">#e6FFFFFF</color>
     <color name="warning">#F57F17</color>
@@ -1094,8 +1096,9 @@
     <dimen name="abc_text_size_title_material_toolbar">20dp</dimen>
     <dimen name="appbar_padding">16dp</dimen>
     <dimen name="appcompat_dialog_background_inset">16dp</dimen>
-    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_corner_radius">20dp</dimen>
     <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_inner_padding">20dp</dimen>
     <dimen name="card_padding">16dp</dimen>
     <dimen name="cardview_compat_inset_shadow">1dp</dimen>
     <dimen name="cardview_default_elevation">2dp</dimen>
@@ -1166,8 +1169,8 @@
     <dimen name="fastscroll_default_thickness">8dp</dimen>
     <dimen name="fastscroll_margin">0dp</dimen>
     <dimen name="fastscroll_minimum_range">50dp</dimen>
-    <dimen name="feature_card_height">120dp</dimen>
-    <dimen name="feature_icon_size">40dp</dimen>
+    <dimen name="feature_card_height">140dp</dimen>
+    <dimen name="feature_icon_size">48dp</dimen>
     <item format="float" name="highlight_alpha_material_colored" type="dimen">0.26</item>
     <item format="float" name="highlight_alpha_material_dark" type="dimen">0.20</item>
     <item format="float" name="highlight_alpha_material_light" type="dimen">0.12</item>
@@ -2046,6 +2049,10 @@
     <string name="abc_shareactionprovider_share_with">Share with</string>
     <string name="abc_shareactionprovider_share_with_application">Share with <ns2:g example="Mail" id="application_name">%s</ns2:g></string>
     <string name="abc_toolbar_collapse_description">Collapse</string>
+    <string name="ai_loading">Consulting the stars\u2026</string>
+    <string name="ai_rate_limited">Too many requests. Please wait a moment and try again.</string>
+    <string name="ai_reading_error">Could not generate your reading. Please try again.</string>
+    <string name="ai_timeout">Taking longer than expected. Please try again.</string>
     <string name="androidx_startup" translatable="false">androidx.startup</string>
     <string name="app_name">AstroApp</string>
     <string name="app_subtitle">Tarot \u2022 Kundli \u2022 Numerology \u2022 Palmistry \u2022 Rashifal</string>
@@ -2370,6 +2377,21 @@
     <string description="Content description for the X button to clear text [CHAR_LIMIT=NONE]" name="searchview_clear_text_content_description">Clear text</string>
     <string description="Content description for the navigation button to return to the previous screen [CHAR_LIMIT=NONE]" name="searchview_navigation_content_description">Back</string>
     <string name="send">Send</string>
+    <string name="settings_clear_history">Clear Reading History</string>
+    <string name="settings_clear_history_done">History cleared</string>
+    <string name="settings_clear_history_msg">This will delete all your past reading history. This action cannot be undone.</string>
+    <string name="settings_clear_history_title">Clear History</string>
+    <string name="settings_delete_confirm">Delete Everything</string>
+    <string name="settings_delete_msg">This will permanently delete your account and all associated data. This action cannot be undone.</string>
+    <string name="settings_delete_title">Delete My Data</string>
+    <string name="settings_logout_msg">Are you sure you want to log out?</string>
+    <string name="settings_logout_title">Log Out</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_section_account">Account</string>
+    <string name="settings_section_danger">Danger Zone</string>
+    <string name="settings_section_preferences">Preferences</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_version">AstroApp v%s</string>
     <string description="Title of the side sheet&apos;s accessibility pane that is spoken by TalkBack when the side sheet appears on screen. [CHAR_LIMIT=NONE]" name="side_sheet_accessibility_pane_title">Side Sheet</string>
     <string name="side_sheet_behavior" translatable="false">com.google.android.material.sidesheet.SideSheetBehavior</string>
     <string name="sign_analyze">View Rashifal</string>
@@ -6728,7 +6750,8 @@
         <item name="colorOutline">@color/outline</item>
 
         <item name="android:windowBackground">@color/surface</item>
-        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:statusBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/surface</item>
 
         
@@ -7548,7 +7571,7 @@
     <style name="Widget.AppCompat.Toolbar.Button.Navigation" parent="Base.Widget.AppCompat.Toolbar.Button.Navigation"/>
     <style name="Widget.Astro" parent="android:Widget"/>
     <style name="Widget.Astro.AppBar">
-        <item name="android:background">@color/primary</item>
+        <item name="android:background">@color/surface</item>
         <item name="android:padding">@dimen/appbar_padding</item>
     </style>
     <style name="Widget.Astro.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">

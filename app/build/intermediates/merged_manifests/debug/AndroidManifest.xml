@@ -86,6 +86,11 @@
             android:name="com.palmreader.astro.ProfileActivity"
             android:exported="false" />
 
+        <!-- Settings -->
+        <activity
+            android:name="com.palmreader.astro.SettingsActivity"
+            android:exported="false" />
+
         <!-- Privacy Policy -->
         <activity
             android:name="com.palmreader.astro.PrivacyPolicyActivity"

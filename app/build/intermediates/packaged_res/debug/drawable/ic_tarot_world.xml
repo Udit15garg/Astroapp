@@ -1,0 +1,99 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Card background -->
+    <path
+        android:pathData="M8,2L40,2A4,4 0,0 1,44 6L44,42A4,4 0,0 1,40 46L8,46A4,4 0,0 1,4 42L4,6A4,4 0,0 1,8 2Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Card border -->
+    <path
+        android:pathData="M10,4L38,4A4,4 0,0 1,42 8L42,40A4,4 0,0 1,38 44L10,44A4,4 0,0 1,6 40L6,8A4,4 0,0 1,10 4Z"
+        android:strokeColor="#E65100"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Outer wreath circle -->
+    <path
+        android:pathData="M24,7A15,15 0,1 1,24 37A15,15 0,1 1,24 7Z"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="2"
+        android:fillColor="#00000000" />
+
+    <!-- Inner wreath circle -->
+    <path
+        android:pathData="M24,9A13,13 0,1 1,24 35A13,13 0,1 1,24 9Z"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Wreath leaf accents - top -->
+    <path
+        android:pathData="M22,7C22,7 24,5 26,7"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1"
+        android:fillColor="#00000000" />
+
+    <!-- Wreath leaf accents - bottom -->
+    <path
+        android:pathData="M22,37C22,37 24,39 26,37"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1"
+        android:fillColor="#00000000" />
+
+    <!-- Wreath leaf accents - left -->
+    <path
+        android:pathData="M9,20C9,20 7,22 9,24"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1"
+        android:fillColor="#00000000" />
+
+    <!-- Wreath leaf accents - right -->
+    <path
+        android:pathData="M39,20C39,20 41,22 39,24"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1"
+        android:fillColor="#00000000" />
+
+    <!-- Inner globe - horizontal line -->
+    <path
+        android:pathData="M13,22L35,22"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.6" />
+
+    <!-- Inner globe - vertical ellipse -->
+    <path
+        android:pathData="M24,11C28,11 30,16 30,22C30,28 28,33 24,33C20,33 18,28 18,22C18,16 20,11 24,11Z"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Inner globe - center dot -->
+    <path
+        android:pathData="M24,20A2,2 0,1 1,24 24A2,2 0,1 1,24 20Z"
+        android:fillColor="#F9A825" />
+
+    <!-- Corner star top-left -->
+    <path
+        android:pathData="M11,8L11.6,9.5L13,9.5L11.9,10.5L12.3,12L11,11.2L9.7,12L10.1,10.5L9,9.5L10.4,9.5Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Corner star top-right -->
+    <path
+        android:pathData="M37,8L37.6,9.5L39,9.5L37.9,10.5L38.3,12L37,11.2L35.7,12L36.1,10.5L35,9.5L36.4,9.5Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Corner star bottom-left -->
+    <path
+        android:pathData="M11,36L11.6,37.5L13,37.5L11.9,38.5L12.3,40L11,39.2L9.7,40L10.1,38.5L9,37.5L10.4,37.5Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Corner star bottom-right -->
+    <path
+        android:pathData="M37,36L37.6,37.5L39,37.5L37.9,38.5L38.3,40L37,39.2L35.7,40L36.1,38.5L35,37.5L36.4,37.5Z"
+        android:fillColor="#FFB74D" />
+
+</vector>

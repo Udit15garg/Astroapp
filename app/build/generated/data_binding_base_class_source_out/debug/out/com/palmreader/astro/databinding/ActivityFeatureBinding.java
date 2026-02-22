@@ -61,6 +61,9 @@ public final class ActivityFeatureBinding implements ViewBinding {
   public final TextInputEditText etTime;
 
   @NonNull
+  public final LinearLayout llCardLabels;
+
+  @NonNull
   public final LinearLayout llCardResults;
 
   @NonNull
@@ -111,14 +114,14 @@ public final class ActivityFeatureBinding implements ViewBinding {
       @NonNull MaterialButton btnDrawCards, @NonNull MaterialButton btnSend,
       @NonNull TextInputEditText etDob, @NonNull TextInputEditText etName,
       @NonNull TextInputEditText etPlace, @NonNull EditText etQuestion,
-      @NonNull TextInputEditText etTime, @NonNull LinearLayout llCardResults,
-      @NonNull LinearLayout llCards, @NonNull LinearLayout llChat,
-      @NonNull LinearLayout llFormSection, @NonNull LinearLayout llInputBar,
-      @NonNull LinearLayout llQaSection, @NonNull LinearLayout llResults,
-      @NonNull LinearLayout llTarotSection, @NonNull NestedScrollView svMain,
-      @NonNull TextInputLayout tilDob, @NonNull TextInputLayout tilName,
-      @NonNull TextInputLayout tilPlace, @NonNull TextInputLayout tilTime,
-      @NonNull TextView tvCredits, @NonNull TextView tvTitle) {
+      @NonNull TextInputEditText etTime, @NonNull LinearLayout llCardLabels,
+      @NonNull LinearLayout llCardResults, @NonNull LinearLayout llCards,
+      @NonNull LinearLayout llChat, @NonNull LinearLayout llFormSection,
+      @NonNull LinearLayout llInputBar, @NonNull LinearLayout llQaSection,
+      @NonNull LinearLayout llResults, @NonNull LinearLayout llTarotSection,
+      @NonNull NestedScrollView svMain, @NonNull TextInputLayout tilDob,
+      @NonNull TextInputLayout tilName, @NonNull TextInputLayout tilPlace,
+      @NonNull TextInputLayout tilTime, @NonNull TextView tvCredits, @NonNull TextView tvTitle) {
     this.rootView = rootView;
     this.btnAnalyze = btnAnalyze;
     this.btnBack = btnBack;
@@ -132,6 +135,7 @@ public final class ActivityFeatureBinding implements ViewBinding {
     this.etPlace = etPlace;
     this.etQuestion = etQuestion;
     this.etTime = etTime;
+    this.llCardLabels = llCardLabels;
     this.llCardResults = llCardResults;
     this.llCards = llCards;
     this.llChat = llChat;
@@ -248,6 +252,12 @@ public final class ActivityFeatureBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.llCardLabels;
+      LinearLayout llCardLabels = ViewBindings.findChildViewById(rootView, id);
+      if (llCardLabels == null) {
+        break missingId;
+      }
+
       id = R.id.llCardResults;
       LinearLayout llCardResults = ViewBindings.findChildViewById(rootView, id);
       if (llCardResults == null) {
@@ -340,8 +350,9 @@ public final class ActivityFeatureBinding implements ViewBinding {
 
       return new ActivityFeatureBinding((LinearLayout) rootView, btnAnalyze, btnBack, btnCard1,
           btnCard2, btnCard3, btnDrawCards, btnSend, etDob, etName, etPlace, etQuestion, etTime,
-          llCardResults, llCards, llChat, llFormSection, llInputBar, llQaSection, llResults,
-          llTarotSection, svMain, tilDob, tilName, tilPlace, tilTime, tvCredits, tvTitle);
+          llCardLabels, llCardResults, llCards, llChat, llFormSection, llInputBar, llQaSection,
+          llResults, llTarotSection, svMain, tilDob, tilName, tilPlace, tilTime, tvCredits,
+          tvTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

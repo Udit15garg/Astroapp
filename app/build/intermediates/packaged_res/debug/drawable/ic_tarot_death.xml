@@ -1,0 +1,96 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Card background -->
+    <path
+        android:pathData="M8,2L40,2A4,4 0,0 1,44 6L44,42A4,4 0,0 1,40 46L8,46A4,4 0,0 1,4 42L4,6A4,4 0,0 1,8 2Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Card border -->
+    <path
+        android:pathData="M10,4L38,4A4,4 0,0 1,42 8L42,40A4,4 0,0 1,38 44L10,44A4,4 0,0 1,6 40L6,8A4,4 0,0 1,10 4Z"
+        android:strokeColor="#E65100"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Phoenix body - rising bird shape -->
+    <path
+        android:pathData="M24,34C24,34 20,28 18,24C16,20 18,14 24,12C30,14 32,20 30,24C28,28 24,34 24,34Z"
+        android:fillColor="#E65100" />
+
+    <!-- Phoenix inner flame -->
+    <path
+        android:pathData="M24,30C24,30 22,26 21,23C20,20 21,16 24,15C27,16 28,20 27,23C26,26 24,30 24,30Z"
+        android:fillColor="#F9A825" />
+
+    <!-- Phoenix core -->
+    <path
+        android:pathData="M24,26C24,26 23,24 22.5,22C22,20 23,18 24,18C25,18 26,20 25.5,22C25,24 24,26 24,26Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Left wing -->
+    <path
+        android:pathData="M18,24C18,24 14,20 11,18C14,17 17,18 18,20"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000" />
+
+    <!-- Right wing -->
+    <path
+        android:pathData="M30,24C30,24 34,20 37,18C34,17 31,18 30,20"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1.2"
+        android:fillColor="#00000000" />
+
+    <!-- Rising flame wisps left -->
+    <path
+        android:pathData="M22,12C22,12 20,9 21,7"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Rising flame wisps right -->
+    <path
+        android:pathData="M26,12C26,12 28,9 27,7"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Rising flame wisp center -->
+    <path
+        android:pathData="M24,12C24,12 24,8 24,6"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Transformation arrows - circular -->
+    <path
+        android:pathData="M16,36A10,4 0,0 1,32 36"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Arrow tip right -->
+    <path
+        android:pathData="M31,35L33,36L31,37"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <path
+        android:pathData="M32,40A10,4 0,0 1,16 40"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Arrow tip left -->
+    <path
+        android:pathData="M17,39L15,40L17,41"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+</vector>

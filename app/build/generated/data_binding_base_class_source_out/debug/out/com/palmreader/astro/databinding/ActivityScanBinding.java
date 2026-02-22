@@ -26,6 +26,9 @@ public final class ActivityScanBinding implements ViewBinding {
   public final MaterialButton btnAnalyze;
 
   @NonNull
+  public final MaterialButton btnBack;
+
+  @NonNull
   public final MaterialButton btnCamera;
 
   @NonNull
@@ -38,10 +41,12 @@ public final class ActivityScanBinding implements ViewBinding {
   public final TextView tvStatus;
 
   private ActivityScanBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnAnalyze,
-      @NonNull MaterialButton btnCamera, @NonNull HandOverlayView handOverlay,
-      @NonNull ImageView ivPreview, @NonNull TextView tvStatus) {
+      @NonNull MaterialButton btnBack, @NonNull MaterialButton btnCamera,
+      @NonNull HandOverlayView handOverlay, @NonNull ImageView ivPreview,
+      @NonNull TextView tvStatus) {
     this.rootView = rootView;
     this.btnAnalyze = btnAnalyze;
+    this.btnBack = btnBack;
     this.btnCamera = btnCamera;
     this.handOverlay = handOverlay;
     this.ivPreview = ivPreview;
@@ -81,6 +86,12 @@ public final class ActivityScanBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnBack;
+      MaterialButton btnBack = ViewBindings.findChildViewById(rootView, id);
+      if (btnBack == null) {
+        break missingId;
+      }
+
       id = R.id.btnCamera;
       MaterialButton btnCamera = ViewBindings.findChildViewById(rootView, id);
       if (btnCamera == null) {
@@ -105,8 +116,8 @@ public final class ActivityScanBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityScanBinding((LinearLayout) rootView, btnAnalyze, btnCamera, handOverlay,
-          ivPreview, tvStatus);
+      return new ActivityScanBinding((LinearLayout) rootView, btnAnalyze, btnBack, btnCamera,
+          handOverlay, ivPreview, tvStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

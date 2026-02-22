@@ -1,0 +1,75 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Card background -->
+    <path
+        android:pathData="M8,2L40,2A4,4 0,0 1,44 6L44,42A4,4 0,0 1,40 46L8,46A4,4 0,0 1,4 42L4,6A4,4 0,0 1,8 2Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Card border -->
+    <path
+        android:pathData="M10,4L38,4A4,4 0,0 1,42 8L42,40A4,4 0,0 1,38 44L10,44A4,4 0,0 1,6 40L6,8A4,4 0,0 1,10 4Z"
+        android:strokeColor="#E65100"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Large central 8-pointed star -->
+    <path
+        android:pathData="M24,7L26.5,17.5L37,15L29,22L37,29L26.5,26.5L24,37L21.5,26.5L11,29L19,22L11,15L21.5,17.5Z"
+        android:fillColor="#F9A825" />
+
+    <!-- Star inner glow -->
+    <path
+        android:pathData="M24,14L25.5,19.5L31,18L27,22L31,26L25.5,24.5L24,30L22.5,24.5L17,26L21,22L17,18L22.5,19.5Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Star center circle -->
+    <path
+        android:pathData="M24,19.5A2.5,2.5 0,1 1,24 24.5A2.5,2.5 0,1 1,24 19.5Z"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Small star top-left -->
+    <path
+        android:pathData="M13,8L13.8,10L15.5,10L14.2,11.2L14.6,13L13,12L11.4,13L11.8,11.2L10.5,10L12.2,10Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Small star top-right -->
+    <path
+        android:pathData="M35,8L35.8,10L37.5,10L36.2,11.2L36.6,13L35,12L33.4,13L33.8,11.2L32.5,10L34.2,10Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Small star bottom-left -->
+    <path
+        android:pathData="M13,35L13.8,37L15.5,37L14.2,38.2L14.6,40L13,39L11.4,40L11.8,38.2L10.5,37L12.2,37Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Small star bottom-right -->
+    <path
+        android:pathData="M35,35L35.8,37L37.5,37L36.2,38.2L36.6,40L35,39L33.4,40L33.8,38.2L32.5,37L34.2,37Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Radiance lines -->
+    <path
+        android:pathData="M24,5L24,7"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.5" />
+
+    <path
+        android:pathData="M24,37L24,39"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.5" />
+
+    <path
+        android:pathData="M9,22L11,22"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.5" />
+
+    <path
+        android:pathData="M37,22L39,22"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.5" />
+
+</vector>

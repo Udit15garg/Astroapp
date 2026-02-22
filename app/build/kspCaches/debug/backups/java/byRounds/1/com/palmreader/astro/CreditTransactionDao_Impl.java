@@ -7,6 +7,7 @@ import androidx.room.CoroutinesRoom;
 import androidx.room.EntityInsertionAdapter;
 import androidx.room.RoomDatabase;
 import androidx.room.RoomSQLiteQuery;
+import androidx.room.SharedSQLiteStatement;
 import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
@@ -32,6 +33,8 @@ public final class CreditTransactionDao_Impl implements CreditTransactionDao {
 
   private final EntityInsertionAdapter<CreditTransactionEntity> __insertionAdapterOfCreditTransactionEntity;
 
+  private final SharedSQLiteStatement __preparedStmtOfDeleteByUser;
+
   public CreditTransactionDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
     this.__insertionAdapterOfCreditTransactionEntity = new EntityInsertionAdapter<CreditTransactionEntity>(__db) {
@@ -52,6 +55,14 @@ public final class CreditTransactionDao_Impl implements CreditTransactionDao {
         statement.bindLong(6, entity.getTimestamp());
       }
     };
+    this.__preparedStmtOfDeleteByUser = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM credit_transactions WHERE userId = ?";
+        return _query;
+      }
+    };
   }
 
   @Override
@@ -68,6 +79,31 @@ public final class CreditTransactionDao_Impl implements CreditTransactionDao {
           return Unit.INSTANCE;
         } finally {
           __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deleteByUser(final long userId, final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteByUser.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, userId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteByUser.release(_stmt);
         }
       }
     }, $completion);

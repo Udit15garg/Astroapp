@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-56:12
-INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-56:12
-INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-56:12
-INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-56:12
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:2:1-59:12
 MERGED from [androidx.databinding:viewbinding:8.2.2] /Users/uditgarg/.gradle/caches/transforms-3/cd3924747fa6dd0a9ff13a3e867a60aa/transformed/viewbinding-8.2.2/AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.11.0] /Users/uditgarg/.gradle/caches/transforms-3/1e2a6a94e36be799e6f3bf05aa4fef8f/transformed/material-1.11.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/uditgarg/.gradle/caches/transforms-3/0741f97d845aa1d3e8c29afad75f7851/transformed/constraintlayout-2.1.4/AndroidManifest.xml:2:1-11:12
@@ -80,8 +80,8 @@ ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:6:5-85
 	android:name
 		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:6:19-57
 application
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:8:5-55:19
-INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:8:5-55:19
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:8:5-58:19
+INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:8:5-58:19
 MERGED from [com.google.android.material:material:1.11.0] /Users/uditgarg/.gradle/caches/transforms-3/1e2a6a94e36be799e6f3bf05aa4fef8f/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] /Users/uditgarg/.gradle/caches/transforms-3/1e2a6a94e36be799e6f3bf05aa4fef8f/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/uditgarg/.gradle/caches/transforms-3/0741f97d845aa1d3e8c29afad75f7851/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
@@ -198,12 +198,18 @@ ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:50:9-78
 		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:50:51-75
 	android:name
 		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:50:19-50
-activity#com.palmreader.astro.PrivacyPolicyActivity
-ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:53:9-84
+activity#com.palmreader.astro.SettingsActivity
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:53:9-79
 	android:exported
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:53:57-81
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:53:52-76
 	android:name
-		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:53:19-56
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:53:19-51
+activity#com.palmreader.astro.PrivacyPolicyActivity
+ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:56:9-84
+	android:exported
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:56:57-81
+	android:name
+		ADDED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml:56:19-56
 uses-sdk
 INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/uditgarg/Astroapp/app/src/main/AndroidManifest.xml

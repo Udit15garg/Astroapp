@@ -39,6 +39,8 @@ public final class UserDao_Impl implements UserDao {
 
   private final SharedSQLiteStatement __preparedStmtOfUpdatePlan;
 
+  private final SharedSQLiteStatement __preparedStmtOfDeleteById;
+
   public UserDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
     this.__insertionAdapterOfUserEntity = new EntityInsertionAdapter<UserEntity>(__db) {
@@ -81,6 +83,14 @@ public final class UserDao_Impl implements UserDao {
       @NonNull
       public String createQuery() {
         final String _query = "UPDATE users SET credits = ?, planType = ?, planExpiry = ? WHERE id = ?";
+        return _query;
+      }
+    };
+    this.__preparedStmtOfDeleteById = new SharedSQLiteStatement(__db) {
+      @Override
+      @NonNull
+      public String createQuery() {
+        final String _query = "DELETE FROM users WHERE id = ?";
         return _query;
       }
     };
@@ -184,6 +194,31 @@ public final class UserDao_Impl implements UserDao {
           }
         } finally {
           __preparedStmtOfUpdatePlan.release(_stmt);
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object deleteById(final long userId, final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        final SupportSQLiteStatement _stmt = __preparedStmtOfDeleteById.acquire();
+        int _argIndex = 1;
+        _stmt.bindLong(_argIndex, userId);
+        try {
+          __db.beginTransaction();
+          try {
+            _stmt.executeUpdateDelete();
+            __db.setTransactionSuccessful();
+            return Unit.INSTANCE;
+          } finally {
+            __db.endTransaction();
+          }
+        } finally {
+          __preparedStmtOfDeleteById.release(_stmt);
         }
       }
     }, $completion);

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg_warm">#FFF8F0</color>
+    <color name="bg_warm">#FAFAFA</color>
     <color name="brand_gold">#FFB74D</color>
     <color name="brand_navy">#1A1A2E</color>
     <color name="card_kundli">#FFF8E1</color>
-    <color name="card_numerology">#E8F5E9</color>
-    <color name="card_palmistry">#F3E5F5</color>
-    <color name="card_rashifal">#E3F2FD</color>
+    <color name="card_numerology">#E0F2F1</color>
+    <color name="card_palmistry">#FFF3E0</color>
+    <color name="card_rashifal">#E8EAF6</color>
     <color name="card_sunsign">#FFF3E0</color>
     <color name="card_tarot">#FCE4EC</color>
+    <color name="card_text_subtitle">#666666</color>
+    <color name="card_text_title">#1A1A2E</color>
     <color name="chat_bot_bg">#FFF3E0</color>
     <color name="chat_user_bg">#E65100</color>
     <color name="divider">#E0D0C8</color>
@@ -21,7 +23,7 @@
     <color name="on_primary_container">#3A0B00</color>
     <color name="on_secondary">#FFFFFF</color>
     <color name="on_secondary_container">#2B1700</color>
-    <color name="on_surface">#2D1B00</color>
+    <color name="on_surface">#1A1A2E</color>
     <color name="on_surface_variant">#53433C</color>
     <color name="on_tertiary">#FFFFFF</color>
     <color name="on_tertiary_container">#271900</color>
@@ -36,27 +38,28 @@
     <color name="secondary_container">#FFDEA6</color>
     <color name="secondary_dark">#C17900</color>
     <color name="success">#2E7D32</color>
-    <color name="surface">#FFF8F0</color>
+    <color name="surface">#FAFAFA</color>
     <color name="surface_container">#FFEEE3</color>
     <color name="surface_container_high">#FFE4D6</color>
     <color name="surface_container_low">#FFF3EC</color>
     <color name="surface_variant">#F5DED2</color>
     <color name="tertiary">#7B5800</color>
     <color name="tertiary_container">#FFDEAC</color>
-    <color name="text_dark">#2D1B00</color>
-    <color name="text_light">#A08979</color>
-    <color name="text_medium">#6D4C41</color>
+    <color name="text_dark">#1A1A2E</color>
+    <color name="text_light">#888888</color>
+    <color name="text_medium">#555555</color>
     <color name="warning">#F57F17</color>
     <dimen name="appbar_padding">16dp</dimen>
-    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_corner_radius">20dp</dimen>
     <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_inner_padding">20dp</dimen>
     <dimen name="card_padding">16dp</dimen>
     <dimen name="elevation_high">8dp</dimen>
     <dimen name="elevation_low">2dp</dimen>
     <dimen name="elevation_medium">4dp</dimen>
     <dimen name="elevation_none">0dp</dimen>
-    <dimen name="feature_card_height">120dp</dimen>
-    <dimen name="feature_icon_size">40dp</dimen>
+    <dimen name="feature_card_height">140dp</dimen>
+    <dimen name="feature_icon_size">48dp</dimen>
     <dimen name="input_corner_radius">24dp</dimen>
     <dimen name="radius_full">50dp</dimen>
     <dimen name="radius_lg">16dp</dimen>
@@ -74,6 +77,10 @@
     <dimen name="spacing_xxs">2dp</dimen>
     <dimen name="spacing_xxxl">48dp</dimen>
     <dimen name="touch_target_min">48dp</dimen>
+    <string name="ai_loading">Consulting the stars\u2026</string>
+    <string name="ai_rate_limited">Too many requests. Please wait a moment and try again.</string>
+    <string name="ai_reading_error">Could not generate your reading. Please try again.</string>
+    <string name="ai_timeout">Taking longer than expected. Please try again.</string>
     <string name="app_name">AstroApp</string>
     <string name="app_subtitle">Tarot \u2022 Kundli \u2022 Numerology \u2022 Palmistry \u2022 Rashifal</string>
     <string name="app_title">AstroApp</string>
@@ -234,6 +241,21 @@
     <string name="scan_take_photo_first">Take a palm photo first</string>
     <string name="scan_title">Take a Palm Photo</string>
     <string name="send">Send</string>
+    <string name="settings_clear_history">Clear Reading History</string>
+    <string name="settings_clear_history_done">History cleared</string>
+    <string name="settings_clear_history_msg">This will delete all your past reading history. This action cannot be undone.</string>
+    <string name="settings_clear_history_title">Clear History</string>
+    <string name="settings_delete_confirm">Delete Everything</string>
+    <string name="settings_delete_msg">This will permanently delete your account and all associated data. This action cannot be undone.</string>
+    <string name="settings_delete_title">Delete My Data</string>
+    <string name="settings_logout_msg">Are you sure you want to log out?</string>
+    <string name="settings_logout_title">Log Out</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_section_account">Account</string>
+    <string name="settings_section_danger">Danger Zone</string>
+    <string name="settings_section_preferences">Preferences</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_version">AstroApp v%s</string>
     <string name="sign_analyze">View Rashifal</string>
     <string name="sign_dob_hint">DD/MM/YYYY</string>
     <string name="sign_missing_dob">Enter your date of birth</string>
@@ -351,7 +373,8 @@
         <item name="colorOutline">@color/outline</item>
 
         <item name="android:windowBackground">@color/surface</item>
-        <item name="android:statusBarColor">@color/primary</item>
+        <item name="android:statusBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">@color/surface</item>
 
         
@@ -366,7 +389,7 @@
     </style>
     <style name="Widget.Astro" parent="android:Widget"/>
     <style name="Widget.Astro.AppBar">
-        <item name="android:background">@color/primary</item>
+        <item name="android:background">@color/surface</item>
         <item name="android:padding">@dimen/appbar_padding</item>
     </style>
     <style name="Widget.Astro.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">

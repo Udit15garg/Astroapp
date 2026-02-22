@@ -1,0 +1,113 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Card background -->
+    <path
+        android:pathData="M8,2L40,2A4,4 0,0 1,44 6L44,42A4,4 0,0 1,40 46L8,46A4,4 0,0 1,4 42L4,6A4,4 0,0 1,8 2Z"
+        android:fillColor="#1A1A2E" />
+
+    <!-- Card border -->
+    <path
+        android:pathData="M10,4L38,4A4,4 0,0 1,42 8L42,40A4,4 0,0 1,38 44L10,44A4,4 0,0 1,6 40L6,8A4,4 0,0 1,10 4Z"
+        android:strokeColor="#E65100"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000" />
+
+    <!-- Long rays (straight) -->
+    <path
+        android:pathData="M24,6L24,13"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1.2" />
+
+    <path
+        android:pathData="M24,31L24,38"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1.2" />
+
+    <path
+        android:pathData="M10,22L17,22"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1.2" />
+
+    <path
+        android:pathData="M31,22L38,22"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1.2" />
+
+    <!-- Diagonal long rays -->
+    <path
+        android:pathData="M13.1,10.7L17.6,15.9"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1" />
+
+    <path
+        android:pathData="M30.4,28.1L34.9,33.3"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1" />
+
+    <path
+        android:pathData="M34.9,10.7L30.4,15.9"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1" />
+
+    <path
+        android:pathData="M17.6,28.1L13.1,33.3"
+        android:strokeColor="#F9A825"
+        android:strokeWidth="1" />
+
+    <!-- Wavy rays (short, between straight rays) -->
+    <path
+        android:pathData="M18.5,8.5C19,9.5 18.5,10.5 19,11.5"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.7"
+        android:fillColor="#00000000" />
+
+    <path
+        android:pathData="M29,32.5C29.5,33.5 29,34.5 29.5,35.5"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.7"
+        android:fillColor="#00000000" />
+
+    <path
+        android:pathData="M10.5,16C11.5,16.5 12.5,16 13.5,16.5"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.7"
+        android:fillColor="#00000000" />
+
+    <path
+        android:pathData="M34.5,27.5C35.5,28 36.5,27.5 37.5,28"
+        android:strokeColor="#FFB74D"
+        android:strokeWidth="0.7"
+        android:fillColor="#00000000" />
+
+    <!-- Sun outer disc -->
+    <path
+        android:pathData="M24,13A9,9 0,1 1,24 31A9,9 0,1 1,24 13Z"
+        android:fillColor="#F9A825" />
+
+    <!-- Sun inner disc -->
+    <path
+        android:pathData="M24,15A7,7 0,1 1,24 29A7,7 0,1 1,24 15Z"
+        android:fillColor="#FFB74D" />
+
+    <!-- Sun face - simple smile arc -->
+    <path
+        android:pathData="M20,23C21,25.5 27,25.5 28,23"
+        android:strokeColor="#E65100"
+        android:strokeWidth="1"
+        android:fillColor="#00000000" />
+
+    <!-- Sun face - left eye -->
+    <path
+        android:pathData="M21,19.5A1,1 0,1 1,21 21.5A1,1 0,1 1,21 19.5Z"
+        android:fillColor="#E65100" />
+
+    <!-- Sun face - right eye -->
+    <path
+        android:pathData="M27,19.5A1,1 0,1 1,27 21.5A1,1 0,1 1,27 19.5Z"
+        android:fillColor="#E65100" />
+
+</vector>
