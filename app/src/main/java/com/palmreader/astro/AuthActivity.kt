@@ -142,10 +142,10 @@ class AuthActivity : AppCompatActivity() {
                     showError(getString(R.string.auth_email_exists)); return@launch
                 }
                 val userId = db.userDao().insert(
-                    UserEntity(name = name, email = email, passwordHash = pass.hashCode().toString(), credits = 1)
+                    UserEntity(name = name, email = email, passwordHash = pass.hashCode().toString(), credits = 10)
                 )
                 db.creditTransactionDao().insert(
-                    CreditTransactionEntity(userId = userId, type = "BONUS", amount = 1, description = "Welcome bonus — 1 free question")
+                    CreditTransactionEntity(userId = userId, type = "BONUS", amount = 10, description = "Welcome bonus — 10 free credits")
                 )
                 session.userId = userId
                 runOnUiThread { goHome() }
@@ -163,6 +163,13 @@ class AuthActivity : AppCompatActivity() {
                     showError(getString(R.string.auth_invalid_credentials)); return@launch
                 }
                 session.userId = user.id
+                // Top-up free users who have run out of credits
+                if (user.planType == "FREE" && user.credits == 0) {
+                    db.userDao().addCredits(user.id, 5)
+                    db.creditTransactionDao().insert(
+                        CreditTransactionEntity(userId = user.id, type = "BONUS", amount = 5, description = "Daily top-up — 5 free credits")
+                    )
+                }
                 runOnUiThread { goHome() }
             } catch (e: Exception) {
                 showError(getString(R.string.auth_login_error, e.message))
@@ -176,14 +183,21 @@ class AuthActivity : AppCompatActivity() {
                 val existing = db.userDao().findByEmail(email)
                 if (existing == null) {
                     val userId = db.userDao().insert(
-                        UserEntity(name = name, email = email, passwordHash = googleId, credits = 1)
+                        UserEntity(name = name, email = email, passwordHash = googleId, credits = 10)
                     )
                     db.creditTransactionDao().insert(
-                        CreditTransactionEntity(userId = userId, type = "BONUS", amount = 1, description = "Google sign-up bonus — 1 free question")
+                        CreditTransactionEntity(userId = userId, type = "BONUS", amount = 10, description = "Google sign-up bonus — 10 free credits")
                     )
                     session.userId = userId
                 } else {
                     session.userId = existing.id
+                    // Top-up free users who have run out of credits
+                    if (existing.planType == "FREE" && existing.credits == 0) {
+                        db.userDao().addCredits(existing.id, 5)
+                        db.creditTransactionDao().insert(
+                            CreditTransactionEntity(userId = existing.id, type = "BONUS", amount = 5, description = "Daily top-up — 5 free credits")
+                        )
+                    }
                 }
                 runOnUiThread { goHome() }
             } catch (e: Exception) {

@@ -48,25 +48,30 @@
     <string name="error_dialog_title">Something Went Wrong</string>
 
     <!-- ── Home ── -->
-    <string name="home_greeting">Hello, %s!</string>
+    <string name="home_greeting">Hi, %s</string>
     <string name="home_unlimited_plan">Unlimited Plan Active</string>
     <string name="home_basic_plan">%d Credits (Basic)</string>
     <string name="home_credits_remaining">%1$d Credit%2$s remaining</string>
     <string name="home_no_credits">No Credits \u2014 Recharge Now</string>
     <string name="home_section_title">What would you like to know?</string>
-    <string name="home_subscription_banner">View Plans \u2014 \u20B949 | \u20B999 | \u20B9199</string>
+    <string name="home_subscription_banner">✦ Premium Reading \u2014 Unlimited AI insights. Get started \u2192</string>
     <string name="home_btn_profile">Profile</string>
     <string name="home_btn_history">History</string>
     <string name="home_btn_logout">Logout</string>
 
     <!-- ── Features ── -->
     <string name="feature_palmistry">Palmistry</string>
-    <string name="feature_palmistry_subtitle">Hast Rekha</string>
+    <string name="feature_palmistry_subtitle">Hand scan</string>
     <string name="feature_tarot">Tarot Reading</string>
+    <string name="feature_tarot_subtitle">Pick 3 cards</string>
     <string name="feature_numerology">Numerology</string>
+    <string name="feature_numerology_subtitle">Life number</string>
     <string name="feature_kundli">Kundli</string>
+    <string name="feature_kundli_subtitle">Birth chart</string>
     <string name="feature_rashifal">Rashifal</string>
+    <string name="feature_rashifal_subtitle">Daily horoscope</string>
     <string name="feature_sunsign">Sun Sign</string>
+    <string name="feature_sunsign_subtitle">Zodiac traits</string>
     <string name="feature_reading">Reading</string>
 
     <!-- ── Scan ── -->
