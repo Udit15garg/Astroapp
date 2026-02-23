@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.palmreader.astro.R;
@@ -31,19 +33,19 @@ public final class ActivityFeatureBinding implements ViewBinding {
   public final MaterialButton btnBack;
 
   @NonNull
-  public final MaterialButton btnCard1;
-
-  @NonNull
-  public final MaterialButton btnCard2;
-
-  @NonNull
-  public final MaterialButton btnCard3;
-
-  @NonNull
   public final MaterialButton btnDrawCards;
 
   @NonNull
   public final MaterialButton btnSend;
+
+  @NonNull
+  public final MaterialCardView cardSlot1;
+
+  @NonNull
+  public final MaterialCardView cardSlot2;
+
+  @NonNull
+  public final MaterialCardView cardSlot3;
 
   @NonNull
   public final TextInputEditText etDob;
@@ -59,6 +61,24 @@ public final class ActivityFeatureBinding implements ViewBinding {
 
   @NonNull
   public final TextInputEditText etTime;
+
+  @NonNull
+  public final ImageView imgCard1;
+
+  @NonNull
+  public final ImageView imgCard2;
+
+  @NonNull
+  public final ImageView imgCard3;
+
+  @NonNull
+  public final ImageView imgCardBack1;
+
+  @NonNull
+  public final ImageView imgCardBack2;
+
+  @NonNull
+  public final ImageView imgCardBack3;
 
   @NonNull
   public final LinearLayout llCardLabels;
@@ -103,38 +123,57 @@ public final class ActivityFeatureBinding implements ViewBinding {
   public final TextInputLayout tilTime;
 
   @NonNull
+  public final TextView tvCardName1;
+
+  @NonNull
+  public final TextView tvCardName2;
+
+  @NonNull
+  public final TextView tvCardName3;
+
+  @NonNull
   public final TextView tvCredits;
 
   @NonNull
   public final TextView tvTitle;
 
   private ActivityFeatureBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnAnalyze,
-      @NonNull MaterialButton btnBack, @NonNull MaterialButton btnCard1,
-      @NonNull MaterialButton btnCard2, @NonNull MaterialButton btnCard3,
-      @NonNull MaterialButton btnDrawCards, @NonNull MaterialButton btnSend,
+      @NonNull MaterialButton btnBack, @NonNull MaterialButton btnDrawCards,
+      @NonNull MaterialButton btnSend, @NonNull MaterialCardView cardSlot1,
+      @NonNull MaterialCardView cardSlot2, @NonNull MaterialCardView cardSlot3,
       @NonNull TextInputEditText etDob, @NonNull TextInputEditText etName,
       @NonNull TextInputEditText etPlace, @NonNull EditText etQuestion,
-      @NonNull TextInputEditText etTime, @NonNull LinearLayout llCardLabels,
+      @NonNull TextInputEditText etTime, @NonNull ImageView imgCard1, @NonNull ImageView imgCard2,
+      @NonNull ImageView imgCard3, @NonNull ImageView imgCardBack1, @NonNull ImageView imgCardBack2,
+      @NonNull ImageView imgCardBack3, @NonNull LinearLayout llCardLabels,
       @NonNull LinearLayout llCardResults, @NonNull LinearLayout llCards,
       @NonNull LinearLayout llChat, @NonNull LinearLayout llFormSection,
       @NonNull LinearLayout llInputBar, @NonNull LinearLayout llQaSection,
       @NonNull LinearLayout llResults, @NonNull LinearLayout llTarotSection,
       @NonNull NestedScrollView svMain, @NonNull TextInputLayout tilDob,
       @NonNull TextInputLayout tilName, @NonNull TextInputLayout tilPlace,
-      @NonNull TextInputLayout tilTime, @NonNull TextView tvCredits, @NonNull TextView tvTitle) {
+      @NonNull TextInputLayout tilTime, @NonNull TextView tvCardName1,
+      @NonNull TextView tvCardName2, @NonNull TextView tvCardName3, @NonNull TextView tvCredits,
+      @NonNull TextView tvTitle) {
     this.rootView = rootView;
     this.btnAnalyze = btnAnalyze;
     this.btnBack = btnBack;
-    this.btnCard1 = btnCard1;
-    this.btnCard2 = btnCard2;
-    this.btnCard3 = btnCard3;
     this.btnDrawCards = btnDrawCards;
     this.btnSend = btnSend;
+    this.cardSlot1 = cardSlot1;
+    this.cardSlot2 = cardSlot2;
+    this.cardSlot3 = cardSlot3;
     this.etDob = etDob;
     this.etName = etName;
     this.etPlace = etPlace;
     this.etQuestion = etQuestion;
     this.etTime = etTime;
+    this.imgCard1 = imgCard1;
+    this.imgCard2 = imgCard2;
+    this.imgCard3 = imgCard3;
+    this.imgCardBack1 = imgCardBack1;
+    this.imgCardBack2 = imgCardBack2;
+    this.imgCardBack3 = imgCardBack3;
     this.llCardLabels = llCardLabels;
     this.llCardResults = llCardResults;
     this.llCards = llCards;
@@ -149,6 +188,9 @@ public final class ActivityFeatureBinding implements ViewBinding {
     this.tilName = tilName;
     this.tilPlace = tilPlace;
     this.tilTime = tilTime;
+    this.tvCardName1 = tvCardName1;
+    this.tvCardName2 = tvCardName2;
+    this.tvCardName3 = tvCardName3;
     this.tvCredits = tvCredits;
     this.tvTitle = tvTitle;
   }
@@ -192,24 +234,6 @@ public final class ActivityFeatureBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.btnCard1;
-      MaterialButton btnCard1 = ViewBindings.findChildViewById(rootView, id);
-      if (btnCard1 == null) {
-        break missingId;
-      }
-
-      id = R.id.btnCard2;
-      MaterialButton btnCard2 = ViewBindings.findChildViewById(rootView, id);
-      if (btnCard2 == null) {
-        break missingId;
-      }
-
-      id = R.id.btnCard3;
-      MaterialButton btnCard3 = ViewBindings.findChildViewById(rootView, id);
-      if (btnCard3 == null) {
-        break missingId;
-      }
-
       id = R.id.btnDrawCards;
       MaterialButton btnDrawCards = ViewBindings.findChildViewById(rootView, id);
       if (btnDrawCards == null) {
@@ -219,6 +243,24 @@ public final class ActivityFeatureBinding implements ViewBinding {
       id = R.id.btnSend;
       MaterialButton btnSend = ViewBindings.findChildViewById(rootView, id);
       if (btnSend == null) {
+        break missingId;
+      }
+
+      id = R.id.cardSlot1;
+      MaterialCardView cardSlot1 = ViewBindings.findChildViewById(rootView, id);
+      if (cardSlot1 == null) {
+        break missingId;
+      }
+
+      id = R.id.cardSlot2;
+      MaterialCardView cardSlot2 = ViewBindings.findChildViewById(rootView, id);
+      if (cardSlot2 == null) {
+        break missingId;
+      }
+
+      id = R.id.cardSlot3;
+      MaterialCardView cardSlot3 = ViewBindings.findChildViewById(rootView, id);
+      if (cardSlot3 == null) {
         break missingId;
       }
 
@@ -249,6 +291,42 @@ public final class ActivityFeatureBinding implements ViewBinding {
       id = R.id.etTime;
       TextInputEditText etTime = ViewBindings.findChildViewById(rootView, id);
       if (etTime == null) {
+        break missingId;
+      }
+
+      id = R.id.imgCard1;
+      ImageView imgCard1 = ViewBindings.findChildViewById(rootView, id);
+      if (imgCard1 == null) {
+        break missingId;
+      }
+
+      id = R.id.imgCard2;
+      ImageView imgCard2 = ViewBindings.findChildViewById(rootView, id);
+      if (imgCard2 == null) {
+        break missingId;
+      }
+
+      id = R.id.imgCard3;
+      ImageView imgCard3 = ViewBindings.findChildViewById(rootView, id);
+      if (imgCard3 == null) {
+        break missingId;
+      }
+
+      id = R.id.imgCardBack1;
+      ImageView imgCardBack1 = ViewBindings.findChildViewById(rootView, id);
+      if (imgCardBack1 == null) {
+        break missingId;
+      }
+
+      id = R.id.imgCardBack2;
+      ImageView imgCardBack2 = ViewBindings.findChildViewById(rootView, id);
+      if (imgCardBack2 == null) {
+        break missingId;
+      }
+
+      id = R.id.imgCardBack3;
+      ImageView imgCardBack3 = ViewBindings.findChildViewById(rootView, id);
+      if (imgCardBack3 == null) {
         break missingId;
       }
 
@@ -336,6 +414,24 @@ public final class ActivityFeatureBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tvCardName1;
+      TextView tvCardName1 = ViewBindings.findChildViewById(rootView, id);
+      if (tvCardName1 == null) {
+        break missingId;
+      }
+
+      id = R.id.tvCardName2;
+      TextView tvCardName2 = ViewBindings.findChildViewById(rootView, id);
+      if (tvCardName2 == null) {
+        break missingId;
+      }
+
+      id = R.id.tvCardName3;
+      TextView tvCardName3 = ViewBindings.findChildViewById(rootView, id);
+      if (tvCardName3 == null) {
+        break missingId;
+      }
+
       id = R.id.tvCredits;
       TextView tvCredits = ViewBindings.findChildViewById(rootView, id);
       if (tvCredits == null) {
@@ -348,11 +444,12 @@ public final class ActivityFeatureBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityFeatureBinding((LinearLayout) rootView, btnAnalyze, btnBack, btnCard1,
-          btnCard2, btnCard3, btnDrawCards, btnSend, etDob, etName, etPlace, etQuestion, etTime,
-          llCardLabels, llCardResults, llCards, llChat, llFormSection, llInputBar, llQaSection,
-          llResults, llTarotSection, svMain, tilDob, tilName, tilPlace, tilTime, tvCredits,
-          tvTitle);
+      return new ActivityFeatureBinding((LinearLayout) rootView, btnAnalyze, btnBack, btnDrawCards,
+          btnSend, cardSlot1, cardSlot2, cardSlot3, etDob, etName, etPlace, etQuestion, etTime,
+          imgCard1, imgCard2, imgCard3, imgCardBack1, imgCardBack2, imgCardBack3, llCardLabels,
+          llCardResults, llCards, llChat, llFormSection, llInputBar, llQaSection, llResults,
+          llTarotSection, svMain, tilDob, tilName, tilPlace, tilTime, tvCardName1, tvCardName2,
+          tvCardName3, tvCredits, tvTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

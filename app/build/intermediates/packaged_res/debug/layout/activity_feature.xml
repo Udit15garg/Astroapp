@@ -132,7 +132,7 @@
                         android:gravity="center" />
                 </LinearLayout>
 
-                <!-- 3 tarot card buttons -->
+                <!-- 3 tarot card image slots -->
                 <LinearLayout
                     android:id="@+id/llCards"
                     android:layout_width="match_parent"
@@ -141,63 +141,171 @@
                     android:visibility="gone"
                     android:layout_marginBottom="12dp">
 
+                    <!-- Card 1 -->
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardSlot1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@color/brand_navy">
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/glass_card_border"
+                        app:strokeWidth="1dp"
+                        app:cardBackgroundColor="@color/glass_card">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnCard1"
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:text="?"
-                            android:textSize="28sp"
-                            android:textColor="@color/brand_gold"
-                            android:backgroundTint="@color/brand_navy"
-                            app:cornerRadius="12dp" />
+                            android:layout_height="wrap_content">
+
+                            <!-- Card back (face-down) -->
+                            <ImageView
+                                android:id="@+id/imgCardBack1"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_tarot_card_back"
+                                android:padding="16dp"
+                                android:contentDescription="@string/tarot_card_back" />
+
+                            <!-- Card front (revealed) -->
+                            <ImageView
+                                android:id="@+id/imgCard1"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:visibility="gone"
+                                android:contentDescription="@string/tarot_card_face" />
+
+                            <!-- Card name overlay -->
+                            <TextView
+                                android:id="@+id/tvCardName1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:background="#99050810"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"
+                                android:textSize="10sp"
+                                android:textColor="@color/brand_gold"
+                                android:textStyle="bold"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:visibility="gone" />
+                        </FrameLayout>
                     </com.google.android.material.card.MaterialCardView>
 
+                    <!-- Card 2 -->
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardSlot2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@color/brand_navy">
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/glass_card_border"
+                        app:strokeWidth="1dp"
+                        app:cardBackgroundColor="@color/glass_card">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnCard2"
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:text="?"
-                            android:textSize="28sp"
-                            android:textColor="@color/brand_gold"
-                            android:backgroundTint="@color/brand_navy"
-                            app:cornerRadius="12dp" />
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/imgCardBack2"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_tarot_card_back"
+                                android:padding="16dp"
+                                android:contentDescription="@string/tarot_card_back" />
+
+                            <ImageView
+                                android:id="@+id/imgCard2"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:visibility="gone"
+                                android:contentDescription="@string/tarot_card_face" />
+
+                            <TextView
+                                android:id="@+id/tvCardName2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:background="#99050810"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"
+                                android:textSize="10sp"
+                                android:textColor="@color/brand_gold"
+                                android:textStyle="bold"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:visibility="gone" />
+                        </FrameLayout>
                     </com.google.android.material.card.MaterialCardView>
 
+                    <!-- Card 3 -->
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardSlot3"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@color/brand_navy">
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/glass_card_border"
+                        app:strokeWidth="1dp"
+                        app:cardBackgroundColor="@color/glass_card">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnCard3"
+                        <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="120dp"
-                            android:text="?"
-                            android:textSize="28sp"
-                            android:textColor="@color/brand_gold"
-                            android:backgroundTint="@color/brand_navy"
-                            app:cornerRadius="12dp" />
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/imgCardBack3"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_tarot_card_back"
+                                android:padding="16dp"
+                                android:contentDescription="@string/tarot_card_back" />
+
+                            <ImageView
+                                android:id="@+id/imgCard3"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp"
+                                android:scaleType="centerCrop"
+                                android:visibility="gone"
+                                android:contentDescription="@string/tarot_card_face" />
+
+                            <TextView
+                                android:id="@+id/tvCardName3"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:background="#99050810"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:paddingTop="4dp"
+                                android:paddingBottom="4dp"
+                                android:textSize="10sp"
+                                android:textColor="@color/brand_gold"
+                                android:textStyle="bold"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:visibility="gone" />
+                        </FrameLayout>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
@@ -373,6 +481,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_send"
-            android:backgroundTint="@color/primary" />
+            android:backgroundTint="@color/btn_send_bg"
+            android:textColor="@color/text_dark"
+            app:strokeColor="@color/btn_send_border"
+            app:strokeWidth="1dp" />
     </LinearLayout>
 </LinearLayout>
