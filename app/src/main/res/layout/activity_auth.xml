@@ -137,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/auth_google_button"
                 android:textSize="14sp"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/glass_card"
                 android:textColor="@color/text_dark"
                 android:layout_marginBottom="12dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"

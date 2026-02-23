@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- ── Base App Theme (Material Design 3) ── -->
-    <style name="Theme.Astroapp" parent="Theme.Material3.Light.NoActionBar">
+    <!-- ── Base App Theme (Midnight Celestial) ── -->
+    <style name="Theme.Astroapp" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorOnPrimary">@color/on_primary</item>
@@ -24,7 +24,7 @@
         <item name="colorErrorContainer">@color/error_container</item>
         <item name="colorOnErrorContainer">@color/on_error_container</item>
 
-        <item name="android:colorBackground">@color/surface</item>
+        <item name="android:colorBackground">@color/bg_warm</item>
         <item name="colorOnBackground">@color/on_surface</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/on_surface</item>
@@ -33,10 +33,10 @@
 
         <item name="colorOutline">@color/outline</item>
 
-        <item name="android:windowBackground">@color/surface</item>
-        <item name="android:statusBarColor">@color/surface</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:windowBackground">@color/bg_warm</item>
+        <item name="android:statusBarColor">@color/bg_warm</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/bg_warm</item>
 
         <!-- Shape -->
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Astro.SmallComponent</item>
@@ -80,7 +80,7 @@
     <style name="TextAppearance.Astro.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/primary</item>
+        <item name="android:textColor">@color/text_dark</item>
     </style>
 
     <style name="TextAppearance.Astro.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
@@ -107,7 +107,7 @@
     <style name="TextAppearance.Astro.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/primary</item>
+        <item name="android:textColor">@color/secondary</item>
     </style>
 
     <style name="TextAppearance.Astro.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
@@ -117,39 +117,41 @@
 
     <!-- ── Component Styles ── -->
 
-    <!-- Base widget namespace -->
     <style name="Widget.Astro" parent="android:Widget" />
 
-    <!-- Feature Card -->
+    <!-- Feature Card (glass style) -->
     <style name="Widget.Astro.FeatureCard" parent="Widget.Material3.CardView.Filled">
-        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
-        <item name="cardElevation">@dimen/elevation_low</item>
+        <item name="cardCornerRadius">18dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/glass_card</item>
+        <item name="strokeColor">@color/glass_card_border</item>
+        <item name="strokeWidth">1dp</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
-    <!-- Primary Button -->
+    <!-- Primary Button (Royal Blue) -->
     <style name="Widget.Astro.Button.Primary" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/primary</item>
         <item name="android:textColor">@color/on_primary</item>
-        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="cornerRadius">14dp</item>
         <item name="android:minHeight">@dimen/touch_target_min</item>
     </style>
 
-    <!-- Secondary Button -->
+    <!-- Secondary Button (Glass outline) -->
     <style name="Widget.Astro.Button.Secondary" parent="Widget.Material3.Button.TonalButton">
-        <item name="backgroundTint">@color/secondary</item>
-        <item name="android:textColor">@color/on_secondary</item>
-        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="backgroundTint">@color/btn_secondary_bg</item>
+        <item name="android:textColor">@color/text_dark</item>
+        <item name="cornerRadius">14dp</item>
         <item name="android:minHeight">@dimen/touch_target_min</item>
     </style>
 
     <!-- Outlined Button -->
     <style name="Widget.Astro.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
         <item name="strokeColor">@color/outline</item>
-        <item name="android:textColor">@color/primary</item>
-        <item name="cornerRadius">@dimen/radius_md</item>
+        <item name="android:textColor">@color/text_dark</item>
+        <item name="cornerRadius">14dp</item>
         <item name="android:minHeight">@dimen/touch_target_min</item>
     </style>
 

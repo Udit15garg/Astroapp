@@ -69,7 +69,7 @@ class ProfileActivity : BaseFeatureActivity() {
                             item.findViewById<TextView>(R.id.tvTxType).text        = typeLabel(tx.type)
                             item.findViewById<TextView>(R.id.tvTxAmount).text      = "$sign${tx.amount}"
                             item.findViewById<TextView>(R.id.tvTxAmount).setTextColor(
-                                if (tx.amount >= 0) 0xFF2E7D32.toInt() else 0xFFC62828.toInt()
+                                if (tx.amount >= 0) resources.getColor(R.color.success, null) else resources.getColor(R.color.error, null)
                             )
                             item.findViewById<TextView>(R.id.tvTxDesc).text        = tx.description
                             item.findViewById<TextView>(R.id.tvTxDate).text        = formatDate(tx.timestamp)

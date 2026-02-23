@@ -146,9 +146,11 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@color/brand_navy">
+                        app:cardCornerRadius="18dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/glass_card_border"
+                        app:strokeWidth="1dp"
+                        app:cardBackgroundColor="@color/glass_card">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnCard1"
@@ -157,8 +159,8 @@
                             android:text="?"
                             android:textSize="28sp"
                             android:textColor="@color/brand_gold"
-                            android:backgroundTint="@color/brand_navy"
-                            app:cornerRadius="12dp" />
+                            android:backgroundTint="@color/glass_card"
+                            app:cornerRadius="18dp" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -166,9 +168,11 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginEnd="6dp"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@color/brand_navy">
+                        app:cardCornerRadius="18dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/glass_card_border"
+                        app:strokeWidth="1dp"
+                        app:cardBackgroundColor="@color/glass_card">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnCard2"
@@ -177,17 +181,19 @@
                             android:text="?"
                             android:textSize="28sp"
                             android:textColor="@color/brand_gold"
-                            android:backgroundTint="@color/brand_navy"
-                            app:cornerRadius="12dp" />
+                            android:backgroundTint="@color/glass_card"
+                            app:cornerRadius="18dp" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="4dp"
-                        app:cardBackgroundColor="@color/brand_navy">
+                        app:cardCornerRadius="18dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/glass_card_border"
+                        app:strokeWidth="1dp"
+                        app:cardBackgroundColor="@color/glass_card">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnCard3"
@@ -196,8 +202,8 @@
                             android:text="?"
                             android:textSize="28sp"
                             android:textColor="@color/brand_gold"
-                            android:backgroundTint="@color/brand_navy"
-                            app:cornerRadius="12dp" />
+                            android:backgroundTint="@color/glass_card"
+                            app:cornerRadius="18dp" />
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
@@ -373,6 +379,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_send"
-            android:backgroundTint="@color/primary" />
+            android:backgroundTint="@color/btn_send_bg"
+            android:textColor="@color/text_dark"
+            app:strokeColor="@color/btn_send_border"
+            app:strokeWidth="1dp" />
     </LinearLayout>
 </LinearLayout>
