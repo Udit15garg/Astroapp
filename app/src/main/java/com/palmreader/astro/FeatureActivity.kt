@@ -1,14 +1,18 @@
 package com.palmreader.astro
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.palmreader.astro.api.OpenAIService
 import com.palmreader.astro.api.PromptTemplates
@@ -74,9 +78,16 @@ class FeatureActivity : BaseFeatureActivity() {
             revealedCount = 0
             binding.llCardLabels.visibility = View.VISIBLE
             binding.llCards.visibility = View.VISIBLE
-            binding.btnCard1.text = "?"
-            binding.btnCard2.text = "?"
-            binding.btnCard3.text = "?"
+            // Reset card slots to face-down
+            listOf(
+                Triple(binding.imgCardBack1, binding.imgCard1, binding.tvCardName1),
+                Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
+                Triple(binding.imgCardBack3, binding.imgCard3, binding.tvCardName3)
+            ).forEach { (back, face, name) ->
+                back.visibility = View.VISIBLE
+                face.visibility = View.GONE
+                name.visibility = View.GONE
+            }
             binding.llCardResults.removeAllViews()
             binding.llCardResults.visibility = View.GONE
             binding.llQaSection.visibility = View.GONE
@@ -89,16 +100,21 @@ class FeatureActivity : BaseFeatureActivity() {
             getString(R.string.tarot_present),
             getString(R.string.tarot_future)
         )
-        val buttons = listOf(binding.btnCard1, binding.btnCard2, binding.btnCard3)
-        buttons.forEachIndexed { i, btn ->
-            btn.setOnClickListener {
+        val cardSlots = listOf(
+            binding.cardSlot1 to Triple(binding.imgCardBack1, binding.imgCard1, binding.tvCardName1),
+            binding.cardSlot2 to Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
+            binding.cardSlot3 to Triple(binding.imgCardBack3, binding.imgCard3, binding.tvCardName3)
+        )
+        cardSlots.forEachIndexed { i, (slot, views) ->
+            val (back, face, nameLabel) = views
+            slot.setOnClickListener {
                 if (drawnCards.isEmpty()) {
                     Toast.makeText(this, getString(R.string.tarot_draw_first), Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-                if (btn.text == "?") {
+                if (face.visibility == View.GONE) {
                     val card = drawnCards[i]
-                    btn.text = card.name
+                    flipCardReveal(slot, back, face, nameLabel, card)
                     addCardResult("${positions[i]}: ${card.name}", card.meaning, card.advice)
                     revealedCount++
                     if (revealedCount == 3) {
@@ -108,6 +124,46 @@ class FeatureActivity : BaseFeatureActivity() {
                 }
             }
         }
+    }
+
+    private fun flipCardReveal(
+        slot: MaterialCardView,
+        back: ImageView,
+        face: ImageView,
+        nameLabel: TextView,
+        card: TarotCard
+    ) {
+        val duration = 300L
+        // First half: rotate back out
+        back.animate()
+            .rotationY(90f)
+            .setDuration(duration)
+            .setInterpolator(AccelerateDecelerateInterpolator())
+            .withEndAction {
+                back.visibility = View.GONE
+                // Load card image
+                if (card.imageRes != 0) {
+                    face.setImageResource(card.imageRes)
+                } else {
+                    face.setImageResource(R.drawable.ic_tarot_card_back)
+                }
+                face.rotationY = -90f
+                face.visibility = View.VISIBLE
+                nameLabel.text = card.name
+                nameLabel.visibility = View.VISIBLE
+                // Second half: rotate face in
+                face.animate()
+                    .rotationY(0f)
+                    .setDuration(duration)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .start()
+                nameLabel.animate()
+                    .rotationY(0f)
+                    .setDuration(duration)
+                    .setInterpolator(AccelerateDecelerateInterpolator())
+                    .start()
+            }
+            .start()
     }
 
     private fun setupNumerology() {

@@ -257,4 +257,6 @@
     <string name="cd_back_button">Go back</string>
     <string name="cd_logout_button">Log out</string>
     <string name="cd_score_bar">Score indicator</string>
+    <string name="tarot_card_back">Tarot card face-down</string>
+    <string name="tarot_card_face">Revealed tarot card</string>
 </resources>

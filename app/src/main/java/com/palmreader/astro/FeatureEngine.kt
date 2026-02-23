@@ -7,40 +7,101 @@ import kotlin.math.abs
 //  Data models
 // ─────────────────────────────────────────────────────────────────────────────
 
-data class TarotCard(val name: String, val emoji: String, val meaning: String, val advice: String)
+data class TarotCard(val name: String, val emoji: String, val meaning: String, val advice: String, val imageRes: Int = 0)
 
 data class ReadingItem(val label: String, val value: String, val description: String)
 
 data class FeatureResult(val title: String, val items: List<ReadingItem>, val summary: String)
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  Tarot Engine  (22 Major Arcana)
+//  Tarot Engine  (78-card Rider-Waite deck)
 // ─────────────────────────────────────────────────────────────────────────────
 
 object TarotEngine {
     private val deck = listOf(
-        TarotCard("The Fool", "", "New paths and fresh beginnings", "Let go of fear and move forward without overthinking."),
-        TarotCard("The Magician", "", "You have every tool you need", "Trust in your own abilities."),
-        TarotCard("The High Priestess", "", "Listen to your inner voice", "Your intuition knows a great deal."),
-        TarotCard("The Empress", "", "Fertility and abundance", "Connect with nature, abundance is coming."),
-        TarotCard("The Emperor", "", "Authority and control", "Establish your reign through discipline."),
-        TarotCard("The Hierophant", "", "Tradition and guidance", "Seek advice from a mentor or elder."),
-        TarotCard("The Lovers", "", "Love and choices", "Choose with your heart, you will not regret it."),
-        TarotCard("The Chariot", "", "Victory and controlled strength", "Stay determined, the goal is not far."),
-        TarotCard("Strength", "", "Inner strength and patience", "Even gentle hands can tame a lion."),
-        TarotCard("The Hermit", "", "Solitude and introspection", "Spend some time alone, the answer will come."),
-        TarotCard("Wheel of Fortune", "", "The wheel of fate", "What was bad will change. Good times are coming."),
-        TarotCard("Justice", "", "Justice and truth", "You will reap what you have sown. Truth will prevail."),
-        TarotCard("The Hanged Man", "", "Pause and see from a new perspective", "Sometimes pausing is the wisest choice."),
-        TarotCard("Death", "", "Not an end, but a transformation", "One chapter is closing, a new one will begin."),
-        TarotCard("Temperance", "", "Balance and patience", "The middle path is the best path."),
-        TarotCard("The Devil", "", "Bondage and temptation", "Break the chains of whatever is holding you back."),
-        TarotCard("The Tower", "", "Sudden upheaval", "Old foundations are crumbling, you must build anew."),
-        TarotCard("The Star", "", "Hope and renewal", "After the darkness, light always returns."),
-        TarotCard("The Moon", "", "Illusion and uncertainty", "Not everything that appears is true. Tread carefully."),
-        TarotCard("The Sun", "", "Joy and success", "A wonderful time is coming. Celebrate!"),
-        TarotCard("Judgement", "", "Awakening and a new opportunity", "Forgive yourself and begin a new life."),
-        TarotCard("The World", "", "Completion and accomplishment", "Your journey is complete. Congratulations!")
+        // Major Arcana
+        TarotCard("The Fool",           "0",    "New paths and fresh beginnings",                       "Let go of fear and move forward without overthinking.",               R.drawable.the_fool),
+        TarotCard("The Magician",       "I",    "You have every tool you need",                         "Trust in your own abilities.",                                        R.drawable.the_magician),
+        TarotCard("The High Priestess", "II",   "Listen to your inner voice",                           "Your intuition knows a great deal.",                                  R.drawable.the_high_priestess),
+        TarotCard("The Empress",        "III",  "Fertility and abundance",                              "Connect with nature — abundance is coming.",                          R.drawable.the_empress),
+        TarotCard("The Emperor",        "IV",   "Authority and structure",                              "Establish your reign through discipline.",                            R.drawable.the_emprorer),
+        TarotCard("The Hierophant",     "V",    "Tradition and spiritual guidance",                     "Seek advice from a mentor or elder.",                                 R.drawable.the_hierophant),
+        TarotCard("The Lovers",         "VI",   "Love and meaningful choices",                          "Choose with your heart — you will not regret it.",                    R.drawable.the_lovers),
+        TarotCard("The Chariot",        "VII",  "Victory through controlled willpower",                 "Stay determined — the goal is within reach.",                         R.drawable.the_chariot),
+        TarotCard("Strength",           "VIII", "Inner strength and patience",                          "Even gentle hands can tame a lion.",                                  R.drawable.strength),
+        TarotCard("The Hermit",         "IX",   "Solitude and deep introspection",                      "Spend time alone — the answer will come.",                            R.drawable.the_hermit),
+        TarotCard("Wheel of Fortune",   "X",    "The wheel of fate turns",                              "What was difficult will change. Good times are coming.",              R.drawable.wheel_of_forture),
+        TarotCard("Justice",            "XI",   "Truth and fair outcome",                               "You will reap what you have sown. Truth will prevail.",               R.drawable.justice),
+        TarotCard("The Hanged Man",     "XII",  "Pause and see from a new perspective",                 "Sometimes pausing is the wisest move.",                               R.drawable.the_hangedman),
+        TarotCard("Death",              "XIII", "Not an end — a transformation",                        "One chapter closes so a new one can begin.",                          R.drawable.death),
+        TarotCard("Temperance",         "XIV",  "Balance, patience and moderation",                     "The middle path is the best path.",                                   R.drawable.temperance),
+        TarotCard("The Devil",          "XV",   "Bondage and temptation",                               "Break the chains of whatever is holding you back.",                   R.drawable.the_devil),
+        TarotCard("The Tower",          "XVI",  "Sudden upheaval, truth revealed",                      "Old foundations are crumbling — rebuild on something real.",          R.drawable.the_tower),
+        TarotCard("The Star",           "XVII", "Hope, renewal and healing",                            "After the darkness, light always returns.",                           R.drawable.the_star),
+        TarotCard("The Moon",           "XVIII","Illusion and hidden uncertainty",                      "Not everything that appears is true — tread carefully.",              R.drawable.the_moon),
+        TarotCard("The Sun",            "XIX",  "Joy, clarity and success",                             "A wonderful time is coming — celebrate!",                            R.drawable.the_sun),
+        TarotCard("Judgement",          "XX",   "Awakening and a new opportunity",                      "Forgive yourself and begin a new life.",                              R.drawable.judgement),
+        TarotCard("The World",          "XXI",  "Completion and accomplishment",                        "Your journey is complete — congratulations!",                         R.drawable.the_world),
+        // Wands
+        TarotCard("Ace of Wands",       "🔥",  "New creative spark or venture",                        "Act on your inspiration now — the energy is with you.",              R.drawable.ace_of_wands),
+        TarotCard("Two of Wands",       "🔥",  "Planning and future possibilities",                    "Look ahead with boldness — your vision is sound.",                   R.drawable.two_of_wands),
+        TarotCard("Three of Wands",     "🔥",  "Progress, expansion, looking forward",                 "Your efforts are moving into the wider world.",                       R.drawable.three_of_wands),
+        TarotCard("Four of Wands",      "🔥",  "Celebration, home and harmony",                        "Take a moment to celebrate what you have built.",                     R.drawable.four_of_wands),
+        TarotCard("Five of Wands",      "🔥",  "Competition and minor conflict",                        "Channel this friction into healthy competition.",                      R.drawable.five_of_wands),
+        TarotCard("Six of Wands",       "🔥",  "Victory, recognition and success",                     "Your success is visible — accept it with grace.",                     R.drawable.six_of_wands),
+        TarotCard("Seven of Wands",     "🔥",  "Holding your ground under challenge",                  "Stand firm — you have the advantage.",                                R.drawable.seven_of_wands),
+        TarotCard("Eight of Wands",     "🔥",  "Swift movement and rapid progress",                    "Act quickly — momentum is on your side.",                             R.drawable.eight_of_wands),
+        TarotCard("Nine of Wands",      "🔥",  "Resilience and perseverance",                          "You are almost there — do not give up now.",                          R.drawable.nine_of_wands),
+        TarotCard("Ten of Wands",       "🔥",  "Overburdened — time to delegate",                     "You carry too much. Share the load.",                                 R.drawable.ten_of_wands),
+        TarotCard("Page of Wands",      "🔥",  "Enthusiasm and creative exploration",                  "Embrace your curiosity — new ideas await.",                           R.drawable.page_of_wands),
+        TarotCard("Knight of Wands",    "🔥",  "Bold action and adventurous energy",                   "Charge forward with passion — avoid recklessness.",                  R.drawable.knight_of_wands),
+        TarotCard("Queen of Wands",     "🔥",  "Confidence, warmth and charisma",                      "Lead with heart — your energy inspires others.",                      R.drawable.queen_of_wands),
+        TarotCard("King of Wands",      "🔥",  "Visionary leadership and boldness",                    "Inspire others with your clear vision and purpose.",                  R.drawable.king_of_wands),
+        // Cups
+        TarotCard("Ace of Cups",        "💧",  "New emotional beginning or love",                      "Open your heart — love and connection are available.",                R.drawable.ace_of_cups),
+        TarotCard("Two of Cups",        "💧",  "Partnership and mutual attraction",                    "A meaningful bond is forming — nurture it.",                          R.drawable.two_of_cups),
+        TarotCard("Three of Cups",      "💧",  "Celebration, friendship and community",                "Rejoice with those you love — joy multiplies when shared.",           R.drawable.three_of_cups),
+        TarotCard("Four of Cups",       "💧",  "Contemplation or mild discontent",                     "Look up — an opportunity may be right in front of you.",             R.drawable.four_of_cups),
+        TarotCard("Five of Cups",       "💧",  "Loss and regret",                                      "Grieve what was lost, then turn toward what remains.",                R.drawable.five_of_cups),
+        TarotCard("Six of Cups",        "💧",  "Nostalgia and revisiting the past",                    "Cherish fond memories but don't let the past eclipse the present.",   R.drawable.six_of_cups),
+        TarotCard("Seven of Cups",      "💧",  "Fantasy, choices and illusion",                        "Ground your dreams in reality — focus on one path.",                  R.drawable.seven_of_cups),
+        TarotCard("Eight of Cups",      "💧",  "Walking away to seek something deeper",                "It is okay to leave behind what no longer fulfills you.",             R.drawable.eight_of_cups),
+        TarotCard("Nine of Cups",       "💧",  "Contentment and wishes fulfilled",                     "Enjoy this period of satisfaction — you earned it.",                  R.drawable.nine_of_cups),
+        TarotCard("Ten of Cups",        "💧",  "Harmony, joy and happy family",                        "Lasting happiness is within reach — cherish those around you.",       R.drawable.ten_of_cups),
+        TarotCard("Page of Cups",       "💧",  "Creative intuition and gentle messages",               "Stay open to gentle insights that come to you unexpectedly.",         R.drawable.page_of_cups),
+        TarotCard("Knight of Cups",     "💧",  "Romance, charm and following the heart",               "Pursue what moves your soul — lead with love.",                       R.drawable.kinght_of_cups),
+        TarotCard("Queen of Cups",      "💧",  "Emotional depth, compassion and intuition",            "Lead from a place of empathy and deep understanding.",                R.drawable.queen_of_cups),
+        TarotCard("King of Cups",       "💧",  "Emotional mastery and compassionate wisdom",           "Balance your feelings with wisdom and steady diplomacy.",             R.drawable.king_of_cups),
+        // Swords
+        TarotCard("Ace of Swords",      "⚔",  "Mental clarity and breakthrough",                      "Cut through confusion — the truth is on your side.",                  R.drawable.ace_of_swords),
+        TarotCard("Two of Swords",      "⚔",  "Indecision and blocked information",                   "Gather more facts — then make the call with confidence.",             R.drawable.two_of_swords),
+        TarotCard("Three of Swords",    "⚔",  "Heartbreak, grief and sorrow",                         "Let yourself feel the pain — healing begins with honesty.",           R.drawable.three_of_swords),
+        TarotCard("Four of Swords",     "⚔",  "Rest and strategic withdrawal",                        "Recharge before the next move — rest is not retreat.",               R.drawable.four_of_swords),
+        TarotCard("Five of Swords",     "⚔",  "Conflict and hollow victory",                          "Pick battles wisely — not every win is worth the cost.",              R.drawable.five_of_swords),
+        TarotCard("Six of Swords",      "⚔",  "Transition towards calmer waters",                     "Leave troubled times behind — smoother sailing lies ahead.",          R.drawable.six_of_swords),
+        TarotCard("Seven of Swords",    "⚔",  "Deception or lone wolf tactics",                       "Be honest — shortcuts will catch up with you.",                       R.drawable.seven_of_swords),
+        TarotCard("Eight of Swords",    "⚔",  "Feeling trapped by your own beliefs",                  "The cage is largely in your mind — take one brave step forward.",     R.drawable.eight_of_swords),
+        TarotCard("Nine of Swords",     "⚔",  "Anxiety and sleepless worry",                          "Most of what you fear will not come to pass — seek support.",         R.drawable.nine_of_swords),
+        TarotCard("Ten of Swords",      "⚔",  "Painful ending but also a new dawn",                   "It is over. Accept it — the only way now is up.",                     R.drawable.ten_of_swords),
+        TarotCard("Page of Swords",     "⚔",  "Curiosity, vigilance and new ideas",                   "Ask questions and keep your eyes open — knowledge is power.",         R.drawable.page_of_swords),
+        TarotCard("Knight of Swords",   "⚔",  "Ambitious, swift and direct action",                   "Move decisively — make sure you know all the facts first.",           R.drawable.knight_of_swords),
+        TarotCard("Queen of Swords",    "⚔",  "Independent thinker with sharp perception",            "Communicate with clarity and set firm, fair boundaries.",             R.drawable.queen_of_swords),
+        TarotCard("King of Swords",     "⚔",  "Intellectual authority and clear judgment",            "Lead with truth and logic — uphold justice above all.",               R.drawable.king_of_swords),
+        // Pentacles
+        TarotCard("Ace of Pentacles",   "🌱",  "New financial or material opportunity",                "Plant this seed wisely — the foundation for abundance is here.",      R.drawable.ace_of_pentacles),
+        TarotCard("Two of Pentacles",   "🌱",  "Juggling priorities and adaptability",                 "Stay flexible — balance is an active skill, not a static state.",     R.drawable.two_of_pentacles),
+        TarotCard("Three of Pentacles", "🌱",  "Teamwork, skill and collaboration",                    "Work well with others — combined effort creates mastery.",            R.drawable.three_of_pentacles),
+        TarotCard("Four of Pentacles",  "🌱",  "Security-seeking or holding too tight",               "Some saving is wise — but don't let fear make you rigid.",            R.drawable.four_of_pentacles),
+        TarotCard("Five of Pentacles",  "🌱",  "Financial hardship or feeling left out",              "Help is available — do not be too proud to accept it.",               R.drawable.five_of_pentacles),
+        TarotCard("Six of Pentacles",   "🌱",  "Generosity, charity and fair exchange",               "Give and receive with an open hand — what flows out returns.",        R.drawable.six_of_pentacles),
+        TarotCard("Seven of Pentacles", "🌱",  "Patience — harvest is not yet ready",                 "Your work is growing — trust the process and tend your garden.",      R.drawable.seven_of_pentacles),
+        TarotCard("Eight of Pentacles", "🌱",  "Diligence, mastery and focused effort",               "Keep honing your craft — excellence comes through repetition.",       R.drawable.eight_of_pentacles),
+        TarotCard("Nine of Pentacles",  "🌱",  "Abundance and self-sufficiency",                      "Enjoy the fruits of your hard work — you have earned this comfort.",  R.drawable.nine_of_pentacles),
+        TarotCard("Ten of Pentacles",   "🌱",  "Lasting wealth, legacy and family security",          "Build something that endures beyond yourself.",                        R.drawable.ten_of_pentacles),
+        TarotCard("Page of Pentacles",  "🌱",  "Ambitious student and careful planner",               "Study before you act — preparation is the foundation of success.",    R.drawable.page_of_pentacles),
+        TarotCard("Knight of Pentacles","🌱",  "Methodical, reliable and hardworking",                 "Stay steady and keep your promises — consistency wins.",              R.drawable.knight_of_pentacles),
+        TarotCard("Queen of Pentacles", "🌱",  "Nurturing provider and practical caretaker",          "Create a warm, stable environment — your generosity sustains others.",R.drawable.queen_of_pentacles),
+        TarotCard("King of Pentacles",  "🌱",  "Mastery of wealth and material success",              "Lead with generosity and the confidence of earned expertise.",         R.drawable.king_of_pentacles)
     )
 
     fun draw(count: Int = 3): List<TarotCard> = deck.shuffled().take(count)
