@@ -278,7 +278,7 @@ class FeatureActivity : BaseFeatureActivity() {
                         }
                         is OpenAIService.ApiResult.Error -> {
                             Log.e("AstroAI", "AI error: ${result.message}")
-                            showError("AI Error (debug): ${result.message}")
+                            showError(getString(R.string.ai_reading_error))
                             aiReadingContext = currentResult?.items?.joinToString("\n") {
                                 "${it.label}: ${it.value} - ${it.description}"
                             } ?: ""
