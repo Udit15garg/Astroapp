@@ -1,7 +1,7 @@
 [
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_world.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ic_tarot_world.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_death.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_death.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_item_history.xml.flat",
@@ -12,20 +12,16 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_palmistry.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_history.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_history.xml"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_launcher_foreground.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_launcher_foreground.xml"
     },
     {
-        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_kundli.xml.flat",
-        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_kundli.xml"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-xxhdpi_ic_launcher_round.png.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_kundli.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_kundli.xml"
     },
     {
         "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_profile.xml.flat",
@@ -60,6 +56,10 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_world.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_world.xml"
+    },
+    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_home.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_home.xml"
     },
@@ -68,16 +68,12 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_chat_user.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_star.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ic_tarot_star.xml"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_history.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_history.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_settings.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_settings.xml"
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_result_card.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/item_result_card.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_profile.xml.flat",
@@ -88,28 +84,28 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-mdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_death.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ic_tarot_death.xml"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_scan.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_scan.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_history.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/item_history.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-xhdpi_ic_launcher.png.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_card_back.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ic_tarot_card_back.xml"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_auth.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_auth.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_auth.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_auth.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_settings.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_settings.xml"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_priestess.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_priestess.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-xxhdpi_ic_launcher.png.flat",
@@ -120,20 +116,12 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_tarot.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_fool.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ic_tarot_fool.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_subscription.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_subscription.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_sun.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_sun.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_item_result_card.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/item_result_card.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_home.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_home.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_result.xml.flat",
@@ -164,24 +152,24 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_chat_bot.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_result.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_result.xml"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_item_credit_transaction.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/item_credit_transaction.xml"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_reading.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/layout/item_reading.xml"
     },
     {
         "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_feature.xml.flat",
         "source": "com.palmreader.astro.app-main-40:/layout/activity_feature.xml"
     },
     {
-        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_main.xml.flat",
-        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_main.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_star.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_star.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_lovers.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ic_tarot_lovers.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_main.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_main.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_item_reading.xml.flat",
@@ -192,28 +180,24 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_preview.xml"
     },
     {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_card_back.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_card_back.xml"
+    },
+    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_sunsign.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_sunsign.xml"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_magician.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_magician.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_app_logo.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_app_logo.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_priestess.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ic_tarot_priestess.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_magician.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ic_tarot_magician.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_scan.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_scan.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_sun.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ic_tarot_sun.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_fool.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_fool.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-mdpi_ic_launcher.png.flat",
@@ -226,6 +210,10 @@
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/xml_locales_config.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/xml/locales_config.xml"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_lovers.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_lovers.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-xhdpi_ic_launcher_round.png.flat",
