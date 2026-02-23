@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { CelestialBackground } from "../components/CelestialBackground";
 import { theme } from "../theme";
 import { TAROT_DECK } from "../services/mockTarot";
@@ -44,7 +44,7 @@ export function TarotDrawScreen({ navigation }: any) {
           const revealed = Boolean(card);
           return (
             <TarotFlipCard
-              key={i}
+              key={`${i}-${cards[i]?.id ?? "back"}`}
               index={i}
               revealed={revealed}
               titleTop={revealed ? card.name : ""}

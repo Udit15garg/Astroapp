@@ -53,11 +53,25 @@ class FeatureActivity : BaseFeatureActivity() {
 
         featureType = intent.getStringExtra("type") ?: "TAROT"
         binding.tvTitle.text = intent.getStringExtra("title") ?: "Reading"
-        binding.btnBack.setOnClickListener { finish() }
 
+        setupHeaderLogo()
         refreshCredits(binding.tvCredits)
         setupFeature()
         setupQA()
+    }
+
+
+    private fun setupHeaderLogo() {
+        val (iconRes, contentDescRes) = when (featureType) {
+            "TAROT" -> R.drawable.ic_feature_tarot to R.string.cd_feature_tarot
+            "NUMEROLOGY" -> R.drawable.ic_feature_numerology to R.string.cd_feature_numerology
+            "KUNDLI" -> R.drawable.ic_feature_kundli to R.string.cd_feature_kundli
+            "SIGN" -> R.drawable.ic_feature_rashifal to R.string.cd_feature_rashifal
+            "SUN_SIGN" -> R.drawable.ic_feature_sunsign to R.string.cd_feature_sunsign
+            else -> R.drawable.ic_app_logo to R.string.cd_app_logo
+        }
+        binding.ivFeatureLogo.setImageResource(iconRes)
+        binding.ivFeatureLogo.contentDescription = getString(contentDescRes)
     }
 
     // -- Feature setup --------------------------------------------------------
@@ -215,7 +229,7 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.llFormSection.visibility = View.VISIBLE
         binding.tilDob.visibility = View.VISIBLE
         binding.etDob.isFocusable = false
-        binding.etDob.hint = "DD/MM/YYYY"
+        binding.tilDob.hint = getString(R.string.sign_dob_hint)
         binding.etDob.setOnClickListener { pickDate(binding.etDob) }
         binding.btnAnalyze.text = getString(R.string.sign_analyze)
         binding.btnAnalyze.setOnClickListener {
