@@ -3081,6 +3081,7 @@ drawable avd_hide_password
 drawable avd_show_password
 drawable bg_chat_bot
 drawable bg_chat_user
+drawable bg_glyph_box
 drawable bg_input
 drawable bg_preview
 drawable bg_score_fill
@@ -4265,14 +4266,19 @@ string fab_transformation_scrim_behavior
 string fab_transformation_sheet_behavior
 string feature_analyze
 string feature_kundli
+string feature_kundli_subtitle
 string feature_numerology
+string feature_numerology_subtitle
 string feature_palmistry
 string feature_palmistry_subtitle
 string feature_rashifal
+string feature_rashifal_subtitle
 string feature_reading
 string feature_summary_prefix
 string feature_sunsign
+string feature_sunsign_subtitle
 string feature_tarot
+string feature_tarot_subtitle
 string feature_tip_prefix
 string hide_bottom_view_on_scroll_behavior
 string history_answer_prefix

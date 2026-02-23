@@ -2182,14 +2182,19 @@
     <string name="fab_transformation_sheet_behavior" translatable="false">com.google.android.material.transformation.FabTransformationSheetBehavior</string>
     <string name="feature_analyze">Analyze</string>
     <string name="feature_kundli">Kundli</string>
+    <string name="feature_kundli_subtitle">Birth chart</string>
     <string name="feature_numerology">Numerology</string>
+    <string name="feature_numerology_subtitle">Life number</string>
     <string name="feature_palmistry">Palmistry</string>
-    <string name="feature_palmistry_subtitle">Hast Rekha</string>
+    <string name="feature_palmistry_subtitle">Hand scan</string>
     <string name="feature_rashifal">Rashifal</string>
+    <string name="feature_rashifal_subtitle">Daily horoscope</string>
     <string name="feature_reading">Reading</string>
     <string name="feature_summary_prefix">Note: %s</string>
     <string name="feature_sunsign">Sun Sign</string>
+    <string name="feature_sunsign_subtitle">Zodiac traits</string>
     <string name="feature_tarot">Tarot Reading</string>
+    <string name="feature_tarot_subtitle">Pick 3 cards</string>
     <string name="feature_tip_prefix">Tip: %s</string>
     <string name="hide_bottom_view_on_scroll_behavior" translatable="false">com.google.android.material.behavior.HideBottomViewOnScrollBehavior</string>
     <string name="history_answer_prefix">A: %s</string>
@@ -2201,10 +2206,10 @@
     <string name="home_btn_logout">Logout</string>
     <string name="home_btn_profile">Profile</string>
     <string name="home_credits_remaining">%1$d Credit%2$s remaining</string>
-    <string name="home_greeting">Hello, %s!</string>
+    <string name="home_greeting">Hi, %s</string>
     <string name="home_no_credits">No Credits \u2014 Recharge Now</string>
     <string name="home_section_title">What would you like to know?</string>
-    <string name="home_subscription_banner">View Plans \u2014 \u20B949 | \u20B999 | \u20B9199</string>
+    <string name="home_subscription_banner">✦ Premium Reading \u2014 Unlimited AI insights. Get started \u2192</string>
     <string name="home_unlimited_plan">Unlimited Plan Active</string>
     <string description="Content description for an icon that appears in the title area of a dialog" name="icon_content_description">Dialog Icon</string>
     <string name="item_view_role_description">Tab</string>

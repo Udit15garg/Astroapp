@@ -4,24 +4,12 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_death.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_five_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/five_of_swords.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_queen_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/queen_of_wands.jpg"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_item_history.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/item_history.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_launcher_foreground.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_launcher_foreground.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ten_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ten_of_swords.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_kundli.xml.flat",
@@ -32,32 +20,20 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-xxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_profile.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_profile.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ten_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ten_of_cups.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_judgement.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/judgement.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_sun.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_sun.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_emprorer.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_emprorer.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_bg_input.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_input.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_page_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/page_of_cups.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ten_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ten_of_swords.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_chat_bot.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/bg_chat_bot.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_hermit.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_hermit.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-hdpi_ic_launcher.png.flat",
@@ -68,12 +44,8 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-xxxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_king_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/king_of_cups.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_queen_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/queen_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_seven_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/seven_of_swords.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_subscription.xml.flat",
@@ -88,44 +60,20 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_star.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_star.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_hermit.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_hermit.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_five_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/five_of_swords.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_bg_chat_user.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_chat_user.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_preview.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/bg_preview.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_four_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/four_of_wands.jpg"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_history.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_history.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_justice.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/justice.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_nine_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/nine_of_swords.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_four_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/four_of_cups.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ten_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ten_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_four_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/four_of_swords.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_profile.xml.flat",
@@ -136,136 +84,136 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-mdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_history.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/item_history.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_eight_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/eight_of_pentacles.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_empress.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_empress.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-xhdpi_ic_launcher.png.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ace_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ace_of_wands.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_knight_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/knight_of_pentacles.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_eight_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/eight_of_swords.jpg"
-    },
-    {
-        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_tarot.xml.flat",
-        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_tarot.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_king_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/king_of_wands.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-xxhdpi_ic_launcher.png.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_tarot.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_tarot.xml"
+    },
+    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_sun.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_sun.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_four_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/four_of_swords.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_high_priestess.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_high_priestess.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_world.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_world.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_six_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/six_of_cups.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_moon.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_moon.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_result.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_result.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_wheel_of_forture.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/wheel_of_forture.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_strength.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/strength.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_two_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/two_of_wands.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_nine_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/nine_of_swords.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_eight_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/eight_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_page_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/page_of_wands.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-hdpi_ic_launcher_round.png.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-hdpi/ic_launcher_round.png"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_queen_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/queen_of_cups.jpg"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_feature.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_feature.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_devil.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_devil.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ace_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ace_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_nine_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/nine_of_wands.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_item_credit_transaction.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/item_credit_transaction.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_reading.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/item_reading.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_queen_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/queen_of_swords.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_seven_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/seven_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ace_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ace_of_wands.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ten_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ten_of_wands.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_two_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/two_of_pentacles.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_page_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/page_of_swords.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_nine_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/nine_of_pentacles.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_six_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/six_of_pentacles.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_page_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/page_of_pentacles.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ace_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ace_of_cups.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_magician.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_magician.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_king_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/king_of_wands.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_queen_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/queen_of_pentacles.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_five_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/five_of_cups.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_magician.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_magician.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_app_logo.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_app_logo.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_empress.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_empress.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_high_priestess.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_high_priestess.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_tower.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_tower.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_four_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/four_of_wands.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_three_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/three_of_cups.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_seven_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/seven_of_cups.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_fool.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_fool.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_moon.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_moon.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-mdpi_ic_launcher.png.flat",
@@ -276,132 +224,132 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/xml/backup_rules.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_death.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/death.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ace_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ace_of_swords.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_score_track.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/bg_score_track.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_two_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/two_of_cups.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_tower.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_tower.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_lovers.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_lovers.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_five_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/five_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_eight_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/eight_of_swords.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_three_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/three_of_swords.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_fool.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_fool.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_lovers.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_lovers.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_sun.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_sun.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_rashifal.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_rashifal.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_nine_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/nine_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_wheel_of_forture.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/wheel_of_forture.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_credit_transaction.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/item_credit_transaction.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_seven_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/seven_of_wands.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_four_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/four_of_pentacles.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ace_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ace_of_swords.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_devil.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_devil.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_palmistry.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_palmistry.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_six_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/six_of_pentacles.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_page_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/page_of_pentacles.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_queen_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/queen_of_swords.jpg"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-xxxhdpi_ic_launcher.png.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-xxxhdpi/ic_launcher.png"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_strength.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/strength.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_six_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/six_of_wands.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_hangedman.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_hangedman.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_nine_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/nine_of_cups.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_two_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/two_of_cups.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_king_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/king_of_swords.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_eight_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/eight_of_cups.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_hangedman.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_hangedman.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_three_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/three_of_wands.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_two_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/two_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ten_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ten_of_wands.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_home.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_home.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_six_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/six_of_swords.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ace_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ace_of_pentacles.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_knight_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/knight_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_four_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/four_of_cups.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_magician.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_magician.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_three_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/three_of_wands.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_chariot.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_chariot.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_eight_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/eight_of_cups.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_item_result_card.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/item_result_card.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_seven_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/seven_of_pentacles.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_temperance.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/temperance.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_two_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/two_of_swords.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_fool.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_fool.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_five_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/five_of_pentacles.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_kinght_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/kinght_of_cups.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_four_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/four_of_pentacles.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_king_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/king_of_swords.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_eight_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/eight_of_wands.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_justice.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/justice.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_six_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/six_of_swords.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_scan.xml.flat",
@@ -412,14 +360,6 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_auth.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_knight_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/knight_of_wands.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_auth.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_auth.xml"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_activity_settings.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_settings.xml"
     },
@@ -428,20 +368,24 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_tarot_priestess.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_three_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/three_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_temperance.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/temperance.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_subscription.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_subscription.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_five_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/five_of_wands.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_hierophant.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_hierophant.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_two_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/two_of_wands.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_item_result_card.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/item_result_card.xml"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_queen_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/queen_of_cups.jpg"
     },
     {
         "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_home.xml.flat",
@@ -452,36 +396,44 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_score_fill.xml"
     },
     {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_three_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/three_of_cups.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_hierophant.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_hierophant.jpg"
+    },
+    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_feature_numerology.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_numerology.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_eight_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/eight_of_wands.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_world.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_world.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_five_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/five_of_cups.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_six_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/six_of_cups.jpg"
+    },
+    {
+        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_glyph_box.xml.flat",
+        "source": "com.palmreader.astro.app-main-40:/drawable/bg_glyph_box.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/xml_data_extraction_rules.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/xml/data_extraction_rules.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_seven_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/seven_of_swords.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_page_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/page_of_swords.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ten_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ten_of_cups.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_bg_chat_bot.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_chat_bot.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_three_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/three_of_swords.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/layout_activity_feature.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_feature.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_star.xml.flat",
@@ -492,24 +444,36 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_main.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_page_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/page_of_wands.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_knight_of_swords.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/knight_of_swords.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_two_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/two_of_swords.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_knight_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/knight_of_wands.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_nine_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/nine_of_wands.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_bg_preview.xml.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_preview.xml"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ten_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ten_of_pentacles.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/layout_item_reading.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/item_reading.xml"
     },
     {
-        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_bg_preview.xml.flat",
-        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_preview.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_death.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/death.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_kinght_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/kinght_of_cups.jpg"
+    },
+    {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_page_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/page_of_cups.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_ic_tarot_card_back.xml.flat",
@@ -520,48 +484,32 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_feature_sunsign.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_seven_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/seven_of_cups.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_judgement.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/judgement.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_chat_user.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/bg_chat_user.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_king_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/king_of_pentacles.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_input.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/bg_input.xml"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_chariot.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_chariot.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_emprorer.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_emprorer.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_king_of_cups.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/king_of_cups.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_nine_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/nine_of_cups.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_three_of_pentacles.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/three_of_pentacles.jpg"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_six_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/six_of_wands.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_five_of_wands.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/five_of_wands.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_king_of_pentacles.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/king_of_pentacles.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_the_star.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/the_star.jpg"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/xml_locales_config.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/xml/locales_config.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_ace_of_cups.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/ace_of_cups.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_bg_score_fill.xml.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/bg_score_fill.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/mipmap-xhdpi_ic_launcher_round.png.flat",
@@ -572,15 +520,15 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/ic_launcher_background.xml"
     },
     {
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_queen_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/queen_of_wands.jpg"
+    },
+    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_bg_score_track.xml.flat",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/bg_score_track.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_knight_of_swords.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/knight_of_swords.jpg"
-    },
-    {
-        "merged": "com.palmreader.astro.app-merged_res-38:/drawable_the_lovers.jpg.flat",
-        "source": "com.palmreader.astro.app-main-40:/drawable/the_lovers.jpg"
+        "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-merged_res-38:/drawable_seven_of_wands.jpg.flat",
+        "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/drawable/seven_of_wands.jpg"
     }
 ]

@@ -3080,6 +3080,7 @@ int drawable avd_hide_password 0x7f070077
 int drawable avd_show_password 0x7f070078
 int drawable bg_chat_bot 0x7f070079
 int drawable bg_chat_user 0x7f07007a
+int drawable bg_glyph_box 0x7f07015e
 int drawable bg_input 0x7f07007b
 int drawable bg_preview 0x7f07007c
 int drawable bg_score_fill 0x7f07007d
@@ -4264,14 +4265,19 @@ int string fab_transformation_scrim_behavior 0x7f0f0089
 int string fab_transformation_sheet_behavior 0x7f0f008a
 int string feature_analyze 0x7f0f008b
 int string feature_kundli 0x7f0f008c
+int string feature_kundli_subtitle 0x7f0f0190
 int string feature_numerology 0x7f0f008d
+int string feature_numerology_subtitle 0x7f0f0191
 int string feature_palmistry 0x7f0f008e
 int string feature_palmistry_subtitle 0x7f0f008f
 int string feature_rashifal 0x7f0f0090
+int string feature_rashifal_subtitle 0x7f0f0192
 int string feature_reading 0x7f0f0091
 int string feature_summary_prefix 0x7f0f0092
 int string feature_sunsign 0x7f0f0093
+int string feature_sunsign_subtitle 0x7f0f0193
 int string feature_tarot 0x7f0f0094
+int string feature_tarot_subtitle 0x7f0f0194
 int string feature_tip_prefix 0x7f0f0095
 int string hide_bottom_view_on_scroll_behavior 0x7f0f0096
 int string history_answer_prefix 0x7f0f0097

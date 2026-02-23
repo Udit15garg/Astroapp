@@ -12,16 +12,8 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/item_result_card.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-mergeDebugResources-37:/layout/item_result_card.xml",
-        "source": "com.palmreader.astro.app-main-40:/layout/item_result_card.xml"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_scan.xml",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_scan.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-mergeDebugResources-37:/layout/item_reading.xml",
-        "source": "com.palmreader.astro.app-main-40:/layout/item_reading.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_subscription.xml",
@@ -34,10 +26,6 @@
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_history.xml",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_history.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-mergeDebugResources-37:/layout/item_credit_transaction.xml",
-        "source": "com.palmreader.astro.app-main-40:/layout/item_credit_transaction.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_settings.xml",
@@ -56,24 +44,8 @@
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_main.xml"
     },
     {
-        "merged": "com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_auth.xml",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_auth.xml"
-    },
-    {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_feature.xml",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_feature.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-mergeDebugResources-37:/layout/item_history.xml",
-        "source": "com.palmreader.astro.app-main-40:/layout/item_history.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_subscription.xml",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_subscription.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_profile.xml",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_profile.xml"
     },
     {
         "merged": "com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_home.xml",
@@ -82,10 +54,6 @@
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_home.xml",
         "source": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-main-40:/layout/activity_home.xml"
-    },
-    {
-        "merged": "com.palmreader.astro.app-mergeDebugResources-37:/layout/activity_feature.xml",
-        "source": "com.palmreader.astro.app-main-40:/layout/activity_feature.xml"
     },
     {
         "merged": "/Users/uditgarg/.gradle/daemon/8.5/com.palmreader.astro.app-mergeDebugResources-37:/layout/item_credit_transaction.xml",
