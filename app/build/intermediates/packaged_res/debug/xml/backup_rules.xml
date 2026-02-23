@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Backup rules for Android 11 and below -->
-<full-backup-content>
-    <include domain="database" path="." />
-    <include domain="sharedpref" path="." />
-    <exclude domain="database" path="astro_db-journal" />
-</full-backup-content>
