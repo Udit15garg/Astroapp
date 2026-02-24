@@ -7,22 +7,43 @@
     android:background="@color/bg_warm"
     android:gravity="center">
 
-    <!-- Logo / branding -->
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/ic_app_logo"
-        android:contentDescription="@string/cd_app_logo"
-        android:layout_marginBottom="8dp" />
+    <!-- Brand block -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/banner_gold_bg"
+        app:strokeColor="@color/brand_gold"
+        app:strokeWidth="1dp"
+        android:layout_marginBottom="14dp">
+
+        <ImageView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_app_logo"
+            android:tint="@color/brand_gold"
+            android:contentDescription="@string/cd_app_logo" />
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="AstroApp"
+        android:text="Astra"
         android:textSize="32sp"
         android:textStyle="bold"
-        android:textColor="@color/primary"
-        android:layout_marginBottom="32dp" />
+        android:letterSpacing="0.03"
+        android:textColor="@color/brand_gold"
+        android:layout_marginBottom="6dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Discover your cosmic destiny"
+        android:textSize="14sp"
+        android:textColor="@color/text_medium"
+        android:layout_marginBottom="28dp" />
 
     <!-- Auth card -->
     <com.google.android.material.card.MaterialCardView
@@ -30,8 +51,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp">
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/surface"
+        app:strokeColor="@color/outline"
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,7 +70,7 @@
                 android:text="@string/auth_title_signup"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/primary"
+                android:textColor="@color/text_dark"
                 android:layout_marginBottom="20dp" />
 
             <!-- Name (signup only) -->
@@ -112,11 +136,15 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSubmit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
                 android:text="@string/auth_signup_button"
                 android:textSize="15sp"
+                android:textStyle="bold"
                 android:backgroundTint="@color/primary"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="14dp"
+                app:cornerRadius="16dp" />
 
             <!-- OR divider -->
             <LinearLayout
@@ -124,9 +152,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:layout_marginBottom="14dp">
                 <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="@color/divider" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auth_or_divider" android:textSize="13sp" android:textColor="@color/text_medium" android:paddingStart="8dp" android:paddingEnd="8dp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/auth_or_divider" android:textSize="12sp" android:textColor="@color/text_medium" android:paddingHorizontal="10dp" />
                 <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="@color/divider" />
             </LinearLayout>
 
@@ -134,14 +162,17 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGoogle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
                 android:text="@string/auth_google_button"
                 android:textSize="14sp"
-                android:backgroundTint="@color/glass_card"
+                android:backgroundTint="@color/surface_container_high"
                 android:textColor="@color/text_dark"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="14dp"
+                app:cornerRadius="16dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                app:strokeColor="@color/divider" />
+                app:strokeColor="@color/outline_variant" />
 
             <TextView
                 android:id="@+id/tvToggle"
@@ -149,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/auth_toggle_to_login"
-                android:textColor="@color/secondary"
+                android:textColor="@color/brand_gold"
                 android:textSize="14sp"
                 android:padding="8dp" />
         </LinearLayout>

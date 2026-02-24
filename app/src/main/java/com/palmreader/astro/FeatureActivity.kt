@@ -104,43 +104,98 @@ class FeatureActivity : BaseFeatureActivity() {
 
     private fun setupTarot() {
         binding.llTarotSection.visibility = View.VISIBLE
-        binding.btnDrawCards.setOnClickListener {
-            drawnCards = TarotEngine.draw(3)
-            revealedCount = 0
-            binding.llCardLabels.visibility = View.VISIBLE
-            binding.llCards.visibility = View.VISIBLE
-            // Reset card slots to face-down
-            listOf(
-                Triple(binding.imgCardBack1, binding.imgCard1, binding.tvCardName1),
-                Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
-                Triple(binding.imgCardBack3, binding.imgCard3, binding.tvCardName3)
-            ).forEach { (back, face, name) ->
-                back.animate().cancel()
-                face.animate().cancel()
-                name.animate().cancel()
-                back.rotationY = 0f
-                back.alpha = 1f
-                face.rotationY = 0f
-                face.alpha = 1f
-                name.rotationY = 0f
-                name.alpha = 1f
-                back.visibility = View.VISIBLE
-                face.visibility = View.GONE
-                face.scaleY = 1f
-                name.visibility = View.GONE
-            }
-            binding.llCardResults.removeAllViews()
-            binding.llCardResults.visibility = View.GONE
-            binding.llQaSection.visibility = View.GONE
-            binding.llInputBar.visibility = View.GONE
-            binding.llChat.removeAllViews()
-            binding.btnDrawCards.text = getString(R.string.tarot_redraw)
-        }
+
         val positions = listOf(
             getString(R.string.tarot_past),
             getString(R.string.tarot_present),
             getString(R.string.tarot_future)
         )
+
+        // ── Restore existing session (user navigated back then returned) ──────
+        if (TarotSessionStore.hasSession()) {
+            drawnCards = TarotSessionStore.drawnCards
+            revealedCount = TarotSessionStore.revealedCount
+            aiReadingContext = TarotSessionStore.aiReadingContext
+
+            binding.llCardLabels.visibility = View.VISIBLE
+            binding.llCards.visibility = View.VISIBLE
+            binding.btnDrawCards.text = getString(R.string.tarot_redraw)
+
+            // Restore card visuals without animation
+            val cardViews = listOf(
+                Triple(binding.imgCardBack1, binding.imgCard1, binding.tvCardName1),
+                Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
+                Triple(binding.imgCardBack3, binding.imgCard3, binding.tvCardName3)
+            )
+            drawnCards.forEachIndexed { i, drawn ->
+                val (back, face, name) = cardViews[i]
+                if (i < revealedCount) {
+                    back.visibility = View.GONE
+                    if (drawn.card.imageRes != 0) face.setImageResource(drawn.card.imageRes)
+                    else face.setImageResource(R.drawable.ic_tarot_card_back)
+                    face.scaleY = if (drawn.isReversed) -1f else 1f
+                    face.visibility = View.VISIBLE
+                    name.text = drawn.displayName
+                    name.visibility = View.VISIBLE
+                }
+            }
+
+            // Restore card result items
+            TarotSessionStore.savedCardResults.forEach { (pos, drawn) -> addCardResultView(pos, drawn) }
+            if (TarotSessionStore.savedCardResults.isNotEmpty()) {
+                binding.llCardResults.visibility = View.VISIBLE
+            }
+
+            // Rebuild chat from store
+            rebuildChatFromStore()
+
+            if (TarotSessionStore.chatMessages.isNotEmpty()) binding.llQaSection.visibility = View.VISIBLE
+            if (revealedCount == 3 && aiReadingContext.isNotEmpty()) binding.llInputBar.visibility = View.VISIBLE
+        }
+
+        // ── Draw / Redraw button ─────────────────────────────────────────────
+        binding.btnDrawCards.setOnClickListener {
+            val isRedraw = TarotSessionStore.hasSession()
+            drawnCards = TarotEngine.draw(3)
+            revealedCount = 0
+
+            TarotSessionStore.drawnCards = drawnCards
+            TarotSessionStore.revealedCount = 0
+            TarotSessionStore.aiReadingContext = ""
+            TarotSessionStore.savedCardResults.clear()
+
+            binding.llCardLabels.visibility = View.VISIBLE
+            binding.llCards.visibility = View.VISIBLE
+
+            listOf(
+                Triple(binding.imgCardBack1, binding.imgCard1, binding.tvCardName1),
+                Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
+                Triple(binding.imgCardBack3, binding.imgCard3, binding.tvCardName3)
+            ).forEach { (back, face, name) ->
+                back.animate().cancel(); face.animate().cancel(); name.animate().cancel()
+                back.rotationY = 0f; back.alpha = 1f
+                face.rotationY = 0f; face.alpha = 1f
+                name.rotationY = 0f; name.alpha = 1f
+                back.visibility = View.VISIBLE
+                face.visibility = View.GONE; face.scaleY = 1f
+                name.visibility = View.GONE
+            }
+
+            binding.llCardResults.removeAllViews()
+            binding.llCardResults.visibility = View.GONE
+            binding.llInputBar.visibility = View.GONE
+
+            // Add draw event to chat — never clear, this is the running log
+            val eventText = buildDrawEventText(isRedraw, drawnCards, positions)
+            TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = eventText, isEvent = true))
+            addTarotEventBubble(eventText)
+            binding.llQaSection.visibility = View.VISIBLE
+
+            binding.btnDrawCards.text = getString(R.string.tarot_redraw)
+            scrollToBottom()
+        }
+
+        // ── Card slot click listeners ────────────────────────────────────────
         val cardSlots = listOf(
             binding.cardSlot1 to Triple(binding.imgCardBack1, binding.imgCard1, binding.tvCardName1),
             binding.cardSlot2 to Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
@@ -158,6 +213,7 @@ class FeatureActivity : BaseFeatureActivity() {
                     flipCardReveal(slot, back, face, nameLabel, drawn)
                     addCardResult(positions[i], drawn)
                     revealedCount++
+                    TarotSessionStore.revealedCount = revealedCount
                     if (revealedCount == 3) {
                         currentResult = TarotEngine.toFeatureResult(
                             drawnCards, positions,
@@ -169,6 +225,44 @@ class FeatureActivity : BaseFeatureActivity() {
                 }
             }
         }
+    }
+
+    private fun buildDrawEventText(isRedraw: Boolean, cards: List<DrawnCard>, positions: List<String>): String {
+        val prefix = if (isRedraw) "⟳  New spread drawn" else "✦  Cards drawn"
+        val cardList = cards.mapIndexed { i, drawn ->
+            "${positions.getOrElse(i) { "Card ${i + 1}" }}: ${drawn.displayName}"
+        }.joinToString("  ·  ")
+        return "$prefix  —  $cardList"
+    }
+
+    private fun addTarotEventBubble(text: String) {
+        val tv = android.widget.TextView(this).apply {
+            this.text = text
+            setTextColor(resources.getColor(R.color.text_medium, null))
+            textSize = 11.5f
+            gravity = android.view.Gravity.CENTER
+            setPadding(20, 10, 20, 10)
+            setTypeface(typeface, android.graphics.Typeface.ITALIC)
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(0, 12, 0, 12) }
+            layoutParams = lp
+        }
+        binding.llChat.addView(tv)
+        binding.llChat.visibility = View.VISIBLE
+    }
+
+    private fun rebuildChatFromStore() {
+        binding.llChat.removeAllViews()
+        TarotSessionStore.chatMessages.forEach { msg ->
+            when {
+                msg.isEvent -> addTarotEventBubble(msg.text)
+                msg.isUser  -> addUserBubble(binding.llChat, msg.text)
+                else        -> addAIReadingBubble(msg.text)
+            }
+        }
+        if (TarotSessionStore.chatMessages.isNotEmpty()) binding.llChat.visibility = View.VISIBLE
     }
 
     private fun flipCardReveal(
@@ -351,6 +445,10 @@ class FeatureActivity : BaseFeatureActivity() {
 
     private fun addReadingToChat(reading: String) {
         aiReadingContext = reading
+        if (featureType == "TAROT") {
+            TarotSessionStore.aiReadingContext = reading
+            TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = reading))
+        }
         addAIReadingBubble(reading)
     }
 
@@ -463,6 +561,11 @@ class FeatureActivity : BaseFeatureActivity() {
     }
 
     private fun addCardResult(position: String, drawn: DrawnCard) {
+        TarotSessionStore.savedCardResults.add(Pair(position, drawn))
+        addCardResultView(position, drawn)
+    }
+
+    private fun addCardResultView(position: String, drawn: DrawnCard) {
         binding.llCardResults.visibility = View.VISIBLE
         val card = layoutInflater.inflate(R.layout.item_result_card, binding.llCardResults, false)
         val header = "$position: ${drawn.displayName}"
@@ -471,9 +574,7 @@ class FeatureActivity : BaseFeatureActivity() {
         card.findViewById<TextView>(R.id.tvDesc).text = getString(R.string.feature_tip_prefix, drawn.card.advice)
         val readMore = card.findViewById<TextView>(R.id.tvReadMore)
         readMore.visibility = View.VISIBLE
-        val openReadMore = {
-            showTarotInterpretationDialog(position, drawn.card)
-        }
+        val openReadMore = { showTarotInterpretationDialog(position, drawn.card) }
         card.setOnClickListener { openReadMore() }
         readMore.setOnClickListener { openReadMore() }
         card.findViewById<TextView>(R.id.tvValue).setOnClickListener { openReadMore() }
@@ -568,6 +669,7 @@ class FeatureActivity : BaseFeatureActivity() {
             binding.etQuestion.setText("")
             useCredit("Question") {
                 addUserBubble(binding.llChat, q)
+                if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = true, text = q))
                 scrollToBottom()
 
                 lifecycleScope.launch {
@@ -590,10 +692,12 @@ class FeatureActivity : BaseFeatureActivity() {
                                 if (answer.isBlank()) {
                                     val fallback = generateLocalAnswer(q)
                                     addBotBubble(binding.llChat, fallback)
+                                    if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                                     saveToHistory(historyCategoryLabel(), q, fallback)
                                 } else {
                                     Log.d("AstroAI", "AI answer received")
                                     addBotBubble(binding.llChat, answer)
+                                    if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = answer))
                                     saveToHistory(historyCategoryLabel(), q, answer)
                                 }
                             }
@@ -601,16 +705,20 @@ class FeatureActivity : BaseFeatureActivity() {
                                 Log.e("AstroAI", "AI follow-up error: ${result.message}")
                                 val fallback = generateLocalAnswer(q)
                                 addBotBubble(binding.llChat, fallback)
+                                if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                                 saveToHistory(historyCategoryLabel(), q, fallback)
                             }
                             is OpenAIService.ApiResult.RateLimited -> {
                                 val fallback = generateLocalAnswer(q)
-                                addBotBubble(binding.llChat, "${getString(R.string.ai_rate_limited)}\n\n$fallback")
+                                val rateLimitedText = "${getString(R.string.ai_rate_limited)}\n\n$fallback"
+                                addBotBubble(binding.llChat, rateLimitedText)
+                                if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = rateLimitedText))
                                 saveToHistory(historyCategoryLabel(), q, fallback)
                             }
                             else -> {
                                 val fallback = generateLocalAnswer(q)
                                 addBotBubble(binding.llChat, fallback)
+                                if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                                 saveToHistory(historyCategoryLabel(), q, fallback)
                             }
                         }
@@ -618,6 +726,7 @@ class FeatureActivity : BaseFeatureActivity() {
                         Log.e("AstroAI", "Follow-up request failed", e)
                         val fallback = generateLocalAnswer(q)
                         addBotBubble(binding.llChat, fallback)
+                        if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                         saveToHistory(historyCategoryLabel(), q, fallback)
                     } finally {
                         refreshCredits(binding.tvCredits)

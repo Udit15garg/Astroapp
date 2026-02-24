@@ -27,7 +27,8 @@
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_back_arrow"
             android:tint="@color/brand_gold"
-            android:contentDescription="@string/cd_back_button" />
+            android:contentDescription="@string/cd_back_button"
+            android:visibility="gone" />
 
         <!-- Left: brand + greeting -->
         <LinearLayout
@@ -40,10 +41,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Astra"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.02"
-                android:textColor="@color/text_dark" />
+                android:textColor="@color/brand_gold" />
 
             <TextView
                 android:id="@+id/tvGreeting"
@@ -52,21 +53,21 @@
                 android:text="@string/home_greeting"
                 android:textSize="12sp"
                 android:textColor="@color/text_medium"
-                android:layout_marginTop="2dp" />
+                android:layout_marginTop="1dp" />
         </LinearLayout>
 
         <!-- Credits pill -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardCredits"
             android:layout_width="wrap_content"
-            android:layout_height="34dp"
+            android:layout_height="36dp"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackgroundBorderless"
-            app:cardCornerRadius="17dp"
+            app:cardCornerRadius="18dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/glass_card"
-            app:strokeColor="@color/glass_card_border"
+            app:cardBackgroundColor="@color/banner_gold_bg"
+            app:strokeColor="@color/brand_gold"
             app:strokeWidth="1dp"
             android:layout_marginEnd="8dp">
 
@@ -79,9 +80,9 @@
                 android:paddingEnd="12dp">
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginEnd="5dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_coin"
                     android:tint="@color/brand_gold" />
@@ -91,9 +92,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/credits_single"
-                    android:textSize="13sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_dark" />
+                    android:textColor="@color/brand_gold" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -107,7 +108,7 @@
             android:padding="8dp"
             android:scaleType="fitCenter"
             app:srcCompat="@android:drawable/ic_menu_manage"
-            android:tint="@color/brand_gold"
+            android:tint="@color/text_medium"
             android:contentDescription="@string/settings_title" />
 
         <!-- Profile icon -->
@@ -119,29 +120,11 @@
             android:padding="8dp"
             android:scaleType="fitCenter"
             app:srcCompat="@android:drawable/ic_menu_myplaces"
-            android:tint="@color/brand_gold"
+            android:tint="@color/text_medium"
             android:contentDescription="@string/cd_profile_icon" />
     </LinearLayout>
 
-    <!-- ── Premium Banner ── -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnSubscription"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="12dp"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="@string/home_subscription_banner"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_dark"
-        android:backgroundTint="@color/glass_card"
-        app:strokeColor="@color/glass_card_border"
-        app:strokeWidth="1dp"
-        app:cornerRadius="18dp" />
-
-    <!-- ── Feature grid ── -->
+    <!-- ── Scrollable Content ── -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -153,111 +136,186 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="28dp">
+            android:paddingTop="16dp"
+            android:paddingBottom="32dp">
 
-            <!-- Section title -->
+            <!-- ── Premium Banner ── -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubscription"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/home_subscription_banner"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/brand_gold"
+                android:backgroundTint="@color/banner_gold_bg"
+                android:gravity="center_vertical|start"
+                app:icon="@drawable/ic_coin"
+                app:iconTint="@color/brand_gold"
+                app:iconGravity="textStart"
+                app:iconSize="18dp"
+                app:iconPadding="10dp"
+                app:strokeColor="@color/banner_gold_border"
+                app:strokeWidth="1dp"
+                app:cornerRadius="18dp"
+                android:layout_marginBottom="22dp" />
+
+            <!-- ── Section Heading ── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/home_section_title"
-                android:textSize="21sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_dark"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="4dp" />
 
-            <!-- Row 1: Palmistry + Tarot -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6 mystical paths await you"
+                android:textSize="13sp"
+                android:textColor="@color/text_medium"
+                android:layout_marginBottom="20dp" />
+
+            <!-- ══ HERO: Palm Reading (full-width, 160dp) ══ -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPalmReading"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackground"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/card_palmistry_bg"
+                app:strokeColor="@color/card_palmistry_border"
+                app:strokeWidth="1dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <!-- Decorative large glyph (top-right) -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|end"
+                        android:layout_margin="14dp"
+                        android:text="✦"
+                        android:textSize="48sp"
+                        android:textColor="@color/card_palmistry_border"
+                        android:alpha="0.6" />
+
+                    <!-- Main content -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="20dp">
+
+                        <!-- Big icon card -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="68dp"
+                            android:layout_height="68dp"
+                            app:cardCornerRadius="18dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="@color/icon_bg_palmistry"
+                            app:strokeWidth="0dp">
+
+                            <ImageView
+                                android:layout_width="38dp"
+                                android:layout_height="38dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_feature_palmistry"
+                                android:tint="@color/icon_palmistry"
+                                android:contentDescription="@string/cd_feature_palmistry" />
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Text block -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="18dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/feature_palmistry"
+                                android:textSize="19sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/feature_palmistry_subtitle"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_medium"
+                                android:layout_marginTop="4dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="✦  Camera · AI Powered"
+                                android:textSize="11sp"
+                                android:textColor="@color/icon_palmistry"
+                                android:layout_marginTop="12dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ══ ROW B: Tarot + Numerology (140dp) ══ -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="12dp">
 
+                <!-- Tarot -->
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardPalmReading"
+                    android:id="@+id/cardTarot"
                     android:layout_width="0dp"
-                    android:layout_height="118dp"
+                    android:layout_height="140dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="6dp"
                     android:foreground="?selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardCornerRadius="18dp"
+                    app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="@color/glass_card_border"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="@color/glass_card">
+                    app:cardBackgroundColor="@color/card_tarot_bg"
+                    app:strokeColor="@color/card_tarot_border"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:padding="14dp">
+                        android:padding="16dp">
 
-                        <FrameLayout
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:background="@drawable/bg_glyph_box">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="@color/icon_bg_tarot"
+                            app:strokeWidth="0dp">
                             <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_feature_palmistry"
-                                android:contentDescription="@string/cd_feature_palmistry" />
-                        </FrameLayout>
-
-                        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/feature_palmistry"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_dark" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/feature_palmistry_subtitle"
-                            android:textSize="11sp"
-                            android:textColor="@color/text_medium"
-                            android:layout_marginTop="2dp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardTarot"
-                    android:layout_width="0dp"
-                    android:layout_height="118dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:foreground="?selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/glass_card_border"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="@color/glass_card">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="14dp">
-
-                        <FrameLayout
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:background="@drawable/bg_glyph_box">
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_feature_tarot"
+                                android:tint="@color/icon_tarot"
                                 android:contentDescription="@string/cd_feature_tarot" />
-                        </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
 
                         <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
 
@@ -275,50 +333,47 @@
                             android:text="@string/feature_tarot_subtitle"
                             android:textSize="11sp"
                             android:textColor="@color/text_medium"
-                            android:layout_marginTop="2dp" />
+                            android:layout_marginTop="3dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
 
-            <!-- Row 2: Numerology + Kundli -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
-
+                <!-- Numerology -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardNumerology"
                     android:layout_width="0dp"
-                    android:layout_height="118dp"
+                    android:layout_height="140dp"
                     android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginStart="6dp"
                     android:foreground="?selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardCornerRadius="18dp"
+                    app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="@color/glass_card_border"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="@color/glass_card">
+                    app:cardBackgroundColor="@color/card_numerology_bg"
+                    app:strokeColor="@color/card_numerology_border"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:padding="14dp">
+                        android:padding="16dp">
 
-                        <FrameLayout
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:background="@drawable/bg_glyph_box">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="@color/icon_bg_numerology"
+                            app:strokeWidth="0dp">
                             <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_feature_numerology"
+                                android:tint="@color/icon_numerology"
                                 android:contentDescription="@string/cd_feature_numerology" />
-                        </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
 
                         <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
 
@@ -336,42 +391,55 @@
                             android:text="@string/feature_numerology_subtitle"
                             android:textSize="11sp"
                             android:textColor="@color/text_medium"
-                            android:layout_marginTop="2dp" />
+                            android:layout_marginTop="3dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
+            <!-- ══ ROW C: Kundli + Rashifal (140dp) ══ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <!-- Kundli -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardKundli"
                     android:layout_width="0dp"
-                    android:layout_height="118dp"
+                    android:layout_height="140dp"
                     android:layout_weight="1"
-                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
                     android:foreground="?selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardCornerRadius="18dp"
+                    app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="@color/glass_card_border"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="@color/glass_card">
+                    app:cardBackgroundColor="@color/card_kundli_bg"
+                    app:strokeColor="@color/card_kundli_border"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:padding="14dp">
+                        android:padding="16dp">
 
-                        <FrameLayout
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:background="@drawable/bg_glyph_box">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="@color/icon_bg_kundli"
+                            app:strokeWidth="0dp">
                             <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_feature_kundli"
+                                android:tint="@color/icon_kundli"
                                 android:contentDescription="@string/cd_feature_kundli" />
-                        </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
 
                         <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
 
@@ -389,50 +457,47 @@
                             android:text="@string/feature_kundli_subtitle"
                             android:textSize="11sp"
                             android:textColor="@color/text_medium"
-                            android:layout_marginTop="2dp" />
+                            android:layout_marginTop="3dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
 
-            <!-- Row 3: Rashifal + Sun Sign -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="12dp">
-
+                <!-- Rashifal -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardSign"
                     android:layout_width="0dp"
-                    android:layout_height="118dp"
+                    android:layout_height="140dp"
                     android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginStart="6dp"
                     android:foreground="?selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardCornerRadius="18dp"
+                    app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="@color/glass_card_border"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="@color/glass_card">
+                    app:cardBackgroundColor="@color/card_rashifal_bg"
+                    app:strokeColor="@color/card_rashifal_border"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:padding="14dp">
+                        android:padding="16dp">
 
-                        <FrameLayout
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:background="@drawable/bg_glyph_box">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="@color/icon_bg_rashifal"
+                            app:strokeWidth="0dp">
                             <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_feature_rashifal"
+                                android:tint="@color/icon_rashifal"
                                 android:contentDescription="@string/cd_feature_rashifal" />
-                        </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
 
                         <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
 
@@ -450,50 +515,61 @@
                             android:text="@string/feature_rashifal_subtitle"
                             android:textSize="11sp"
                             android:textColor="@color/text_medium"
-                            android:layout_marginTop="2dp" />
+                            android:layout_marginTop="3dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardSunSign"
-                    android:layout_width="0dp"
-                    android:layout_height="118dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="6dp"
-                    android:foreground="?selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/glass_card_border"
-                    app:strokeWidth="1dp"
-                    app:cardBackgroundColor="@color/glass_card">
+            <!-- ══ ROW D: Sun Sign (full-width featured strip) ══ -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardSunSign"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginBottom="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?selectableItemBackground"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/card_sunsign_bg"
+                app:strokeColor="@color/card_sunsign_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="20dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/icon_bg_sunsign"
+                        app:strokeWidth="0dp">
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_feature_sunsign"
+                            android:tint="@color/icon_sunsign"
+                            android:contentDescription="@string/cd_feature_sunsign" />
+                    </com.google.android.material.card.MaterialCardView>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:orientation="vertical"
-                        android:padding="14dp">
-
-                        <FrameLayout
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
-                            android:background="@drawable/bg_glyph_box">
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_feature_sunsign"
-                                android:contentDescription="@string/cd_feature_sunsign" />
-                        </FrameLayout>
-
-                        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
+                        android:layout_marginStart="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/feature_sunsign"
-                            android:textSize="14sp"
+                            android:textSize="15sp"
                             android:textStyle="bold"
                             android:textColor="@color/text_dark" />
 
@@ -503,10 +579,19 @@
                             android:text="@string/feature_sunsign_subtitle"
                             android:textSize="11sp"
                             android:textColor="@color/text_medium"
-                            android:layout_marginTop="2dp" />
+                            android:layout_marginTop="3dp" />
                     </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="›"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/icon_sunsign"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Disclaimer -->
             <TextView
@@ -514,9 +599,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/disclaimer"
                 android:textSize="11sp"
-                android:textColor="@color/text_medium"
-                android:gravity="center"
-                android:layout_marginTop="8dp" />
+                android:textColor="@color/text_light"
+                android:gravity="center" />
 
         </LinearLayout>
     </ScrollView>

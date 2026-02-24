@@ -47,9 +47,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/credits_single"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:textColor="@color/text_medium" />
         </LinearLayout>
+
+        <!-- Credits pill -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/banner_gold_bg"
+            app:strokeColor="@color/brand_gold"
+            app:strokeWidth="1dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:paddingEnd="12dp">
+                <ImageView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_coin"
+                    android:tint="@color/brand_gold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/credits_single"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/brand_gold"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <ScrollView
@@ -63,165 +97,399 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Page headline -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sub_choose_plan"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:layout_marginBottom="10dp" />
+                android:textColor="@color/text_dark"
+                android:layout_marginBottom="4dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unlock deeper cosmic insights"
+                android:textSize="13sp"
+                android:textColor="@color/text_medium"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Coin history link -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCoinHistory"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="20dp"
                 android:text="@string/sub_coin_history"
-                android:textColor="@color/text_dark"
+                android:textColor="@color/text_medium"
                 app:icon="@drawable/ic_coin"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"
                 app:iconTint="@color/brand_gold"
-                app:strokeColor="@color/glass_card_border" />
+                app:strokeColor="@color/outline"
+                app:cornerRadius="14dp" />
 
-            <!-- Plan 1: Starter Pack -->
+            <!-- ── Plan 1: Starter Pack ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/plan_basic"
+                app:strokeColor="@color/outline"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
+                    <!-- Title row + price -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" android:textSize="32sp" android:textStyle="bold" android:textColor="@color/primary" android:layout_marginEnd="12dp" />
-
-                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_starter_title" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_starter_desc" android:textSize="13sp" android:textColor="@color/text_medium" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sub_starter_title"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sub_starter_desc"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_medium"
+                                android:layout_marginTop="2dp" />
                         </LinearLayout>
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="\u20B949" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="end">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="&#8377;49"
+                                android:textSize="28sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/secondary" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="one-time"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_medium"
+                                android:gravity="end" />
+                        </LinearLayout>
                     </LinearLayout>
+
+                    <!-- Feature bullets -->
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginVertical="14dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="·  5 AI-powered readings"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_medium"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="·  All 6 features included"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_medium"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="·  1 follow-up question per reading"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_medium" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnBuy49"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
                         android:text="@string/sub_starter_buy"
+                        android:textStyle="bold"
                         android:backgroundTint="@color/secondary"
-                        android:layout_marginTop="12dp" />
+                        android:textColor="@color/on_secondary"
+                        android:layout_marginTop="14dp"
+                        app:cornerRadius="14dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Plan 2: Basic Monthly -->
+            <!-- ── Plan 2: Monthly (MOST POPULAR) ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/plan_premium">
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/plan_popular_bg"
+                app:strokeColor="@color/banner_gold_border"
+                app:strokeWidth="1.5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_basic_badge" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/secondary" android:layout_marginBottom="4dp" />
+                    <!-- Most popular badge -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/banner_gold_bg"
+                        app:strokeColor="@color/brand_gold"
+                        app:strokeWidth="1dp"
+                        android:layout_marginBottom="12dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="✦  MOST POPULAR"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/brand_gold"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="5dp" />
+                    </com.google.android.material.card.MaterialCardView>
 
+                    <!-- Title row + price -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" android:textSize="32sp" android:textStyle="bold" android:textColor="@color/primary" android:layout_marginEnd="12dp" />
-
-                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_basic_title" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_basic_desc" android:textSize="13sp" android:textColor="@color/text_medium" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sub_basic_title"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sub_basic_desc"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_medium"
+                                android:layout_marginTop="2dp" />
                         </LinearLayout>
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="\u20B999" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="end">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="&#8377;99"
+                                android:textSize="28sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/brand_gold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="/ month"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_medium"
+                                android:gravity="end" />
+                        </LinearLayout>
                     </LinearLayout>
+
+                    <!-- Feature bullets -->
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginVertical="14dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✓  Unlimited readings for 30 days"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_dark"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✓  All 6 mystical features"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_dark"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✓  Unlimited follow-up Q&amp;A"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_dark" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnBuy99"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
                         android:text="@string/sub_basic_buy"
-                        android:backgroundTint="@color/primary"
-                        android:layout_marginTop="12dp" />
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/brand_gold"
+                        android:textColor="@color/on_secondary"
+                        android:layout_marginTop="14dp"
+                        app:cornerRadius="14dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Plan 3: Unlimited Monthly -->
+            <!-- ── Plan 3: Pro Monthly ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/plan_unlimited">
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/plan_unlimited"
+                app:strokeColor="@color/card_numerology_border"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
+                    <!-- Title row + price -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" android:textSize="32sp" android:textStyle="bold" android:textColor="@color/primary" android:layout_marginEnd="12dp" />
-
-                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_unlimited_title" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/primary" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sub_unlimited_desc" android:textSize="13sp" android:textColor="@color/text_medium" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sub_unlimited_title"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sub_unlimited_desc"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_medium"
+                                android:layout_marginTop="2dp" />
                         </LinearLayout>
 
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="\u20B9199" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/secondary" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="end">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="&#8377;199"
+                                android:textSize="28sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/success" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="/ month"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_medium"
+                                android:gravity="end" />
+                        </LinearLayout>
                     </LinearLayout>
+
+                    <!-- Feature bullets -->
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginVertical="14dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✓  Everything in Monthly"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_dark"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✓  Priority AI responses"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_dark"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✓  Downloadable reading summary"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_dark" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnBuy199"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
                         android:text="@string/sub_unlimited_buy"
+                        android:textStyle="bold"
                         android:backgroundTint="@color/success"
-                        android:layout_marginTop="12dp" />
+                        android:textColor="@color/on_primary"
+                        android:layout_marginTop="14dp"
+                        app:cornerRadius="14dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Divider -->
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginVertical="8dp" />
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" android:layout_marginBottom="16dp" />
 
-            <!-- Free trial button -->
+            <!-- Free trial -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnFreeTrial"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/sub_free_trial"
-                android:backgroundTint="@color/text_medium"
+                android:textColor="@color/text_medium"
+                android:backgroundTint="@color/bg_warm"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                app:strokeColor="@color/text_medium" />
+                app:strokeColor="@color/outline"
+                app:cornerRadius="14dp" />
 
         </LinearLayout>
     </ScrollView>

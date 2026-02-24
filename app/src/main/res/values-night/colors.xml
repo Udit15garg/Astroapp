@@ -98,4 +98,50 @@
     <color name="plan_basic">#101420</color>
     <color name="plan_premium">#141028</color>
     <color name="plan_unlimited">#0C1610</color>
+
+    <!-- ── Per-feature design tokens ── -->
+
+    <!-- Palmistry (Cobalt Blue) -->
+    <color name="card_palmistry_bg">#090F22</color>
+    <color name="card_palmistry_border">#1A3A70</color>
+    <color name="icon_palmistry">#7EB5FF</color>
+    <color name="icon_bg_palmistry">#142048</color>
+
+    <!-- Tarot (Royal Purple) -->
+    <color name="card_tarot_bg">#100920</color>
+    <color name="card_tarot_border">#361A70</color>
+    <color name="icon_tarot">#C47AFF</color>
+    <color name="icon_bg_tarot">#1C0E3E</color>
+
+    <!-- Numerology (Forest Emerald) -->
+    <color name="card_numerology_bg">#091A12</color>
+    <color name="card_numerology_border">#1A5E36</color>
+    <color name="icon_numerology">#4DD494</color>
+    <color name="icon_bg_numerology">#0C2618</color>
+
+    <!-- Kundli (Bronze Amber) -->
+    <color name="card_kundli_bg">#140E06</color>
+    <color name="card_kundli_border">#6E420E</color>
+    <color name="icon_kundli">#FFBE5C</color>
+    <color name="icon_bg_kundli">#281A06</color>
+
+    <!-- Rashifal (Ruby Rose) -->
+    <color name="card_rashifal_bg">#14060C</color>
+    <color name="card_rashifal_border">#6E1A34</color>
+    <color name="icon_rashifal">#FF7AAA</color>
+    <color name="icon_bg_rashifal">#280C14</color>
+
+    <!-- Sun Sign (Deep Teal) -->
+    <color name="card_sunsign_bg">#061416</color>
+    <color name="card_sunsign_border">#1A5E6E</color>
+    <color name="icon_sunsign">#4DD4DD</color>
+    <color name="icon_bg_sunsign">#0C2628</color>
+
+    <!-- Premium Banner -->
+    <color name="banner_gold_bg">#140E06</color>
+    <color name="banner_gold_border">#F3C46B</color>
+
+    <!-- Subscription plan premium badge -->
+    <color name="plan_premium_border">#6E420E</color>
+    <color name="plan_popular_bg">#1A1006</color>
 </resources>
