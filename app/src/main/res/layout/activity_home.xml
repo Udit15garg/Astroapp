@@ -66,45 +66,43 @@
                 android:paddingHorizontal="14dp" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- History chip -->
-        <com.google.android.material.button.MaterialButton
+        <!-- History icon -->
+        <ImageView
             android:id="@+id/btnHistory"
             android:layout_width="34dp"
             android:layout_height="34dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="@string/home_btn_history"
-            android:textSize="8sp"
-            app:cornerRadius="17dp"
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_marginEnd="6dp" />
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_topbar_icon"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/ic_menu_recent_history"
+            android:tint="@color/brand_gold"
+            android:contentDescription="@string/cd_history_icon" />
 
-        <!-- Settings chip -->
-        <com.google.android.material.button.MaterialButton
+        <!-- Settings icon -->
+        <ImageView
             android:id="@+id/btnLogout"
             android:layout_width="34dp"
             android:layout_height="34dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="⚙"
-            android:textSize="14sp"
-            app:cornerRadius="17dp"
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_marginEnd="6dp" />
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_topbar_icon"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/ic_menu_manage"
+            android:tint="@color/brand_gold"
+            android:contentDescription="@string/settings_title" />
 
-        <!-- Profile avatar -->
-        <com.google.android.material.button.MaterialButton
+        <!-- Profile icon -->
+        <ImageView
             android:id="@+id/btnProfile"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="@string/home_btn_profile"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            app:cornerRadius="18dp"
-            app:iconSize="0dp"
-            style="@style/Widget.Material3.Button.TonalButton" />
+            android:background="@drawable/bg_topbar_icon"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@android:drawable/ic_menu_myplaces"
+            android:tint="@color/brand_gold"
+            android:contentDescription="@string/cd_profile_icon" />
     </LinearLayout>
 
     <!-- ── Premium Banner ── -->
