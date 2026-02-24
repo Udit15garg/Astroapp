@@ -92,6 +92,26 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPastReadings"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="@color/glass_card"
+                android:text="@string/history_title"
+                android:textColor="@color/text_dark"
+                android:textStyle="bold"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingHorizontal="14dp"
+                app:cornerRadius="14dp"
+                app:icon="@android:drawable/ic_menu_recent_history"
+                app:iconGravity="textStart"
+                app:iconPadding="10dp"
+                app:iconTint="@color/brand_gold"
+                app:strokeColor="@color/glass_card_border"
+                app:strokeWidth="1dp" />
+
             <!-- Credit stats row -->
             <TextView
                 android:layout_width="wrap_content"

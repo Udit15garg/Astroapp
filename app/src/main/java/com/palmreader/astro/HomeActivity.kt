@@ -65,9 +65,6 @@ class HomeActivity : AppCompatActivity() {
         binding.cardSunSign.setOnClickListener {
             startFeature("SUN_SIGN", getString(R.string.feature_sunsign))
         }
-        binding.btnHistory.setOnClickListener {
-            startActivity(Intent(this, HistoryActivity::class.java))
-        }
         binding.btnProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }

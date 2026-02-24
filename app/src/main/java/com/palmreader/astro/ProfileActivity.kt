@@ -1,5 +1,6 @@
 package com.palmreader.astro
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -19,6 +20,9 @@ class ProfileActivity : BaseFeatureActivity() {
         setContentView(binding.root)
 
         binding.btnBack.setOnClickListener { finish() }
+        binding.btnPastReadings.setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
+        }
         loadProfile()
     }
 

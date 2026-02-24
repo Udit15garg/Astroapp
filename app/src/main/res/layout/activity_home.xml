@@ -66,19 +66,6 @@
                 android:paddingHorizontal="14dp" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- History icon -->
-        <ImageView
-            android:id="@+id/btnHistory"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:layout_marginEnd="6dp"
-            android:background="@drawable/bg_topbar_icon"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@android:drawable/ic_menu_recent_history"
-            android:tint="@color/brand_gold"
-            android:contentDescription="@string/cd_history_icon" />
-
         <!-- Settings icon -->
         <ImageView
             android:id="@+id/btnLogout"
