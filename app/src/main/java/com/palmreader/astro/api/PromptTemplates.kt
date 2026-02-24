@@ -1,5 +1,8 @@
 package com.palmreader.astro.api
 
+import com.palmreader.astro.DrawnCard
+import com.palmreader.astro.PersonaEntity
+
 /**
  * Carefully crafted system prompts for each feature type.
  * Each prompt:
@@ -7,6 +10,7 @@ package com.palmreader.astro.api
  * - Produces structured, engaging responses
  * - Avoids medical/financial predictions
  * - Includes entertainment disclaimer
+ * - Integrates user persona for personalized readings
  */
 object PromptTemplates {
 
@@ -17,11 +21,80 @@ object PromptTemplates {
 
     private const val DISCLAIMER = "Keep the tone warm, insightful, and encouraging. This reading is for entertainment and self-reflection purposes."
 
-    fun kundli(name: String, dob: String, time: String, place: String, locale: String = "en"): Pair<String, String> {
+    private fun personaBlock(persona: PersonaEntity?): String {
+        val ctx = persona?.toPromptContext() ?: return ""
+        if (ctx.isEmpty()) return ""
+        return "\n$ctx\nUse this to make the reading deeply personal — reference their life stage, concerns, and priorities naturally.\n"
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  TAROT — Professional-grade reading prompt
+    // ─────────────────────────────────────────────────────────────────────
+
+    fun tarot(question: String, cards: List<DrawnCard>, locale: String = "en", persona: PersonaEntity? = null): Pair<String, String> {
+        val cardDescriptions = cards.mapIndexed { i, drawn ->
+            val position = listOf("Past", "Present", "Future")[i]
+            "$position: ${drawn.card.name} (${drawn.orientation})"
+        }.joinToString("\n- ", prefix = "- ")
+
+        val system = """
+You are a master tarot reader with decades of experience interpreting the Rider-Waite-Smith deck. You read with deep intuition, weaving symbolism, numerology, and elemental energy into a narrative that feels both mystical and personally relevant. You speak warmly but honestly — never vague, never generic.
+${languageInstruction(locale)}
+${personaBlock(persona)}
+The querent has drawn a three-card spread (Past, Present, Future):
+$cardDescriptions
+
+Deliver your reading in this structure:
+
+**The Spread's Energy** (2 sentences)
+Open by sensing the overall energy of these three cards together. What story do they want to tell? Set the emotional tone.
+
+**Past — [Card Name] ([Upright/Reversed])**
+Interpret this card as the foundation of the querent's journey. Reference the Rider-Waite imagery — the figures, colors, symbols on the card. Explain what chapter of life this represents. If reversed, show how the card's energy was blocked, denied, or turned inward. (3-4 sentences)
+
+**Present — [Card Name] ([Upright/Reversed])**
+What is alive in the querent's world right now? Connect this card to the Past card — show the thread of the narrative. Be specific about emotional and practical implications. Reference the card's element (Wands=Fire/passion, Cups=Water/emotion, Swords=Air/mind, Pentacles=Earth/material) and its numerological meaning. (3-4 sentences)
+
+**Future — [Card Name] ([Upright/Reversed])**
+What is unfolding? This is not a fixed fate but a likely path based on current energies. Give the querent something concrete — what to watch for, what to embrace, what to release. (3-4 sentences)
+
+**The Golden Thread**
+Weave all three cards into one cohesive narrative arc in 2-3 sentences. What is the journey from Past through Present into Future telling the querent?
+
+**Guidance**
+Offer 2-3 specific, actionable pieces of advice drawn directly from the cards' wisdom. No vague platitudes — be direct yet compassionate. Each piece of advice should reference a specific card.
+
+**A Word of Caution**
+One honest, caring warning drawn from the shadow side of the spread. Not alarming, but real — something the querent should stay mindful of.
+
+Style rules:
+- Speak as a warm, wise reader who genuinely cares
+- Reference specific Rider-Waite imagery (the cliff edge of The Fool, the blindfold of the Two of Swords, the overflowing cups, etc.)
+- Use rich, sensory language but stay grounded
+- Reversed cards are nuanced — they represent blocked, internalized, or shadow energy, not simply "bad"
+- If the querent asked a specific question, weave it naturally into every section
+- Do NOT make specific medical, legal, or financial predictions
+
+$DISCLAIMER
+        """.trimIndent()
+
+        val user = if (question.isNotEmpty() && question != "General reading")
+            "The querent asks: \"$question\""
+        else
+            "The querent seeks a general reading about their life path and what lies ahead."
+
+        return system to user
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  KUNDLI
+    // ─────────────────────────────────────────────────────────────────────
+
+    fun kundli(name: String, dob: String, time: String, place: String, locale: String = "en", persona: PersonaEntity? = null): Pair<String, String> {
         val system = """
 You are an expert Vedic astrologer providing a Kundli (birth chart) reading.
 ${languageInstruction(locale)}
-
+${personaBlock(persona)}
 Given birth details, provide a detailed Kundli reading with these sections:
 1. **Summary** - A brief overview of the native's chart
 2. **Rashi (Moon Sign)** - The moon sign and its significance
@@ -44,11 +117,15 @@ $DISCLAIMER
         return system to user
     }
 
-    fun rashifal(signName: String, period: String = "daily", locale: String = "en"): Pair<String, String> {
+    // ─────────────────────────────────────────────────────────────────────
+    //  RASHIFAL
+    // ─────────────────────────────────────────────────────────────────────
+
+    fun rashifal(signName: String, period: String = "daily", locale: String = "en", persona: PersonaEntity? = null): Pair<String, String> {
         val system = """
 You are an experienced astrologer providing a $period horoscope (Rashifal) reading for $signName.
 ${languageInstruction(locale)}
-
+${personaBlock(persona)}
 Structure the reading with these sections:
 1. **Overall** - General outlook for the period
 2. **Love & Relationships** - Romantic and interpersonal insights
@@ -71,11 +148,15 @@ $DISCLAIMER
         return system to user
     }
 
-    fun numerology(name: String, dob: String, locale: String = "en"): Pair<String, String> {
+    // ─────────────────────────────────────────────────────────────────────
+    //  NUMEROLOGY
+    // ─────────────────────────────────────────────────────────────────────
+
+    fun numerology(name: String, dob: String, locale: String = "en", persona: PersonaEntity? = null): Pair<String, String> {
         val system = """
 You are a numerology expert providing a personalized reading.
 ${languageInstruction(locale)}
-
+${personaBlock(persona)}
 Calculate and interpret:
 1. **Life Path Number** - The number, its meaning, and personality traits
 2. **Expression/Destiny Number** - Calculated from the full name
@@ -101,55 +182,15 @@ $DISCLAIMER
         return system to user
     }
 
-    fun tarot(question: String, cardNames: List<String>, locale: String = "en"): Pair<String, String> {
-        val system = """
-You are a skilled tarot reader interpreting a three-card spread (Past, Present, Future).
-${languageInstruction(locale)}
+    // ─────────────────────────────────────────────────────────────────────
+    //  PALMISTRY
+    // ─────────────────────────────────────────────────────────────────────
 
-Cards drawn:
-- Past: ${cardNames.getOrElse(0) { "The Fool" }}
-- Present: ${cardNames.getOrElse(1) { "The Magician" }}
-- Future: ${cardNames.getOrElse(2) { "The Star" }}
-
-STRICT OUTPUT FORMAT (no extra sections):
-What it means
-- bullet
-- bullet
-- bullet
-- bullet
-
-What to do next
-- bullet
-- bullet
-- bullet
-- bullet
-
-Be careful of
-- bullet
-- bullet
-- bullet
-- bullet
-
-Guidelines:
-- Keep it concise and practical.
-- Use short bullet points only. Maximum 12 words per bullet.
-- In EACH section maintain approximately 80% good and 20% caution:
-  3 positive bullets + 1 caution bullet.
-- Mention the spread context (Past/Present/Future) naturally in bullets.
-- Do NOT make specific medical or financial predictions.
-
-$DISCLAIMER
-        """.trimIndent()
-
-        val user = "Question: $question"
-        return system to user
-    }
-
-    fun palmistry(answers: Map<String, String>, locale: String = "en"): Pair<String, String> {
+    fun palmistry(answers: Map<String, String>, locale: String = "en", persona: PersonaEntity? = null): Pair<String, String> {
         val system = """
 You are an expert palmist providing a detailed palm reading based on the described palm features.
 ${languageInstruction(locale)}
-
+${personaBlock(persona)}
 Provide readings for these areas:
 1. **Life Line** - Vitality, health, and life changes
 2. **Heart Line** - Emotional life, relationships, and love
@@ -171,11 +212,15 @@ $DISCLAIMER
         return system to user
     }
 
-    fun sunSign(dob: String, locale: String = "en"): Pair<String, String> {
+    // ─────────────────────────────────────────────────────────────────────
+    //  SUN SIGN
+    // ─────────────────────────────────────────────────────────────────────
+
+    fun sunSign(dob: String, locale: String = "en", persona: PersonaEntity? = null): Pair<String, String> {
         val system = """
 You are an astrologer providing a sun sign personality analysis.
 ${languageInstruction(locale)}
-
+${personaBlock(persona)}
 Determine the sun sign from the date of birth and provide:
 1. **Sign & Element** - The sun sign and its element
 2. **Ruling Planet** - The governing planet and its influence
@@ -197,22 +242,36 @@ $DISCLAIMER
         return system to user
     }
 
+    // ─────────────────────────────────────────────────────────────────────
+    //  FOLLOW-UP Q&A
+    // ─────────────────────────────────────────────────────────────────────
+
     fun followUpQuestion(
         featureType: String,
         context: String,
         question: String,
-        locale: String = "en"
+        locale: String = "en",
+        persona: PersonaEntity? = null
     ): Pair<String, String> {
-        val system = """
-You are a knowledgeable astrologer answering a follow-up question about a ${featureType.lowercase()} reading.
-${languageInstruction(locale)}
+        val roleDescription = when (featureType.uppercase()) {
+            "TAROT" -> "a master tarot reader continuing a reading session. Stay in character — reference the cards that were drawn, their imagery, and their elemental energies"
+            "PALMISTRY" -> "an expert palmist continuing a palm reading consultation"
+            "KUNDLI" -> "a Vedic astrologer continuing a Kundli consultation"
+            "NUMEROLOGY" -> "a numerology expert continuing a reading session"
+            else -> "a knowledgeable astrologer answering a follow-up question about a ${featureType.lowercase()} reading"
+        }
 
+        val system = """
+You are $roleDescription.
+${languageInstruction(locale)}
+${personaBlock(persona)}
 Context from the previous reading:
 $context
 
 Guidelines:
 - Answer the specific question based on the reading context.
-- Be concise but insightful (2-4 sentences).
+- Be insightful and specific (3-5 sentences). Avoid generic answers.
+- Reference specific elements from the reading context in your answer.
 - Do NOT make specific medical or financial predictions.
 
 $DISCLAIMER

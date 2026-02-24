@@ -50,6 +50,9 @@
         <activity android:name=".ProfileActivity" android:exported="false" />
         <activity android:name=".EditProfileActivity" android:exported="false" />
 
+        <!-- Persona questionnaire -->
+        <activity android:name=".PersonaActivity" android:exported="false" />
+
         <!-- Settings -->
         <activity android:name=".SettingsActivity" android:exported="false" />
 

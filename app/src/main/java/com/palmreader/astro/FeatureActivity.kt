@@ -1,7 +1,5 @@
 package com.palmreader.astro
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
@@ -28,7 +26,7 @@ class FeatureActivity : BaseFeatureActivity() {
     private var featureType = "TAROT"
 
     // Tarot state
-    private var drawnCards = listOf<TarotCard>()
+    private var drawnCards = listOf<DrawnCard>()
     private var revealedCount = 0
     private var featureLoaderInitialized = false
 
@@ -44,6 +42,9 @@ class FeatureActivity : BaseFeatureActivity() {
     // Gibberish tracker per session
     private val gibberishTracker = GibberishTracker()
 
+    // User persona for personalized readings
+    private var persona: PersonaEntity? = null
+
     private val locale: String
         get() = LanguageManager.getCurrentLocale(this)
 
@@ -58,11 +59,17 @@ class FeatureActivity : BaseFeatureActivity() {
 
         setupHeaderLogo()
         refreshCredits(binding.tvCredits)
+        loadPersona()
         setupFeature()
         setupQA()
         initFeatureLoader()
     }
 
+    private fun loadPersona() {
+        lifecycleScope.launch {
+            persona = db.personaDao().findByUser(session.userId)
+        }
+    }
 
     private fun setupHeaderLogo() {
         val (iconRes, contentDescRes) = when (featureType) {
@@ -111,7 +118,9 @@ class FeatureActivity : BaseFeatureActivity() {
                 name.rotationY = 0f
                 name.alpha = 1f
                 back.visibility = View.VISIBLE
+                back.rotationY = 0f
                 face.visibility = View.GONE
+                face.scaleY = 1f
                 name.visibility = View.GONE
             }
             binding.llCardResults.removeAllViews()
@@ -139,9 +148,9 @@ class FeatureActivity : BaseFeatureActivity() {
                     return@setOnClickListener
                 }
                 if (face.visibility == View.GONE) {
-                    val card = drawnCards[i]
-                    flipCardReveal(slot, back, face, nameLabel, card)
-                    addCardResult(positions[i], card)
+                    val drawn = drawnCards[i]
+                    flipCardReveal(slot, back, face, nameLabel, drawn)
+                    addCardResult(positions[i], drawn)
                     revealedCount++
                     if (revealedCount == 3) {
                         currentResult = TarotEngine.toFeatureResult(drawnCards)
@@ -157,7 +166,7 @@ class FeatureActivity : BaseFeatureActivity() {
         back: ImageView,
         face: ImageView,
         nameLabel: TextView,
-        card: TarotCard
+        drawn: DrawnCard
     ) {
         val duration = 300L
         // First half: rotate back out
@@ -168,14 +177,16 @@ class FeatureActivity : BaseFeatureActivity() {
             .withEndAction {
                 back.visibility = View.GONE
                 // Load card image
-                if (card.imageRes != 0) {
-                    face.setImageResource(card.imageRes)
+                if (drawn.card.imageRes != 0) {
+                    face.setImageResource(drawn.card.imageRes)
                 } else {
                     face.setImageResource(R.drawable.ic_tarot_card_back)
                 }
+                // Reversed cards appear flipped vertically
+                face.scaleY = if (drawn.isReversed) -1f else 1f
                 face.rotationY = -90f
                 face.visibility = View.VISIBLE
-                nameLabel.text = card.name
+                nameLabel.text = drawn.displayName
                 nameLabel.visibility = View.VISIBLE
                 // Second half: rotate face in
                 face.animate()
@@ -342,27 +353,26 @@ class FeatureActivity : BaseFeatureActivity() {
     private fun buildPromptForFeature(): Pair<String, String>? {
         return when (featureType) {
             "TAROT" -> {
-                val cardNames = drawnCards.map { it.name }
-                PromptTemplates.tarot("General reading", cardNames, locale)
+                PromptTemplates.tarot("General reading", drawnCards, locale, persona)
             }
             "NUMEROLOGY" -> {
                 val name = binding.etName.text.toString().trim()
                 val dob = binding.etDob.text.toString().trim()
-                PromptTemplates.numerology(name, dob, locale)
+                PromptTemplates.numerology(name, dob, locale, persona)
             }
             "KUNDLI" -> {
                 val name = binding.etName.text.toString().trim()
                 val dob = binding.etDob.text.toString().trim()
                 val time = binding.etTime.text.toString().trim().ifEmpty { "unknown" }
                 val place = binding.etPlace.text.toString().trim().ifEmpty { "unknown" }
-                PromptTemplates.kundli(name, dob, time, place, locale)
+                PromptTemplates.kundli(name, dob, time, place, locale, persona)
             }
             "SIGN", "SUN_SIGN" -> {
                 val dob = binding.etDob.text.toString().trim()
                 if (featureType == "SIGN" && currentSign != null) {
-                    PromptTemplates.rashifal(currentSign!!.name, "daily", locale)
+                    PromptTemplates.rashifal(currentSign!!.name, "daily", locale, persona)
                 } else {
-                    PromptTemplates.sunSign(dob, locale)
+                    PromptTemplates.sunSign(dob, locale, persona)
                 }
             }
             else -> null
@@ -413,17 +423,17 @@ class FeatureActivity : BaseFeatureActivity() {
         }
     }
 
-    private fun addCardResult(position: String, tarotCard: TarotCard) {
+    private fun addCardResult(position: String, drawn: DrawnCard) {
         binding.llCardResults.visibility = View.VISIBLE
         val card = layoutInflater.inflate(R.layout.item_result_card, binding.llCardResults, false)
-        val header = "$position: ${tarotCard.name}"
+        val header = "$position: ${drawn.displayName}"
         card.findViewById<TextView>(R.id.tvLabel).text = header
-        card.findViewById<TextView>(R.id.tvValue).text = tarotCard.meaning
-        card.findViewById<TextView>(R.id.tvDesc).text = getString(R.string.feature_tip_prefix, tarotCard.advice)
+        card.findViewById<TextView>(R.id.tvValue).text = drawn.card.meaning
+        card.findViewById<TextView>(R.id.tvDesc).text = getString(R.string.feature_tip_prefix, drawn.card.advice)
         val readMore = card.findViewById<TextView>(R.id.tvReadMore)
         readMore.visibility = View.VISIBLE
         val openReadMore = {
-            showTarotInterpretationDialog(position, tarotCard)
+            showTarotInterpretationDialog(position, drawn.card)
         }
         card.setOnClickListener { openReadMore() }
         readMore.setOnClickListener { openReadMore() }
@@ -522,7 +532,7 @@ class FeatureActivity : BaseFeatureActivity() {
 
                     Log.d("AstroAI", "Calling OpenAI for follow-up: $q")
                     val prompts = PromptTemplates.followUpQuestion(
-                        featureType, context, q, locale
+                        featureType, context, q, locale, persona
                     )
 
                     val result = OpenAIService.chatCompletion(

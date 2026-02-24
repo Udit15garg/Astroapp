@@ -8,7 +8,9 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import com.palmreader.astro.databinding.ActivityProfileBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,12 +30,16 @@ class ProfileActivity : BaseFeatureActivity() {
         binding.btnPastReadings.setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
+        binding.btnEditPersona.setOnClickListener {
+            startActivity(Intent(this, PersonaActivity::class.java))
+        }
         loadProfile()
     }
 
     override fun onResume() {
         super.onResume()
         loadProfile()
+        loadPersona()
     }
 
     private fun loadProfile() {
@@ -108,6 +114,39 @@ class ProfileActivity : BaseFeatureActivity() {
                 }
             } catch (e: Exception) {
                 runOnUiThread { showError(getString(R.string.profile_data_error, e.message)) }
+            }
+        }
+        loadPersona()
+    }
+
+    private fun loadPersona() {
+        lifecycleScope.launch {
+            val persona = db.personaDao().findByUser(session.userId)
+            withContext(Dispatchers.Main) {
+                if (persona != null && persona.isComplete()) {
+                    binding.llPersonaDetails.visibility = View.VISIBLE
+                    binding.tvPersonaEmpty.visibility = View.GONE
+                    binding.btnEditPersona.text = getString(R.string.persona_edit)
+
+                    binding.tvPersonaDob.text = getString(R.string.persona_display_dob, persona.dob)
+                    binding.tvPersonaDob.visibility = if (persona.dob.isNotEmpty()) View.VISIBLE else View.GONE
+
+                    binding.tvPersonaRelationship.text = getString(R.string.persona_display_relationship, persona.relationshipStatus)
+                    binding.tvPersonaRelationship.visibility = if (persona.relationshipStatus.isNotEmpty()) View.VISIBLE else View.GONE
+
+                    binding.tvPersonaOccupation.text = getString(R.string.persona_display_occupation, persona.occupation)
+                    binding.tvPersonaOccupation.visibility = if (persona.occupation.isNotEmpty()) View.VISIBLE else View.GONE
+
+                    binding.tvPersonaGoal.text = getString(R.string.persona_display_goal, persona.lifeGoal)
+                    binding.tvPersonaGoal.visibility = if (persona.lifeGoal.isNotEmpty()) View.VISIBLE else View.GONE
+
+                    binding.tvPersonaConcern.text = getString(R.string.persona_display_concern, persona.biggestConcern)
+                    binding.tvPersonaConcern.visibility = if (persona.biggestConcern.isNotEmpty()) View.VISIBLE else View.GONE
+                } else {
+                    binding.llPersonaDetails.visibility = View.GONE
+                    binding.tvPersonaEmpty.visibility = View.VISIBLE
+                    binding.btnEditPersona.text = getString(R.string.persona_setup)
+                }
             }
         }
     }

@@ -8,7 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
-    entities = [UserEntity::class, HistoryEntity::class, CreditTransactionEntity::class],
+    entities = [UserEntity::class, HistoryEntity::class, CreditTransactionEntity::class, PersonaEntity::class],
     version = 3,
     exportSchema = false
 )
@@ -16,6 +16,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun historyDao(): HistoryDao
     abstract fun creditTransactionDao(): CreditTransactionDao
+    abstract fun personaDao(): PersonaDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null

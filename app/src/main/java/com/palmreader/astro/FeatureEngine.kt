@@ -15,6 +15,11 @@ data class TarotInterpretation(
     val carefulSection: List<String>
 )
 
+data class DrawnCard(val card: TarotCard, val isReversed: Boolean) {
+    val displayName: String get() = if (isReversed) "${card.name} (Reversed)" else card.name
+    val orientation: String get() = if (isReversed) "Reversed" else "Upright"
+}
+
 data class ReadingItem(val label: String, val value: String, val description: String)
 
 data class FeatureResult(val title: String, val items: List<ReadingItem>, val summary: String)
@@ -110,27 +115,34 @@ object TarotEngine {
         TarotCard("King of Pentacles",  "🌱",  "Mastery of wealth and material success",              "Lead with generosity and the confidence of earned expertise.",         R.drawable.king_of_pentacles)
     )
 
-    fun draw(count: Int = 3): List<TarotCard> = deck.shuffled().take(count)
+    fun draw(count: Int = 3): List<DrawnCard> =
+        deck.shuffled().take(count).map { DrawnCard(it, kotlin.random.Random.nextBoolean()) }
 
-    fun toFeatureResult(cards: List<TarotCard>): FeatureResult {
+    fun toFeatureResult(cards: List<DrawnCard>): FeatureResult {
         val positions = listOf("Past", "Present", "Future")
-        val items = cards.mapIndexed { i, c ->
-            ReadingItem(positions[i], "${c.emoji} ${c.name}", "${c.meaning}\n${c.advice}")
+        val items = cards.mapIndexed { i, drawn ->
+            val suffix = if (drawn.isReversed) " (Reversed)" else ""
+            ReadingItem(
+                positions[i],
+                "${drawn.card.emoji} ${drawn.card.name}$suffix",
+                "${drawn.card.meaning}\n${drawn.card.advice}"
+            )
         }
         return FeatureResult(
             title = "Tarot Card Reading",
             items = items,
-            summary = "Your future has been revealed through three cards."
+            summary = "The cards have spoken — past, present, and future revealed."
         )
     }
 
-    fun answer(question: String, cards: List<TarotCard>): String {
+    fun answer(question: String, cards: List<DrawnCard>): String {
+        val c = cards.random()
         val pool = listOf(
-            "Your cards say: '${cards.random().advice}'",
-            "${cards.random().name} sends you a message: ${cards.random().meaning}.",
-            "The answer to this question is hidden in ${cards.random().name} — ${cards.random().advice}",
-            "The Tarot says: Be patient. ${cards.random().meaning}.",
-            "Your ${cards.random().name} card answers this question: ${cards.random().advice}"
+            "The ${c.displayName} whispers: '${c.card.advice}'",
+            "${c.card.name} carries a message for you: ${c.card.meaning}.",
+            "Through the veil of ${c.card.name} — ${c.card.advice}",
+            "The cards speak with patience: ${c.card.meaning}.",
+            "Your ${c.displayName} reveals: ${c.card.advice}"
         )
         return pool.random()
     }
@@ -162,13 +174,13 @@ object TarotEngine {
         }.trim()
     }
 
-    fun compactSpreadInterpretation(cards: List<TarotCard>): TarotInterpretation {
-        if (cards.size < 3) {
+    fun compactSpreadInterpretation(drawnCards: List<DrawnCard>): TarotInterpretation {
+        if (drawnCards.size < 3) {
             return TarotInterpretation(emptyList(), emptyList(), emptyList())
         }
-        val past = cards[0]
-        val present = cards[1]
-        val future = cards[2]
+        val past = drawnCards[0].card
+        val present = drawnCards[1].card
+        val future = drawnCards[2].card
         val warning = inferRisk(present)
         return TarotInterpretation(
             meaningSection = listOf(
@@ -193,12 +205,12 @@ object TarotEngine {
     }
 
     fun compactSpreadReading(
-        cards: List<TarotCard>,
+        drawnCards: List<DrawnCard>,
         meaningTitle: String,
         actionTitle: String,
         carefulTitle: String
     ): String {
-        val insight = compactSpreadInterpretation(cards)
+        val insight = compactSpreadInterpretation(drawnCards)
         if (insight.meaningSection.isEmpty()) return ""
         return buildString {
             append("$meaningTitle\n")

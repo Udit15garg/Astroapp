@@ -22,6 +22,7 @@ class ResultActivity : BaseFeatureActivity() {
     private lateinit var binding: ActivityResultBinding
     private lateinit var readings: List<PalmReading>
     private val gibberishTracker = GibberishTracker()
+    private var persona: PersonaEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +34,15 @@ class ResultActivity : BaseFeatureActivity() {
 
         binding.btnBack.setOnClickListener { finish() }
         refreshCredits(binding.tvCredits)
+        loadPersona()
         buildResultCards()
         setupQA()
+    }
+
+    private fun loadPersona() {
+        lifecycleScope.launch {
+            persona = db.personaDao().findByUser(session.userId)
+        }
     }
 
     private fun buildResultCards() {
@@ -109,7 +117,7 @@ class ResultActivity : BaseFeatureActivity() {
 
                 val locale = LanguageManager.getCurrentLocale(this@ResultActivity)
                 val prompts = PromptTemplates.followUpQuestion(
-                    "Palmistry", context, q, locale
+                    "Palmistry", context, q, locale, persona
                 )
 
                 Log.d("AstroAI", "Calling OpenAI for palm Q&A: $q")

@@ -259,6 +259,50 @@
     <string name="settings_delete_confirm">सब कुछ हटाएं</string>
     <string name="settings_version">एस्ट्रोऐप v%s</string>
 
+    <!-- ── व्यक्तित्व / पर्सोना ── -->
+    <string name="persona_title">आपका व्यक्तित्व</string>
+    <string name="persona_subtitle">कुछ सवालों के जवाब दें ताकि हम आपकी रीडिंग को व्यक्तिगत बना सकें। इसमें एक मिनट से भी कम समय लगेगा।</string>
+    <string name="persona_section_title">मेरा व्यक्तित्व</string>
+    <string name="persona_edit">बदलें</string>
+    <string name="persona_setup">सेट अप करें</string>
+    <string name="persona_empty">व्यक्तिगत रीडिंग पाने के लिए अपना व्यक्तित्व सेट करें।</string>
+    <string name="persona_save">व्यक्तित्व सहेजें</string>
+    <string name="persona_saved">व्यक्तित्व सहेजा गया! अब आपकी रीडिंग व्यक्तिगत होंगी।</string>
+    <string name="persona_fill_minimum">कृपया कम से कम जन्मतिथि, वैवाहिक स्थिति या व्यवसाय भरें।</string>
+    <string name="persona_dob_hint">DD/MM/YYYY</string>
+    <string name="persona_q_dob">आपका जन्म कब हुआ?</string>
+    <string name="persona_q_relationship">आपकी वैवाहिक स्थिति क्या है?</string>
+    <string name="persona_q_occupation">आप क्या करते हैं?</string>
+    <string name="persona_q_lifegoal">आपके लिए सबसे महत्वपूर्ण क्या है?</string>
+    <string name="persona_q_concern">आपकी सबसे बड़ी चिंता क्या है?</string>
+    <string name="persona_rel_single">अविवाहित</string>
+    <string name="persona_rel_relationship">रिलेशनशिप में</string>
+    <string name="persona_rel_married">विवाहित</string>
+    <string name="persona_rel_divorced">तलाकशुदा</string>
+    <string name="persona_rel_widowed">विधवा/विधुर</string>
+    <string name="persona_occ_student">छात्र</string>
+    <string name="persona_occ_professional">नौकरीपेशा</string>
+    <string name="persona_occ_business">व्यापारी</string>
+    <string name="persona_occ_homemaker">गृहिणी</string>
+    <string name="persona_occ_retired">सेवानिवृत्त</string>
+    <string name="persona_goal_love">प्रेम</string>
+    <string name="persona_goal_career">करियर</string>
+    <string name="persona_goal_health">स्वास्थ्य</string>
+    <string name="persona_goal_family">परिवार</string>
+    <string name="persona_goal_wealth">धन</string>
+    <string name="persona_goal_spiritual">आध्यात्मिक विकास</string>
+    <string name="persona_concern_career">करियर</string>
+    <string name="persona_concern_relationships">रिश्ते</string>
+    <string name="persona_concern_health">स्वास्थ्य</string>
+    <string name="persona_concern_money">पैसा</string>
+    <string name="persona_concern_family">परिवार</string>
+    <string name="persona_concern_self">आत्म-खोज</string>
+    <string name="persona_display_dob">जन्म: %s</string>
+    <string name="persona_display_relationship">स्थिति: %s</string>
+    <string name="persona_display_occupation">कार्य: %s</string>
+    <string name="persona_display_goal">प्राथमिकता: %s</string>
+    <string name="persona_display_concern">फोकस: %s</string>
+
     <!-- ── सुगम्यता विवरण ── -->
     <string name="cd_app_logo">एस्ट्रोऐप लोगो</string>
     <string name="cd_feature_palmistry">हस्त रेखा फीचर आइकन</string>

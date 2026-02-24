@@ -264,6 +264,50 @@
     <string name="settings_delete_confirm">Delete Everything</string>
     <string name="settings_version">AstroApp v%s</string>
 
+    <!-- ── Persona / Personality ── -->
+    <string name="persona_title">Your Persona</string>
+    <string name="persona_subtitle">Answer a few quick questions so we can personalize your readings. This takes less than a minute.</string>
+    <string name="persona_section_title">My Persona</string>
+    <string name="persona_edit">Edit</string>
+    <string name="persona_setup">Set Up</string>
+    <string name="persona_empty">Set up your persona to get personalized readings.</string>
+    <string name="persona_save">Save Persona</string>
+    <string name="persona_saved">Persona saved! Your readings will now be personalized.</string>
+    <string name="persona_fill_minimum">Please fill at least your DOB, relationship status, or occupation.</string>
+    <string name="persona_dob_hint">DD/MM/YYYY</string>
+    <string name="persona_q_dob">When were you born?</string>
+    <string name="persona_q_relationship">What is your relationship status?</string>
+    <string name="persona_q_occupation">What do you do?</string>
+    <string name="persona_q_lifegoal">What matters most to you right now?</string>
+    <string name="persona_q_concern">What is your biggest concern?</string>
+    <string name="persona_rel_single">Single</string>
+    <string name="persona_rel_relationship">In a Relationship</string>
+    <string name="persona_rel_married">Married</string>
+    <string name="persona_rel_divorced">Divorced</string>
+    <string name="persona_rel_widowed">Widowed</string>
+    <string name="persona_occ_student">Student</string>
+    <string name="persona_occ_professional">Working Professional</string>
+    <string name="persona_occ_business">Business Owner</string>
+    <string name="persona_occ_homemaker">Homemaker</string>
+    <string name="persona_occ_retired">Retired</string>
+    <string name="persona_goal_love">Love</string>
+    <string name="persona_goal_career">Career</string>
+    <string name="persona_goal_health">Health</string>
+    <string name="persona_goal_family">Family</string>
+    <string name="persona_goal_wealth">Wealth</string>
+    <string name="persona_goal_spiritual">Spiritual Growth</string>
+    <string name="persona_concern_career">Career</string>
+    <string name="persona_concern_relationships">Relationships</string>
+    <string name="persona_concern_health">Health</string>
+    <string name="persona_concern_money">Money</string>
+    <string name="persona_concern_family">Family</string>
+    <string name="persona_concern_self">Self-Discovery</string>
+    <string name="persona_display_dob">Born: %s</string>
+    <string name="persona_display_relationship">Status: %s</string>
+    <string name="persona_display_occupation">Work: %s</string>
+    <string name="persona_display_goal">Priority: %s</string>
+    <string name="persona_display_concern">Focus: %s</string>
+
     <!-- ── Accessibility content descriptions ── -->
     <string name="cd_app_logo">AstroApp logo</string>
     <string name="cd_feature_palmistry">Palmistry feature icon</string>
