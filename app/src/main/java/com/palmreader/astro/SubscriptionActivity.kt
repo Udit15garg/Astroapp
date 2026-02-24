@@ -1,5 +1,6 @@
 package com.palmreader.astro
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +22,9 @@ class SubscriptionActivity : BaseFeatureActivity() {
         binding.btnBack.setOnClickListener { finish() }
         refreshCredits(binding.tvCurrentCredits)
         setupPlans()
+        binding.btnCoinHistory.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
     }
 
     override fun onResume() {

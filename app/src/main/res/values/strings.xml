@@ -156,6 +156,7 @@
     <string name="sub_unlimited_title">Unlimited Monthly</string>
     <string name="sub_unlimited_desc">Ask as many questions as you want!</string>
     <string name="sub_unlimited_buy">Unlimited/Month \u2014 \u20B9199</string>
+    <string name="sub_coin_history">View Coin Consumption History</string>
     <string name="sub_free_trial">Not now \u2014 Continue with Free Trial (1 Credit)</string>
     <string name="sub_free_trial_note">You already have 1 free question. Use it!</string>
     <string name="sub_payment_title">Confirm Payment</string>

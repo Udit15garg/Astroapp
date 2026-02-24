@@ -70,7 +70,21 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="10dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCoinHistory"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/sub_coin_history"
+                android:textColor="@color/text_dark"
+                app:icon="@drawable/ic_coin"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconTint="@color/brand_gold"
+                app:strokeColor="@color/glass_card_border" />
 
             <!-- Plan 1: Starter Pack -->
             <com.google.android.material.card.MaterialCardView

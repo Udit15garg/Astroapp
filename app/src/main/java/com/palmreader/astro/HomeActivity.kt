@@ -36,12 +36,7 @@ class HomeActivity : AppCompatActivity() {
             val now = System.currentTimeMillis()
             runOnUiThread {
                 binding.tvGreeting.text = getString(R.string.home_greeting, user.name)
-                binding.tvCredits.text = when {
-                    user.planType == "UNLIMITED" && user.planExpiry > now -> getString(R.string.home_unlimited_plan)
-                    user.planType == "BASIC" && user.planExpiry > now -> getString(R.string.home_basic_plan, user.credits)
-                    user.credits > 0 -> getString(R.string.home_credits_remaining, user.credits, if (user.credits > 1) "s" else "")
-                    else -> getString(R.string.home_no_credits)
-                }
+                binding.tvCredits.text = if (user.planType == "UNLIMITED" && user.planExpiry > now) "∞" else maxOf(0, user.credits).toString()
             }
         }
     }
@@ -67,6 +62,9 @@ class HomeActivity : AppCompatActivity() {
         }
         binding.btnProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
+        }
+        binding.cardCredits.setOnClickListener {
+            startActivity(Intent(this, SubscriptionActivity::class.java))
         }
         binding.btnSubscription.setOnClickListener {
             startActivity(Intent(this, SubscriptionActivity::class.java))

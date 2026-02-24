@@ -151,6 +151,7 @@
     <string name="sub_unlimited_title">अनलिमिटेड मंथली</string>
     <string name="sub_unlimited_desc">जितने चाहो उतने सवाल पूछो!</string>
     <string name="sub_unlimited_buy">अनलिमिटेड/माह \u2014 \u20B9199</string>
+    <string name="sub_coin_history">कॉइन उपयोग इतिहास देखें</string>
     <string name="sub_free_trial">अभी नहीं \u2014 फ्री ट्रायल जारी रखें (1 क्रेडिट)</string>
     <string name="sub_free_trial_note">आपको 1 मुफ्त सवाल पहले से मिला है। इसे उपयोग करें!</string>
     <string name="sub_payment_title">भुगतान पुष्टि करें</string>
