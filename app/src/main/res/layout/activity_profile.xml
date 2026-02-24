@@ -16,17 +16,17 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
-        <com.google.android.material.button.MaterialButton
+        <ImageView
             android:id="@+id/btnBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="@string/back"
-            android:textSize="12sp"
-            app:cornerRadius="20dp"
             android:layout_marginEnd="12dp"
-            style="@style/Widget.Material3.Button.TonalButton" />
+            android:background="@drawable/bg_topbar_icon"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_back_arrow"
+            android:tint="@color/brand_gold"
+            android:contentDescription="@string/cd_back_button" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -50,45 +50,80 @@
 
             <!-- User card -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardProfileInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:cardCornerRadius="20dp"
-                app:cardElevation="4dp">
+                app:cardElevation="0dp"
+                app:strokeColor="@color/glass_card_border"
+                app:strokeWidth="1dp"
+                app:cardBackgroundColor="@color/glass_card">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tvName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="User Name"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary"
-                        android:layout_marginBottom="4dp" />
+                    <ImageView
+                        android:id="@+id/ivProfilePhoto"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_topbar_icon"
+                        android:padding="10dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@android:drawable/ic_menu_myplaces"
+                        android:tint="@color/brand_gold"
+                        android:contentDescription="@string/profile_photo" />
 
-                    <TextView
-                        android:id="@+id/tvEmail"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="email@example.com"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_medium"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvPlan"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/profile_plan_free"
-                        android:textSize="14sp"
-                        android:textColor="@color/primary"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="User Name"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/primary"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="email@example.com"
+                            android:textSize="14sp"
+                            android:textColor="@color/text_medium"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvProfileMeta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_tap_to_edit"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_medium"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvPlan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_plan_free"
+                            android:textSize="14sp"
+                            android:textColor="@color/primary"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

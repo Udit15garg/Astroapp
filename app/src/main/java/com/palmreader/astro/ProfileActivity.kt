@@ -1,6 +1,8 @@
 package com.palmreader.astro
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -20,9 +22,17 @@ class ProfileActivity : BaseFeatureActivity() {
         setContentView(binding.root)
 
         binding.btnBack.setOnClickListener { finish() }
+        binding.cardProfileInfo.setOnClickListener {
+            startActivity(Intent(this, EditProfileActivity::class.java))
+        }
         binding.btnPastReadings.setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
+        loadProfile()
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadProfile()
     }
 
@@ -35,15 +45,30 @@ class ProfileActivity : BaseFeatureActivity() {
                 }
                 val txDao = db.creditTransactionDao()
                 val purchased = txDao.totalPurchased(session.userId)
-                val used      = txDao.totalUsed(session.userId)
+                val usedFromTx = txDao.totalUsed(session.userId)
                 val bonus     = txDao.totalBonus(session.userId)
                 val history   = txDao.getByUser(session.userId)
                 val now       = System.currentTimeMillis()
+                val derivedUsed = (purchased + bonus - user.credits).coerceAtLeast(0)
+                val used = maxOf(usedFromTx, derivedUsed)
 
                 runOnUiThread {
                     // User info
                     binding.tvName.text  = user.name
                     binding.tvEmail.text = user.email
+                    binding.tvProfileMeta.text = buildProfileMeta(user)
+                    if (user.profilePhotoUri.isNotBlank()) {
+                        try {
+                            binding.ivProfilePhoto.setImageURI(Uri.parse(user.profilePhotoUri))
+                            binding.ivProfilePhoto.imageTintList = null
+                        } catch (_: Exception) {
+                            binding.ivProfilePhoto.setImageResource(android.R.drawable.ic_menu_myplaces)
+                            binding.ivProfilePhoto.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.brand_gold, null))
+                        }
+                    } else {
+                        binding.ivProfilePhoto.setImageResource(android.R.drawable.ic_menu_myplaces)
+                        binding.ivProfilePhoto.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.brand_gold, null))
+                    }
 
                     // Plan badge
                     val planText = when {
@@ -93,6 +118,14 @@ class ProfileActivity : BaseFeatureActivity() {
         "USED"           -> getString(R.string.profile_tx_used)
         "PLAN_ACTIVATED" -> getString(R.string.profile_tx_plan)
         else             -> type
+    }
+
+    private fun buildProfileMeta(user: UserEntity): String {
+        val parts = mutableListOf<String>()
+        if (user.dob.isNotBlank()) parts.add("${getString(R.string.profile_dob)}: ${user.dob}")
+        if (user.birthPlace.isNotBlank()) parts.add("${getString(R.string.profile_birth_place)}: ${user.birthPlace}")
+        if (user.mobile.isNotBlank()) parts.add("${getString(R.string.profile_mobile)}: ${user.mobile}")
+        return if (parts.isEmpty()) getString(R.string.profile_tap_to_edit) else parts.joinToString(" | ")
     }
 
     override fun showError(msg: String) {

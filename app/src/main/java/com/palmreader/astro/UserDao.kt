@@ -22,6 +22,29 @@ interface UserDao {
     @Query("UPDATE users SET credits = :credits, planType = :planType, planExpiry = :expiry WHERE id = :userId")
     suspend fun updatePlan(userId: Long, credits: Int, planType: String, expiry: Long)
 
+    @Query("""
+        UPDATE users
+        SET name = :name,
+            email = :email,
+            dob = :dob,
+            birthPlace = :birthPlace,
+            mobile = :mobile,
+            profilePhotoUri = :profilePhotoUri
+        WHERE id = :userId
+    """)
+    suspend fun updateProfile(
+        userId: Long,
+        name: String,
+        email: String,
+        dob: String,
+        birthPlace: String,
+        mobile: String,
+        profilePhotoUri: String
+    )
+
+    @Query("UPDATE users SET passwordHash = :passwordHash WHERE id = :userId")
+    suspend fun updatePassword(userId: Long, passwordHash: String)
+
     @Query("DELETE FROM users WHERE id = :userId")
     suspend fun deleteById(userId: Long)
 }

@@ -111,18 +111,31 @@ Cards drawn:
 - Present: ${cardNames.getOrElse(1) { "The Magician" }}
 - Future: ${cardNames.getOrElse(2) { "The Star" }}
 
-Provide your reading with:
-1. **Card Interpretations** - For each card:
-   - Card name and position
-   - Its interpretation in this context
-   - Key keywords
-2. **Overall Reading** - How the three cards connect into a narrative
-3. **Guidance** - Actionable advice based on the spread
-4. **Warning** - Any cautions or things to be mindful of
+STRICT OUTPUT FORMAT (no extra sections):
+What it means
+- bullet
+- bullet
+- bullet
+- bullet
+
+What to do next
+- bullet
+- bullet
+- bullet
+- bullet
+
+Be careful of
+- bullet
+- bullet
+- bullet
+- bullet
 
 Guidelines:
-- Connect the three cards into a cohesive narrative.
-- Be mystical yet grounded in your interpretation.
+- Keep it concise and practical.
+- Use short bullet points only. Maximum 12 words per bullet.
+- In EACH section maintain approximately 80% good and 20% caution:
+  3 positive bullets + 1 caution bullet.
+- Mention the spread context (Past/Present/Future) naturally in bullets.
 - Do NOT make specific medical or financial predictions.
 
 $DISCLAIMER

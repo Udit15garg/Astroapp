@@ -142,6 +142,11 @@
     <string name="feature_analyze">Analyze</string>
     <string name="feature_tip_prefix">Tip: %s</string>
     <string name="feature_summary_prefix">Note: %s</string>
+    <string name="feature_read_more">Read More</string>
+    <string name="tarot_insight_title">Card Insight</string>
+    <string name="tarot_ai_section_meaning">What it means</string>
+    <string name="tarot_ai_section_action">What to do next</string>
+    <string name="tarot_ai_section_careful">Be careful of</string>
 
     <!-- ── Subscription ── -->
     <string name="sub_title">Plans &amp; Credits</string>
@@ -194,6 +199,16 @@
     <string name="profile_privacy_policy">Privacy Policy</string>
     <string name="profile_terms">Terms of Service</string>
     <string name="profile_delete_data">Delete My Data</string>
+    <string name="profile_tap_to_edit">Tap to edit profile details</string>
+    <string name="profile_dob">Date of Birth</string>
+    <string name="profile_birth_place">Place of Birth</string>
+    <string name="profile_mobile">Mobile Number</string>
+    <string name="profile_new_password">New Password (optional)</string>
+    <string name="profile_edit_title">Edit Profile</string>
+    <string name="profile_pick_photo">Add/Change Profile Photo</string>
+    <string name="profile_save_changes">Save Changes</string>
+    <string name="profile_saved">Profile updated successfully</string>
+    <string name="profile_photo">Profile photo</string>
 
     <!-- ── Credits ── -->
     <string name="credits_format">%d Credits</string>

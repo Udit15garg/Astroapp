@@ -42,6 +42,9 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupButtons() {
+        binding.btnBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         binding.cardPalmReading.setOnClickListener {
             startActivity(Intent(this, ScanActivity::class.java))
         }

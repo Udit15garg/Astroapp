@@ -9,6 +9,10 @@ data class UserEntity(
     val name: String,
     val email: String,
     val passwordHash: String,
+    val dob: String = "",
+    val birthPlace: String = "",
+    val mobile: String = "",
+    val profilePhotoUri: String = "",
     val credits: Int = 10,         // 10 free questions on signup
     val planType: String = "FREE", // FREE | BASIC | UNLIMITED
     val planExpiry: Long = 0L

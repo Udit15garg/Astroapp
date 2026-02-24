@@ -16,17 +16,17 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
-        <com.google.android.material.button.MaterialButton
+        <ImageView
             android:id="@+id/btnBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="@string/back"
-            android:textSize="12sp"
-            app:cornerRadius="20dp"
             android:layout_marginEnd="12dp"
-            style="@style/Widget.Material3.Button.TonalButton" />
+            android:background="@drawable/bg_topbar_icon"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_back_arrow"
+            android:tint="@color/brand_gold"
+            android:contentDescription="@string/cd_back_button" />
 
         <TextView
             android:layout_width="wrap_content"

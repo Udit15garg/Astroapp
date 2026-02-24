@@ -21,11 +21,12 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="12dp"
-            android:background="@color/surface_container_low"
-            android:padding="6dp"
+            android:background="@drawable/bg_topbar_icon"
+            android:padding="10dp"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_app_logo"
-            android:contentDescription="@string/cd_app_logo" />
+            app:srcCompat="@drawable/ic_back_arrow"
+            android:tint="@color/brand_gold"
+            android:contentDescription="@string/cd_back_button" />
 
         <TextView
             android:layout_width="wrap_content"

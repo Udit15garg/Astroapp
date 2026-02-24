@@ -53,6 +53,7 @@ class FeatureActivity : BaseFeatureActivity() {
 
         featureType = intent.getStringExtra("type") ?: "TAROT"
         binding.tvTitle.text = intent.getStringExtra("title") ?: "Reading"
+        binding.btnBack.setOnClickListener { finish() }
 
         setupHeaderLogo()
         refreshCredits(binding.tvCredits)
@@ -129,7 +130,7 @@ class FeatureActivity : BaseFeatureActivity() {
                 if (face.visibility == View.GONE) {
                     val card = drawnCards[i]
                     flipCardReveal(slot, back, face, nameLabel, card)
-                    addCardResult("${positions[i]}: ${card.name}", card.meaning, card.advice)
+                    addCardResult(positions[i], card)
                     revealedCount++
                     if (revealedCount == 3) {
                         currentResult = TarotEngine.toFeatureResult(drawnCards)
@@ -271,23 +272,52 @@ class FeatureActivity : BaseFeatureActivity() {
                     showLoading(false)
                     when (result) {
                         is OpenAIService.ApiResult.Success -> {
-                            Log.d("AstroAI", "AI reading received: ${result.data.take(100)}...")
-                            aiReadingContext = result.data
-                            addAIReadingBubble(result.data)
-                            saveToHistory(featureType, "AI Reading", result.data)
+                            val finalReading = if (featureType == "TAROT") {
+                                normalizeTarotReading(result.data)
+                            } else {
+                                result.data
+                            }
+                            Log.d("AstroAI", "AI reading received: ${finalReading.take(100)}...")
+                            aiReadingContext = finalReading
+                            addAIReadingBubble(finalReading)
+                            saveToHistory(featureType, "AI Reading", finalReading)
                         }
                         is OpenAIService.ApiResult.Error -> {
                             Log.e("AstroAI", "AI error: ${result.message}")
-                            showError(getString(R.string.ai_reading_error))
-                            aiReadingContext = currentResult?.items?.joinToString("\n") {
-                                "${it.label}: ${it.value} - ${it.description}"
-                            } ?: ""
+                            if (featureType == "TAROT" && drawnCards.size == 3) {
+                                val fallback = TarotEngine.compactSpreadReading(
+                                    drawnCards,
+                                    getString(R.string.tarot_ai_section_meaning),
+                                    getString(R.string.tarot_ai_section_action),
+                                    getString(R.string.tarot_ai_section_careful)
+                                )
+                                aiReadingContext = fallback
+                                addAIReadingBubble(fallback)
+                                saveToHistory(featureType, "AI Reading", fallback)
+                            } else {
+                                showError(getString(R.string.ai_reading_error))
+                                aiReadingContext = currentResult?.items?.joinToString("\n") {
+                                    "${it.label}: ${it.value} - ${it.description}"
+                                } ?: ""
+                            }
                         }
                         is OpenAIService.ApiResult.RateLimited -> {
-                            showError(getString(R.string.ai_rate_limited))
-                            aiReadingContext = currentResult?.items?.joinToString("\n") {
-                                "${it.label}: ${it.value} - ${it.description}"
-                            } ?: ""
+                            if (featureType == "TAROT" && drawnCards.size == 3) {
+                                val fallback = TarotEngine.compactSpreadReading(
+                                    drawnCards,
+                                    getString(R.string.tarot_ai_section_meaning),
+                                    getString(R.string.tarot_ai_section_action),
+                                    getString(R.string.tarot_ai_section_careful)
+                                )
+                                aiReadingContext = fallback
+                                addAIReadingBubble(fallback)
+                                saveToHistory(featureType, "AI Reading", fallback)
+                            } else {
+                                showError(getString(R.string.ai_rate_limited))
+                                aiReadingContext = currentResult?.items?.joinToString("\n") {
+                                    "${it.label}: ${it.value} - ${it.description}"
+                                } ?: ""
+                            }
                         }
                         else -> {}
                     }
@@ -329,7 +359,19 @@ class FeatureActivity : BaseFeatureActivity() {
     }
 
     private fun addAIReadingBubble(text: String) {
-        addBotBubble(binding.llChat, text)
+        val tv = TextView(this).apply {
+            this.text = text
+            setTextColor(resources.getColor(R.color.text_dark, null))
+            setBackgroundResource(R.drawable.bg_chat_bot)
+            setPadding(24, 16, 24, 16)
+            textSize = 13f
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(8, 8, 80, 8) }
+            layoutParams = lp
+        }
+        binding.llChat.addView(tv)
         binding.llChat.visibility = View.VISIBLE
         scrollToBottom()
     }
@@ -344,12 +386,21 @@ class FeatureActivity : BaseFeatureActivity() {
         }
     }
 
-    private fun addCardResult(header: String, meaning: String, advice: String) {
+    private fun addCardResult(position: String, tarotCard: TarotCard) {
         binding.llCardResults.visibility = View.VISIBLE
         val card = layoutInflater.inflate(R.layout.item_result_card, binding.llCardResults, false)
+        val header = "$position: ${tarotCard.name}"
         card.findViewById<TextView>(R.id.tvLabel).text = header
-        card.findViewById<TextView>(R.id.tvValue).text = meaning
-        card.findViewById<TextView>(R.id.tvDesc).text = getString(R.string.feature_tip_prefix, advice)
+        card.findViewById<TextView>(R.id.tvValue).text = tarotCard.meaning
+        card.findViewById<TextView>(R.id.tvDesc).text = getString(R.string.feature_tip_prefix, tarotCard.advice)
+        val readMore = card.findViewById<TextView>(R.id.tvReadMore)
+        readMore.visibility = View.VISIBLE
+        val openReadMore = {
+            showTarotInterpretationDialog(position, tarotCard)
+        }
+        card.setOnClickListener { openReadMore() }
+        readMore.setOnClickListener { openReadMore() }
+        card.findViewById<TextView>(R.id.tvValue).setOnClickListener { openReadMore() }
         binding.llCardResults.addView(card)
     }
 
@@ -377,6 +428,7 @@ class FeatureActivity : BaseFeatureActivity() {
             card.findViewById<TextView>(R.id.tvLabel).text = item.label
             card.findViewById<TextView>(R.id.tvValue).text = item.value
             card.findViewById<TextView>(R.id.tvDesc).text = item.description
+            card.findViewById<TextView>(R.id.tvReadMore).visibility = View.GONE
             binding.llResults.addView(card)
         }
 
@@ -505,5 +557,98 @@ class FeatureActivity : BaseFeatureActivity() {
 
     private fun scrollToBottom() {
         binding.svMain.post { binding.svMain.fullScroll(NestedScrollView.FOCUS_DOWN) }
+    }
+
+    private fun showTarotInterpretationDialog(position: String, card: TarotCard) {
+        val message = TarotEngine.detailedInterpretationText(
+            card = card,
+            position = position,
+            meaningTitle = getString(R.string.tarot_ai_section_meaning),
+            actionTitle = getString(R.string.tarot_ai_section_action),
+            carefulTitle = getString(R.string.tarot_ai_section_careful)
+        )
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(getString(R.string.tarot_insight_title))
+            .setMessage(message)
+            .setPositiveButton(getString(R.string.ok), null)
+            .show()
+    }
+
+    private fun normalizeTarotReading(raw: String): String {
+        val meaningTitle = getString(R.string.tarot_ai_section_meaning)
+        val actionTitle = getString(R.string.tarot_ai_section_action)
+        val carefulTitle = getString(R.string.tarot_ai_section_careful)
+        val fallback = TarotEngine.compactSpreadInterpretation(drawnCards)
+
+        val sections = linkedMapOf(
+            meaningTitle to mutableListOf<String>(),
+            actionTitle to mutableListOf<String>(),
+            carefulTitle to mutableListOf<String>()
+        )
+        var current = meaningTitle
+
+        raw.lines().forEach { line ->
+            val cleaned = line.trim()
+            if (cleaned.isBlank()) return@forEach
+            val headingProbe = cleaned
+                .replace("*", "")
+                .replace("#", "")
+                .replace(":", "")
+                .trim()
+                .lowercase()
+            val nextSection = when {
+                headingProbe.contains("what it means") || headingProbe == "meaning" || headingProbe == "overall" -> meaningTitle
+                headingProbe.contains("what to do") || headingProbe == "action" || headingProbe == "guidance" -> actionTitle
+                headingProbe.contains("be careful") || headingProbe == "warning" || headingProbe == "caution" -> carefulTitle
+                else -> current
+            }
+            val sectionChanged = nextSection != current
+            current = nextSection
+            if (sectionChanged || headingProbe == current.lowercase()) return@forEach
+
+            val bullet = cleaned
+                .replace(Regex("^[-•*]\\s*"), "")
+                .replace(Regex("^\\d+[.)]\\s*"), "")
+                .trim()
+            if (bullet.isBlank()) return@forEach
+            if (sections[current]!!.size < 4) {
+                sections[current]!!.add(shrinkBullet(bullet))
+            }
+        }
+
+        ensureTarotSectionSize(sections[meaningTitle]!!, fallback.meaningSection)
+        ensureTarotSectionSize(sections[actionTitle]!!, fallback.actionSection)
+        ensureTarotSectionSize(sections[carefulTitle]!!, fallback.carefulSection)
+
+        return buildString {
+            append("$meaningTitle\n")
+            sections[meaningTitle]!!.forEach { append("• $it\n") }
+            append("\n$actionTitle\n")
+            sections[actionTitle]!!.forEach { append("• $it\n") }
+            append("\n$carefulTitle\n")
+            sections[carefulTitle]!!.forEach { append("• $it\n") }
+        }.trim()
+    }
+
+    private fun ensureTarotSectionSize(target: MutableList<String>, fallback: List<String>) {
+        fallback.forEach { candidate ->
+            if (target.size >= 4) return
+            val compact = shrinkBullet(candidate)
+            if (target.none { it.equals(compact, ignoreCase = true) }) {
+                target.add(compact)
+            }
+        }
+        while (target.size < 4) {
+            target.add("Stay calm and make practical choices.")
+        }
+    }
+
+    private fun shrinkBullet(text: String): String {
+        val words = text.split(Regex("\\s+")).filter { it.isNotBlank() }
+        return if (words.size <= 12) {
+            text.trimEnd('.')
+        } else {
+            words.take(12).joinToString(" ").trimEnd('.') + "..."
+        }
     }
 }

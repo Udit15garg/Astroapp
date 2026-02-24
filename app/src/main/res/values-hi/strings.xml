@@ -137,6 +137,11 @@
     <string name="feature_analyze">विश्लेषण करें</string>
     <string name="feature_tip_prefix">सुझाव: %s</string>
     <string name="feature_summary_prefix">नोट: %s</string>
+    <string name="feature_read_more">और पढ़ें</string>
+    <string name="tarot_insight_title">कार्ड विवरण</string>
+    <string name="tarot_ai_section_meaning">What it means</string>
+    <string name="tarot_ai_section_action">What to do next</string>
+    <string name="tarot_ai_section_careful">Be careful of</string>
 
     <!-- ── सदस्यता ── -->
     <string name="sub_title">प्लान और क्रेडिट</string>
@@ -189,6 +194,16 @@
     <string name="profile_privacy_policy">गोपनीयता नीति</string>
     <string name="profile_terms">सेवा की शर्तें</string>
     <string name="profile_delete_data">मेरा डेटा हटाएं</string>
+    <string name="profile_tap_to_edit">प्रोफ़ाइल विवरण संपादित करने के लिए टैप करें</string>
+    <string name="profile_dob">जन्म तिथि</string>
+    <string name="profile_birth_place">जन्म स्थान</string>
+    <string name="profile_mobile">मोबाइल नंबर</string>
+    <string name="profile_new_password">नया पासवर्ड (वैकल्पिक)</string>
+    <string name="profile_edit_title">प्रोफ़ाइल संपादित करें</string>
+    <string name="profile_pick_photo">प्रोफ़ाइल फोटो जोड़ें/बदलें</string>
+    <string name="profile_save_changes">बदलाव सहेजें</string>
+    <string name="profile_saved">प्रोफ़ाइल सफलतापूर्वक अपडेट हुई</string>
+    <string name="profile_photo">प्रोफ़ाइल फोटो</string>
 
     <!-- ── क्रेडिट ── -->
     <string name="credits_format">%d क्रेडिट</string>

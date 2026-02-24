@@ -48,7 +48,17 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
                 val now = System.currentTimeMillis()
                 val isUnlimited = user.planType == "UNLIMITED" && user.planExpiry > now
                 when {
-                    isUnlimited -> withContext(Dispatchers.Main) { onAllowed() }
+                    isUnlimited -> {
+                        db.creditTransactionDao().insert(
+                            CreditTransactionEntity(
+                                userId = session.userId,
+                                type = "USED",
+                                amount = 0,
+                                description = "$featureLabel — unlimited usage"
+                            )
+                        )
+                        withContext(Dispatchers.Main) { onAllowed() }
+                    }
                     user.credits > 0 -> {
                         db.userDao().deductCredit(session.userId)
                         db.creditTransactionDao().insert(

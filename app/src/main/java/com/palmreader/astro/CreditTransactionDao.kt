@@ -14,7 +14,16 @@ interface CreditTransactionDao {
     @Query("SELECT COALESCE(SUM(amount), 0) FROM credit_transactions WHERE userId = :userId AND type IN ('PURCHASED','PLAN_ACTIVATED')")
     suspend fun totalPurchased(userId: Long): Int
 
-    @Query("SELECT COALESCE(ABS(SUM(amount)), 0) FROM credit_transactions WHERE userId = :userId AND type = 'USED'")
+    @Query("""
+        SELECT COALESCE(SUM(
+            CASE
+                WHEN amount < 0 THEN ABS(amount)
+                ELSE 1
+            END
+        ), 0)
+        FROM credit_transactions
+        WHERE userId = :userId AND type = 'USED'
+    """)
     suspend fun totalUsed(userId: Long): Int
 
     @Query("SELECT COALESCE(SUM(amount), 0) FROM credit_transactions WHERE userId = :userId AND type = 'BONUS'")

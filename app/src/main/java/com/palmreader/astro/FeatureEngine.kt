@@ -9,6 +9,12 @@ import kotlin.math.abs
 
 data class TarotCard(val name: String, val emoji: String, val meaning: String, val advice: String, val imageRes: Int = 0)
 
+data class TarotInterpretation(
+    val meaningSection: List<String>,
+    val actionSection: List<String>,
+    val carefulSection: List<String>
+)
+
 data class ReadingItem(val label: String, val value: String, val description: String)
 
 data class FeatureResult(val title: String, val items: List<ReadingItem>, val summary: String)
@@ -127,6 +133,129 @@ object TarotEngine {
             "Your ${cards.random().name} card answers this question: ${cards.random().advice}"
         )
         return pool.random()
+    }
+
+    private val detailedInterpretationStore: Map<String, TarotInterpretation> by lazy {
+        deck.associate { it.name to buildInterpretation(it) }
+    }
+
+    fun detailedInterpretation(card: TarotCard): TarotInterpretation {
+        return detailedInterpretationStore[card.name] ?: buildInterpretation(card)
+    }
+
+    fun detailedInterpretationText(
+        card: TarotCard,
+        position: String,
+        meaningTitle: String,
+        actionTitle: String,
+        carefulTitle: String
+    ): String {
+        val insight = detailedInterpretation(card)
+        return buildString {
+            append("$position: ${card.name}\n\n")
+            append("$meaningTitle\n")
+            insight.meaningSection.forEach { append("• $it\n") }
+            append("\n$actionTitle\n")
+            insight.actionSection.forEach { append("• $it\n") }
+            append("\n$carefulTitle\n")
+            insight.carefulSection.forEach { append("• $it\n") }
+        }.trim()
+    }
+
+    fun compactSpreadInterpretation(cards: List<TarotCard>): TarotInterpretation {
+        if (cards.size < 3) {
+            return TarotInterpretation(emptyList(), emptyList(), emptyList())
+        }
+        val past = cards[0]
+        val present = cards[1]
+        val future = cards[2]
+        val warning = inferRisk(present)
+        return TarotInterpretation(
+            meaningSection = listOf(
+                "Past supports growth: ${past.meaning.lowercase()}.",
+                "Present shows momentum: ${present.meaning.lowercase()}.",
+                "Future points to progress: ${future.meaning.lowercase()}.",
+                "Watch: $warning"
+            ),
+            actionSection = listOf(
+                "Build on past lessons: ${past.advice.lowercase()}",
+                "Focus on today: ${present.advice.lowercase()}",
+                "Prepare next phase: ${future.advice.lowercase()}",
+                "Watch: avoid rushed choices and emotional overreaction."
+            ),
+            carefulSection = listOf(
+                "Keep communication clear and expectations realistic.",
+                "Protect energy with boundaries and healthy routines.",
+                "Check facts before trusting assumptions.",
+                "Watch: $warning"
+            )
+        )
+    }
+
+    fun compactSpreadReading(
+        cards: List<TarotCard>,
+        meaningTitle: String,
+        actionTitle: String,
+        carefulTitle: String
+    ): String {
+        val insight = compactSpreadInterpretation(cards)
+        if (insight.meaningSection.isEmpty()) return ""
+        return buildString {
+            append("$meaningTitle\n")
+            insight.meaningSection.forEach { append("• $it\n") }
+            append("\n$actionTitle\n")
+            insight.actionSection.forEach { append("• $it\n") }
+            append("\n$carefulTitle\n")
+            insight.carefulSection.forEach { append("• $it\n") }
+        }.trim()
+    }
+
+    private fun buildInterpretation(card: TarotCard): TarotInterpretation {
+        val theme = inferTheme(card)
+        val risk = inferRisk(card)
+        val actionCore = card.advice.trim().trimEnd('.')
+
+        return TarotInterpretation(
+            meaningSection = listOf(
+                "${card.meaning} brings a useful opening in this cycle.",
+                "This card favors ${theme.lowercase()} when handled calmly.",
+                "Your strengths can turn this into steady progress.",
+                "Watch: $risk"
+            ),
+            actionSection = listOf(
+                "$actionCore.",
+                "Take one practical step and complete it fully today.",
+                "Stay consistent; small wins compound quickly now.",
+                "Watch: avoid overthinking or impulsive reactions."
+            ),
+            carefulSection = listOf(
+                "Use structure and timing to reduce avoidable stress.",
+                "Keep plans flexible so changes do not derail momentum.",
+                "Seek grounded advice before major commitments.",
+                "Watch: $risk"
+            )
+        )
+    }
+
+    private fun inferTheme(card: TarotCard): String {
+        return when {
+            card.name.contains("Wands") -> "courage, initiative and momentum"
+            card.name.contains("Cups") -> "emotional clarity and relationships"
+            card.name.contains("Swords") -> "truth, decisions and mental focus"
+            card.name.contains("Pentacles") -> "stability, money and practical growth"
+            else -> "self-awareness and meaningful transition"
+        }
+    }
+
+    private fun inferRisk(card: TarotCard): String {
+        val text = "${card.meaning} ${card.advice}".lowercase()
+        return when {
+            listOf("illusion", "uncertain", "conflict", "loss", "anxiety", "deception", "burden").any { text.contains(it) } ->
+                "do not assume the first impression is final."
+            listOf("change", "transformation", "upheaval", "tower", "death").any { text.contains(it) } ->
+                "resistance to change can create extra stress."
+            else -> "overconfidence can hide small but important details."
+        }
     }
 }
 
