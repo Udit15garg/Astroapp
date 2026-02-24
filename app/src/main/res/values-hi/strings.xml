@@ -58,6 +58,10 @@
     <string name="home_btn_profile">प्रोफ़ाइल</string>
     <string name="home_btn_history">इतिहास</string>
     <string name="home_btn_logout">लॉग आउट</string>
+    <string name="profile_setup_title">अपनी प्रोफ़ाइल पूरी करें</string>
+    <string name="profile_setup_message">कृपया एक बार प्रोफ़ाइल और पर्सोना पूरा करें। इसके बाद DOB जैसी जानकारी सभी रीडिंग में अपने-आप भर जाएगी।</string>
+    <string name="profile_setup_cta">प्रोफ़ाइल भरें</string>
+    <string name="profile_setup_later">बाद में</string>
 
     <!-- ── फ़ीचर्स ── -->
     <string name="feature_palmistry">हस्त रेखा</string>
@@ -305,6 +309,12 @@
     <string name="persona_display_occupation">कार्य: %s</string>
     <string name="persona_display_goal">प्राथमिकता: %s</string>
     <string name="persona_display_concern">फोकस: %s</string>
+    <string name="persona_summary_snapshot">प्रोफ़ाइल सार: %s</string>
+    <string name="persona_summary_priorities">प्राथमिकताएँ: %s</string>
+    <string name="persona_summary_concerns">चिंताएँ: %s</string>
+    <string name="persona_summary_style">मार्गदर्शन शैली: सरल, व्यावहारिक और उत्साहवर्धक।</string>
+    <string name="persona_summary_default_priority">सामान्य जीवन प्रगति</string>
+    <string name="persona_summary_default_concern">सामान्य अनिश्चितता</string>
 
     <!-- ── सुगम्यता विवरण ── -->
     <string name="cd_app_logo">एस्ट्रोऐप लोगो</string>

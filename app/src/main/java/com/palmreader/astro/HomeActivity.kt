@@ -2,8 +2,11 @@ package com.palmreader.astro
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.palmreader.astro.databinding.ActivityHomeBinding
 import kotlinx.coroutines.launch
 
@@ -12,6 +15,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var db: AppDatabase
     private lateinit var session: SessionManager
+    private var profilePromptVisible = false
+    private var profileDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,13 +37,48 @@ class HomeActivity : AppCompatActivity() {
 
     private fun loadUser() {
         lifecycleScope.launch {
-            val user = db.userDao().findById(session.userId) ?: return@launch
-            val now = System.currentTimeMillis()
-            runOnUiThread {
+            try {
+                val user = db.userDao().findById(session.userId) ?: return@launch
+                val persona = db.personaDao().findByUser(session.userId)
+                val now = System.currentTimeMillis()
                 binding.tvGreeting.text = getString(R.string.home_greeting, user.name)
                 binding.tvCredits.text = if (user.planType == "UNLIMITED" && user.planExpiry > now) "∞" else maxOf(0, user.credits).toString()
+                promptProfileSetupIfNeeded(user, persona)
+            } catch (e: Exception) {
+                Log.e("HomeActivity", "Failed to load home data", e)
             }
         }
+    }
+
+    private fun isProfileSetup(user: UserEntity, persona: PersonaEntity?): Boolean {
+        val basicsReady = user.dob.isNotBlank() && user.birthPlace.isNotBlank()
+        val personaReady = persona != null &&
+            persona.relationshipStatus.isNotBlank() &&
+            persona.occupation.isNotBlank()
+        return basicsReady && personaReady
+    }
+
+    private fun promptProfileSetupIfNeeded(user: UserEntity, persona: PersonaEntity?) {
+        if (isProfileSetup(user, persona) || profilePromptVisible || isFinishing || isDestroyed) return
+        if (profileDialog?.isShowing == true) return
+
+        profilePromptVisible = true
+        profileDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.profile_setup_title))
+            .setMessage(getString(R.string.profile_setup_message))
+            .setPositiveButton(getString(R.string.profile_setup_cta)) { _, _ ->
+                profilePromptVisible = false
+                startActivity(Intent(this, ProfileActivity::class.java))
+            }
+            .setNegativeButton(getString(R.string.profile_setup_later)) { _, _ ->
+                profilePromptVisible = false
+            }
+            .setOnDismissListener {
+                profilePromptVisible = false
+                profileDialog = null
+            }
+            .create()
+        profileDialog?.show()
     }
 
     private fun setupButtons() {
@@ -82,5 +122,11 @@ class HomeActivity : AppCompatActivity() {
             putExtra("type", type)
             putExtra("title", title)
         })
+    }
+
+    override fun onPause() {
+        profileDialog?.dismiss()
+        profileDialog = null
+        super.onPause()
     }
 }

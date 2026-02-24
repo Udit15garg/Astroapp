@@ -58,6 +58,10 @@
     <string name="home_btn_profile">Profile</string>
     <string name="home_btn_history">History</string>
     <string name="home_btn_logout">Logout</string>
+    <string name="profile_setup_title">Complete Your Profile</string>
+    <string name="profile_setup_message">Please complete your profile and persona once. We will auto-fill details like DOB in all readings.</string>
+    <string name="profile_setup_cta">Fill Profile</string>
+    <string name="profile_setup_later">Later</string>
 
     <!-- ── Features ── -->
     <string name="feature_palmistry">Palmistry</string>
@@ -310,6 +314,12 @@
     <string name="persona_display_occupation">Work: %s</string>
     <string name="persona_display_goal">Priority: %s</string>
     <string name="persona_display_concern">Focus: %s</string>
+    <string name="persona_summary_snapshot">Profile Snapshot: %s</string>
+    <string name="persona_summary_priorities">Priorities: %s</string>
+    <string name="persona_summary_concerns">Concerns: %s</string>
+    <string name="persona_summary_style">Guidance Style: Practical, simple, and encouraging.</string>
+    <string name="persona_summary_default_priority">General life growth</string>
+    <string name="persona_summary_default_concern">General uncertainty</string>
 
     <!-- ── Accessibility content descriptions ── -->
     <string name="cd_app_logo">AstroApp logo</string>

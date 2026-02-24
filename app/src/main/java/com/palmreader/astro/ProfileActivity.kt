@@ -56,8 +56,7 @@ class ProfileActivity : BaseFeatureActivity() {
                 val history   = txDao.getByUser(session.userId)
                 val now       = System.currentTimeMillis()
                 val derivedUsed = (purchased + bonus - user.credits).coerceAtLeast(0)
-                val hasTrackedUsage = history.any { it.type == "USED" }
-                val used = if (hasTrackedUsage) usedFromTx else derivedUsed
+                val used = maxOf(usedFromTx, derivedUsed)
 
                 runOnUiThread {
                     // User info
@@ -143,6 +142,9 @@ class ProfileActivity : BaseFeatureActivity() {
 
                     binding.tvPersonaConcern.text = getString(R.string.persona_display_concern, persona.biggestConcern)
                     binding.tvPersonaConcern.visibility = if (persona.biggestConcern.isNotEmpty()) View.VISIBLE else View.GONE
+
+                    binding.tvPersonaSummary.text = persona.aiSummary
+                    binding.tvPersonaSummary.visibility = if (persona.aiSummary.isNotBlank()) View.VISIBLE else View.GONE
                 } else {
                     binding.llPersonaDetails.visibility = View.GONE
                     binding.tvPersonaEmpty.visibility = View.VISIBLE

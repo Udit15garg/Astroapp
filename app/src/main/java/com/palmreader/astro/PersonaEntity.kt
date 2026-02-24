@@ -11,6 +11,7 @@ data class PersonaEntity(
     val occupation: String = "",
     val lifeGoal: String = "",
     val biggestConcern: String = "",
+    val aiSummary: String = "",
     val updatedAt: Long = System.currentTimeMillis()
 ) {
     fun toPromptContext(): String {
@@ -20,6 +21,7 @@ data class PersonaEntity(
         if (occupation.isNotEmpty()) parts.add("Occupation: $occupation")
         if (lifeGoal.isNotEmpty()) parts.add("Life Priority: $lifeGoal")
         if (biggestConcern.isNotEmpty()) parts.add("Current Concern: $biggestConcern")
+        if (aiSummary.isNotEmpty()) parts.add("AI Summary: $aiSummary")
         if (parts.isEmpty()) return ""
         return "About the querent (use this to deeply personalize the reading):\n${parts.joinToString("\n")}"
     }

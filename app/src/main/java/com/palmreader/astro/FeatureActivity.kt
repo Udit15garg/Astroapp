@@ -2,12 +2,16 @@ package com.palmreader.astro
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.graphics.Typeface
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.StyleSpan
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.card.MaterialCardView
@@ -36,6 +40,7 @@ class FeatureActivity : BaseFeatureActivity() {
     private var lifePathNum = 1
     private var currentSign: SignEngine.ZodiacSign? = null
     private var kundliRashi = ""
+    private var currentUser: UserEntity? = null
 
     // AI reading context for follow-up questions
     private var aiReadingContext = ""
@@ -61,6 +66,7 @@ class FeatureActivity : BaseFeatureActivity() {
         setupHeaderLogo()
         refreshCredits(binding.tvCredits)
         loadPersona()
+        loadUserProfile()
         setupFeature()
         setupQA()
         initFeatureLoader()
@@ -68,7 +74,12 @@ class FeatureActivity : BaseFeatureActivity() {
 
     private fun loadPersona() {
         lifecycleScope.launch {
-            persona = db.personaDao().findByUser(session.userId)
+            try {
+                persona = db.personaDao().findByUser(session.userId)
+                withContext(Dispatchers.Main) { prefillFeatureInputs() }
+            } catch (e: Exception) {
+                Log.e("FeatureActivity", "Failed to load persona", e)
+            }
         }
     }
 
@@ -76,6 +87,45 @@ class FeatureActivity : BaseFeatureActivity() {
         if (persona != null) return
         persona = withContext(Dispatchers.IO) {
             db.personaDao().findByUser(session.userId)
+        }
+    }
+
+    private fun loadUserProfile() {
+        lifecycleScope.launch {
+            try {
+                currentUser = db.userDao().findById(session.userId)
+                if (persona == null) {
+                    persona = db.personaDao().findByUser(session.userId)
+                }
+                withContext(Dispatchers.Main) { prefillFeatureInputs() }
+            } catch (e: Exception) {
+                Log.e("FeatureActivity", "Failed to load profile prefill", e)
+            }
+        }
+    }
+
+    private fun prefillFeatureInputs() {
+        val user = currentUser ?: return
+        val bestDob = when {
+            user.dob.isNotBlank() -> user.dob
+            !persona?.dob.isNullOrBlank() -> persona?.dob.orEmpty()
+            else -> ""
+        }
+        when (featureType) {
+            "NUMEROLOGY" -> {
+                if (binding.etName.text.isNullOrBlank()) binding.etName.setText(user.name)
+                if (binding.etDob.text.isNullOrBlank() && bestDob.isNotBlank()) binding.etDob.setText(bestDob)
+            }
+            "KUNDLI" -> {
+                if (binding.etName.text.isNullOrBlank()) binding.etName.setText(user.name)
+                if (binding.etDob.text.isNullOrBlank() && bestDob.isNotBlank()) binding.etDob.setText(bestDob)
+                if (binding.etPlace.text.isNullOrBlank() && user.birthPlace.isNotBlank()) {
+                    binding.etPlace.setText(user.birthPlace)
+                }
+            }
+            "SIGN", "SUN_SIGN" -> {
+                if (binding.etDob.text.isNullOrBlank() && bestDob.isNotBlank()) binding.etDob.setText(bestDob)
+            }
         }
     }
 
@@ -128,7 +178,7 @@ class FeatureActivity : BaseFeatureActivity() {
                 Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
                 Triple(binding.imgCardBack3, binding.imgCard3, binding.tvCardName3)
             )
-            drawnCards.forEachIndexed { i, drawn ->
+            drawnCards.take(cardViews.size).forEachIndexed { i, drawn ->
                 val (back, face, name) = cardViews[i]
                 if (i < revealedCount) {
                     back.visibility = View.GONE
@@ -158,6 +208,10 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.btnDrawCards.setOnClickListener {
             val isRedraw = TarotSessionStore.hasSession()
             drawnCards = TarotEngine.draw(3)
+            if (drawnCards.size < 3) {
+                Toast.makeText(this, getString(R.string.ai_reading_error), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             revealedCount = 0
 
             TarotSessionStore.drawnCards = drawnCards
@@ -175,6 +229,7 @@ class FeatureActivity : BaseFeatureActivity() {
             ).forEach { (back, face, name) ->
                 back.animate().cancel(); face.animate().cancel(); name.animate().cancel()
                 back.rotationY = 0f; back.alpha = 1f
+                back.setImageResource(R.drawable.ic_tarot_card_back)
                 face.rotationY = 0f; face.alpha = 1f
                 name.rotationY = 0f; name.alpha = 1f
                 back.visibility = View.VISIBLE
@@ -206,6 +261,10 @@ class FeatureActivity : BaseFeatureActivity() {
             val (back, face, nameLabel) = views
             slot.setOnClickListener {
                 if (drawnCards.isEmpty()) {
+                    Toast.makeText(this, getString(R.string.tarot_draw_first), Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (i >= drawnCards.size) {
                     Toast.makeText(this, getString(R.string.tarot_draw_first), Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
@@ -314,6 +373,7 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.tilDob.visibility = View.VISIBLE
         binding.etDob.isFocusable = false
         binding.etDob.setOnClickListener { pickDate(binding.etDob) }
+        prefillFeatureInputs()
         binding.btnAnalyze.setOnClickListener {
             val name = binding.etName.text.toString().trim()
             val dob = binding.etDob.text.toString().trim()
@@ -337,6 +397,7 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.etDob.isFocusable = false
         binding.etDob.setOnClickListener { pickDate(binding.etDob) }
         binding.btnAnalyze.text = getString(R.string.kundli_analyze)
+        prefillFeatureInputs()
         binding.btnAnalyze.setOnClickListener {
             val name = binding.etName.text.toString().trim()
             val dob = binding.etDob.text.toString().trim()
@@ -360,6 +421,7 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.tilDob.hint = getString(R.string.sign_dob_hint)
         binding.etDob.setOnClickListener { pickDate(binding.etDob) }
         binding.btnAnalyze.text = getString(R.string.sign_analyze)
+        prefillFeatureInputs()
         binding.btnAnalyze.setOnClickListener {
             val dob = binding.etDob.text.toString().trim()
             if (dob.isEmpty()) {
@@ -445,12 +507,13 @@ class FeatureActivity : BaseFeatureActivity() {
     }
 
     private fun addReadingToChat(reading: String) {
-        aiReadingContext = reading
+        val cleaned = normalizeDisplayText(reading)
+        aiReadingContext = cleaned
         if (featureType == "TAROT") {
-            TarotSessionStore.aiReadingContext = reading
-            TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = reading))
+            TarotSessionStore.aiReadingContext = cleaned
+            TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = cleaned))
         }
-        addAIReadingBubble(reading)
+        addAIReadingBubble(cleaned)
     }
 
     private fun buildLocalReadingFallback(): String {
@@ -518,12 +581,14 @@ class FeatureActivity : BaseFeatureActivity() {
     }
 
     private fun addAIReadingBubble(text: String) {
+        val cleaned = normalizeDisplayText(text)
         val tv = TextView(this).apply {
-            this.text = text
+            this.text = toStyledHeadings(cleaned)
             setTextColor(resources.getColor(R.color.text_dark, null))
             setBackgroundResource(R.drawable.bg_chat_bot)
             setPadding(24, 16, 24, 16)
             textSize = 13f
+            setLineSpacing(4f, 1f)
             val lp = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -533,6 +598,42 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.llChat.addView(tv)
         binding.llChat.visibility = View.VISIBLE
         scrollToBottom()
+    }
+
+    private fun normalizeDisplayText(raw: String): String {
+        return raw
+            .replace("**", "")
+            .replace("__", "")
+            .replace("###", "")
+            .replace("##", "")
+            .replace("...", ".")
+            .replace(Regex("\\n{3,}"), "\n\n")
+            .trim()
+    }
+
+    private fun toStyledHeadings(text: String): CharSequence {
+        val builder = SpannableStringBuilder(text)
+        val headingCandidates = setOf(
+            getString(R.string.tarot_ai_section_meaning).lowercase(),
+            getString(R.string.tarot_ai_section_action).lowercase(),
+            getString(R.string.tarot_ai_section_careful).lowercase(),
+            "what it means",
+            "what to do next",
+            "be careful of"
+        )
+
+        var cursor = 0
+        text.lines().forEach { line ->
+            val start = cursor
+            val end = cursor + line.length
+            val probe = line.trim().trimEnd(':').lowercase()
+            val looksLikeHeading = probe in headingCandidates || (line.trim().endsWith(":") && line.length <= 42)
+            if (looksLikeHeading && end > start) {
+                builder.setSpan(StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            cursor = end + 1
+        }
+        return builder
     }
 
     private fun showLoading(show: Boolean) {
@@ -710,33 +811,34 @@ class FeatureActivity : BaseFeatureActivity() {
                             is OpenAIService.ApiResult.Success -> {
                                 val answer = result.data.trim()
                                 if (answer.isBlank()) {
-                                    val fallback = generateLocalAnswer(q)
+                                    val fallback = normalizeDisplayText(generateLocalAnswer(q))
                                     addBotBubble(binding.llChat, fallback)
                                     if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                                     saveToHistory(historyCategoryLabel(), q, fallback)
                                 } else {
+                                    val cleanedAnswer = normalizeDisplayText(answer)
                                     Log.d("AstroAI", "AI answer received")
-                                    addBotBubble(binding.llChat, answer)
-                                    if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = answer))
-                                    saveToHistory(historyCategoryLabel(), q, answer)
+                                    addBotBubble(binding.llChat, cleanedAnswer)
+                                    if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = cleanedAnswer))
+                                    saveToHistory(historyCategoryLabel(), q, cleanedAnswer)
                                 }
                             }
                             is OpenAIService.ApiResult.Error -> {
                                 Log.e("AstroAI", "AI follow-up error: ${result.message}")
-                                val fallback = generateLocalAnswer(q)
+                                val fallback = normalizeDisplayText(generateLocalAnswer(q))
                                 addBotBubble(binding.llChat, fallback)
                                 if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                                 saveToHistory(historyCategoryLabel(), q, fallback)
                             }
                             is OpenAIService.ApiResult.RateLimited -> {
-                                val fallback = generateLocalAnswer(q)
+                                val fallback = normalizeDisplayText(generateLocalAnswer(q))
                                 val rateLimitedText = "${getString(R.string.ai_rate_limited)}\n\n$fallback"
                                 addBotBubble(binding.llChat, rateLimitedText)
                                 if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = rateLimitedText))
                                 saveToHistory(historyCategoryLabel(), q, fallback)
                             }
                             else -> {
-                                val fallback = generateLocalAnswer(q)
+                                val fallback = normalizeDisplayText(generateLocalAnswer(q))
                                 addBotBubble(binding.llChat, fallback)
                                 if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                                 saveToHistory(historyCategoryLabel(), q, fallback)
@@ -744,7 +846,7 @@ class FeatureActivity : BaseFeatureActivity() {
                         }
                     } catch (e: Exception) {
                         Log.e("AstroAI", "Follow-up request failed", e)
-                        val fallback = generateLocalAnswer(q)
+                        val fallback = normalizeDisplayText(generateLocalAnswer(q))
                         addBotBubble(binding.llChat, fallback)
                         if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                         saveToHistory(historyCategoryLabel(), q, fallback)
@@ -896,11 +998,18 @@ class FeatureActivity : BaseFeatureActivity() {
     }
 
     private fun shrinkBullet(text: String): String {
-        val words = text.split(Regex("\\s+")).filter { it.isNotBlank() }
-        return if (words.size <= 12) {
-            text.trimEnd('.')
-        } else {
-            words.take(12).joinToString(" ").trimEnd('.') + "..."
+        var clean = text
+            .replace("**", "")
+            .replace("__", "")
+            .replace("`", "")
+            .replace("...", ".")
+            .replace(Regex("\\s+"), " ")
+            .trim()
+
+        if (clean.isEmpty()) return clean
+        if (!(clean.endsWith(".") || clean.endsWith("!") || clean.endsWith("?"))) {
+            clean += "."
         }
+        return clean
     }
 }

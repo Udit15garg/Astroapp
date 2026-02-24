@@ -1,9 +1,7 @@
 package com.palmreader.astro
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
@@ -18,19 +16,24 @@ class ScanActivity : AppCompatActivity() {
     private var capturedBitmap: Bitmap? = null
 
     private val cameraLauncher = registerForActivityResult(
+        ActivityResultContracts.TakePicturePreview()
+    ) { photo ->
+        if (photo != null) {
+            onPhotoCaptured(photo)
+        } else {
+            launchLegacyCamera()
+        }
+    }
+
+    private val legacyCameraLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            @Suppress("DEPRECATION")
-            val photo = result.data?.extras?.get("data") as? Bitmap
-            if (photo != null) {
-                capturedBitmap = photo
-                binding.ivPreview.setImageBitmap(photo)
-                binding.handOverlay.visibility = View.GONE   // hide guide once photo captured
-                checkImageQuality(photo)
-            } else {
-                setStatus(getString(R.string.scan_no_photo), isError = true)
-            }
+        @Suppress("DEPRECATION")
+        val photo = result.data?.extras?.get("data") as? Bitmap
+        if (photo != null) {
+            onPhotoCaptured(photo)
+        } else {
+            setStatus(getString(R.string.scan_no_photo), isError = true)
         }
     }
 
@@ -41,12 +44,7 @@ class ScanActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener { finish() }
         binding.btnCamera.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
-                cameraLauncher.launch(intent)
-            } else {
-                Toast.makeText(this, getString(R.string.scan_camera_unavailable), Toast.LENGTH_SHORT).show()
-            }
+            cameraLauncher.launch(null)
         }
 
         binding.btnAnalyze.setOnClickListener {
@@ -77,6 +75,22 @@ class ScanActivity : AppCompatActivity() {
                 binding.btnAnalyze.isEnabled = true
             }
         }
+    }
+
+    private fun launchLegacyCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (intent.resolveActivity(packageManager) != null) {
+            legacyCameraLauncher.launch(intent)
+        } else {
+            Toast.makeText(this, getString(R.string.scan_camera_unavailable), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun onPhotoCaptured(photo: Bitmap) {
+        capturedBitmap = photo
+        binding.ivPreview.setImageBitmap(photo)
+        binding.handOverlay.visibility = View.GONE
+        checkImageQuality(photo)
     }
 
     private fun checkImageQuality(bmp: Bitmap) {
