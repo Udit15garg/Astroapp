@@ -101,6 +101,15 @@ class FeatureActivity : BaseFeatureActivity() {
                 Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
                 Triple(binding.imgCardBack3, binding.imgCard3, binding.tvCardName3)
             ).forEach { (back, face, name) ->
+                back.animate().cancel()
+                face.animate().cancel()
+                name.animate().cancel()
+                back.rotationY = 0f
+                back.alpha = 1f
+                face.rotationY = 0f
+                face.alpha = 1f
+                name.rotationY = 0f
+                name.alpha = 1f
                 back.visibility = View.VISIBLE
                 face.visibility = View.GONE
                 name.visibility = View.GONE
