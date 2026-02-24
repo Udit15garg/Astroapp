@@ -118,20 +118,24 @@ object TarotEngine {
     fun draw(count: Int = 3): List<DrawnCard> =
         deck.shuffled().take(count).map { DrawnCard(it, kotlin.random.Random.nextBoolean()) }
 
-    fun toFeatureResult(cards: List<DrawnCard>): FeatureResult {
-        val positions = listOf("Past", "Present", "Future")
+    fun toFeatureResult(
+        cards: List<DrawnCard>,
+        positions: List<String> = listOf("Past", "Present", "Future"),
+        title: String = "Tarot Card Reading",
+        summary: String = "The cards have spoken \u2014 past, present, and future revealed."
+    ): FeatureResult {
         val items = cards.mapIndexed { i, drawn ->
             val suffix = if (drawn.isReversed) " (Reversed)" else ""
             ReadingItem(
-                positions[i],
+                positions.getOrElse(i) { "Card ${i + 1}" },
                 "${drawn.card.emoji} ${drawn.card.name}$suffix",
                 "${drawn.card.meaning}\n${drawn.card.advice}"
             )
         }
         return FeatureResult(
-            title = "Tarot Card Reading",
+            title = title,
             items = items,
-            summary = "The cards have spoken — past, present, and future revealed."
+            summary = summary
         )
     }
 

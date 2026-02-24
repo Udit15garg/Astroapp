@@ -83,7 +83,9 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
                 db.historyDao().insert(
                     HistoryEntity(userId = session.userId, category = category, question = question, answer = answer)
                 )
-            } catch (_: Exception) { /* history save silently skipped */ }
+            } catch (e: Exception) {
+                android.util.Log.w("BaseFeature", "History save failed: ${e.message}")
+            }
         }
     }
 
@@ -155,6 +157,9 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
         container.addView(tv)
     }
 
-    protected fun formatDate(ts: Long): String =
-        SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()).format(Date(ts))
+    protected fun formatDate(ts: Long): String {
+        val appLang = LanguageManager.getCurrentLocale(this)
+        val locale = if (appLang == "hi") Locale("hi") else Locale.ENGLISH
+        return SimpleDateFormat("dd MMM yyyy, hh:mm a", locale).format(Date(ts))
+    }
 }

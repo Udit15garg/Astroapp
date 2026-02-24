@@ -159,7 +159,11 @@ class FeatureActivity : BaseFeatureActivity() {
                     addCardResult(positions[i], drawn)
                     revealedCount++
                     if (revealedCount == 3) {
-                        currentResult = TarotEngine.toFeatureResult(drawnCards)
+                        currentResult = TarotEngine.toFeatureResult(
+                            drawnCards, positions,
+                            getString(R.string.tarot_result_title),
+                            getString(R.string.tarot_summary)
+                        )
                         callOpenAIForReading()
                     }
                 }
@@ -661,6 +665,13 @@ class FeatureActivity : BaseFeatureActivity() {
         }
     }
 
+    override fun onDestroy() {
+        if (featureLoaderInitialized) {
+            binding.vvTarotLoader.stopPlayback()
+        }
+        super.onDestroy()
+    }
+
     private fun showTarotInterpretationDialog(position: String, card: TarotCard) {
         val message = TarotEngine.detailedInterpretationText(
             card = card,
@@ -741,7 +752,7 @@ class FeatureActivity : BaseFeatureActivity() {
             }
         }
         while (target.size < 4) {
-            target.add("Stay calm and make practical choices.")
+            target.add(getString(R.string.tarot_fallback_calm))
         }
     }
 

@@ -27,6 +27,18 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("ALTER TABLE users ADD COLUMN birthPlace TEXT NOT NULL DEFAULT ''")
                 db.execSQL("ALTER TABLE users ADD COLUMN mobile TEXT NOT NULL DEFAULT ''")
                 db.execSQL("ALTER TABLE users ADD COLUMN profilePhotoUri TEXT NOT NULL DEFAULT ''")
+                db.execSQL(
+                    """CREATE TABLE IF NOT EXISTS `persona` (
+                        `userId` INTEGER NOT NULL,
+                        `dob` TEXT NOT NULL,
+                        `relationshipStatus` TEXT NOT NULL,
+                        `occupation` TEXT NOT NULL,
+                        `lifeGoal` TEXT NOT NULL,
+                        `biggestConcern` TEXT NOT NULL,
+                        `updatedAt` INTEGER NOT NULL,
+                        PRIMARY KEY(`userId`)
+                    )"""
+                )
             }
         }
 

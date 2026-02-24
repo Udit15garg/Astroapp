@@ -320,4 +320,9 @@
     <string name="cd_back_button">वापस जाएं</string>
     <string name="cd_logout_button">लॉग आउट करें</string>
     <string name="cd_score_bar">स्कोर सूचक</string>
+
+    <!-- ── गिबरिश ट्रैकर ── -->
+    <string name="gibberish_warning">आपका सवाल स्पष्ट नहीं लग रहा। कृपया सही सवाल टाइप करें। (चेतावनी %d/3)</string>
+    <string name="gibberish_credit_deducted">3 अस्पष्ट सवालों से 1 क्रेडिट कटा। कृपया सही सवाल पूछें।</string>
+    <string name="tarot_fallback_calm">शांत रहें और व्यावहारिक निर्णय लें।</string>
 </resources>

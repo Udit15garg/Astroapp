@@ -4,11 +4,13 @@ import com.palmreader.astro.BuildConfig
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
@@ -50,11 +52,36 @@ object OpenAIService {
                 )
             }
 
-            val result = withTimeoutOrNull(TIMEOUT_MS) {
-                makeRequest(apiKey, systemPrompt, userMessage, temperature)
+            var lastResult: ApiResult<String> = ApiResult.Error("Unknown error", -1)
+            var backoffMs = 2_000L
+
+            for (attempt in 0..2) {
+                if (attempt > 0) {
+                    Log.w("OpenAIService", "Retrying after ${backoffMs}ms (attempt $attempt)")
+                    delay(backoffMs)
+                    backoffMs *= 2
+                }
+
+                val result = withTimeoutOrNull(TIMEOUT_MS) {
+                    try {
+                        makeRequest(apiKey, systemPrompt, userMessage, temperature)
+                    } catch (e: IOException) {
+                        Log.w("OpenAIService", "Network IO error on attempt $attempt: ${e.message}")
+                        ApiResult.Error("Network error: ${e.message}", -1)
+                    }
+                } ?: ApiResult.Error("Request timed out. Please try again.", 408)
+
+                lastResult = result
+
+                when {
+                    result is ApiResult.Success -> return@withContext result
+                    result is ApiResult.RateLimited -> return@withContext result
+                    result is ApiResult.Error && result.code in 400..499 -> return@withContext result
+                    // 5xx server errors, timeout (-408), network error (-1) → retry
+                }
             }
 
-            result ?: ApiResult.Error("Request timed out. Please try again.", 408)
+            lastResult
         } catch (e: Exception) {
             Log.e("OpenAIService", "API call failed: ${e::class.simpleName}: ${e.message}", e)
             val reason = e.message?.takeIf { it.isNotBlank() } ?: "unknown reason"

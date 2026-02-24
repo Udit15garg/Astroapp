@@ -7,6 +7,7 @@ package com.palmreader.astro
 object GibberishDetector {
 
     private val DEVANAGARI_RANGE = '\u0900'..'\u097F'
+    private val WHITESPACE_REGEX = "\\s+".toRegex()
 
     private val QWERTY_ROWS = listOf("qwertyuiop", "asdfghjkl", "zxcvbnm")
 
@@ -34,7 +35,7 @@ object GibberishDetector {
         // Single character or too short
         if (trimmed.length < 3) return true
 
-        val words = trimmed.split("\\s+".toRegex())
+        val words = trimmed.split(WHITESPACE_REGEX)
 
         // Fewer than 3 words — check if it looks like a real question
         if (words.size < 3) {
