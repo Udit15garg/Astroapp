@@ -30,6 +30,7 @@ class FeatureActivity : BaseFeatureActivity() {
     // Tarot state
     private var drawnCards = listOf<TarotCard>()
     private var revealedCount = 0
+    private var featureLoaderInitialized = false
 
     // Other feature state
     private var currentResult: FeatureResult? = null
@@ -59,6 +60,7 @@ class FeatureActivity : BaseFeatureActivity() {
         refreshCredits(binding.tvCredits)
         setupFeature()
         setupQA()
+        initFeatureLoader()
     }
 
 
@@ -379,10 +381,26 @@ class FeatureActivity : BaseFeatureActivity() {
     private fun showLoading(show: Boolean) {
         binding.btnAnalyze.isEnabled = !show
         binding.btnDrawCards.isEnabled = !show
+        toggleFeatureLoader(show)
+    }
+
+    private fun initFeatureLoader() {
+        if (featureLoaderInitialized) return
+        featureLoaderInitialized = true
+        val loaderVideoRes = if (featureType == "TAROT") R.raw.cards else R.raw.tap_burst
+        binding.vvTarotLoader.setVideoPath("android.resource://$packageName/$loaderVideoRes")
+        binding.vvTarotLoader.setOnPreparedListener { it.isLooping = true }
+        binding.vvTarotLoader.setOnErrorListener { _, _, _ -> false }
+    }
+
+    private fun toggleFeatureLoader(show: Boolean) {
+        if (!featureLoaderInitialized) initFeatureLoader()
+        binding.tarotLoaderOverlay.visibility = if (show) View.VISIBLE else View.GONE
         if (show) {
-            addBotBubble(binding.llChat, getString(R.string.ai_loading))
-            binding.llChat.visibility = View.VISIBLE
-            scrollToBottom()
+            binding.vvTarotLoader.start()
+        } else {
+            if (binding.vvTarotLoader.isPlaying) binding.vvTarotLoader.pause()
+            binding.vvTarotLoader.seekTo(0)
         }
     }
 
@@ -557,6 +575,20 @@ class FeatureActivity : BaseFeatureActivity() {
 
     private fun scrollToBottom() {
         binding.svMain.post { binding.svMain.fullScroll(NestedScrollView.FOCUS_DOWN) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (featureLoaderInitialized && binding.vvTarotLoader.isPlaying) {
+            binding.vvTarotLoader.pause()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (featureLoaderInitialized && binding.tarotLoaderOverlay.visibility == View.VISIBLE) {
+            binding.vvTarotLoader.start()
+        }
     }
 
     private fun showTarotInterpretationDialog(position: String, card: TarotCard) {
