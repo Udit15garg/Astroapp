@@ -112,8 +112,8 @@ class GibberishTracker {
 
     sealed class Result {
         data object Valid : Result()
-        data class Warning(val count: Int, val message: String) : Result()
-        data class CreditDeducted(val message: String) : Result()
+        data class Warning(val count: Int) : Result()
+        data object CreditDeducted : Result()
     }
 
     fun check(input: String): Result {
@@ -126,14 +126,9 @@ class GibberishTracker {
 
         return if (consecutiveCount >= 3) {
             consecutiveCount = 0
-            Result.CreditDeducted(
-                "3 unclear questions used 1 credit. Please ask meaningful questions."
-            )
+            Result.CreditDeducted
         } else {
-            Result.Warning(
-                consecutiveCount,
-                "Your question doesn't seem clear. Please type a proper question. (Warning $consecutiveCount/3)"
-            )
+            Result.Warning(consecutiveCount)
         }
     }
 

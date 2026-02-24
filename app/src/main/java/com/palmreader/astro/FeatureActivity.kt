@@ -54,7 +54,7 @@ class FeatureActivity : BaseFeatureActivity() {
         setContentView(binding.root)
 
         featureType = intent.getStringExtra("type") ?: "TAROT"
-        binding.tvTitle.text = intent.getStringExtra("title") ?: "Reading"
+        binding.tvTitle.text = intent.getStringExtra("title") ?: getString(R.string.feature_reading)
         binding.btnBack.setOnClickListener { finish() }
 
         setupHeaderLogo()
@@ -68,6 +68,13 @@ class FeatureActivity : BaseFeatureActivity() {
     private fun loadPersona() {
         lifecycleScope.launch {
             persona = db.personaDao().findByUser(session.userId)
+        }
+    }
+
+    private suspend fun ensurePersonaLoaded() {
+        if (persona != null) return
+        persona = withContext(Dispatchers.IO) {
+            db.personaDao().findByUser(session.userId)
         }
     }
 
@@ -118,7 +125,6 @@ class FeatureActivity : BaseFeatureActivity() {
                 name.rotationY = 0f
                 name.alpha = 1f
                 back.visibility = View.VISIBLE
-                back.rotationY = 0f
                 face.visibility = View.GONE
                 face.scaleY = 1f
                 name.visibility = View.GONE
@@ -276,78 +282,107 @@ class FeatureActivity : BaseFeatureActivity() {
         useCredit(featureType) {
             lifecycleScope.launch {
                 showLoading(true)
-                val prompts = buildPromptForFeature()
-                if (prompts == null) {
-                    showLoading(false)
-                    showQASection()
-                    return@launch
-                }
+                try {
+                    ensurePersonaLoaded()
+                    val prompts = buildPromptForFeature()
+                    if (prompts == null) {
+                        val fallback = buildLocalReadingFallback()
+                        addReadingToChat(fallback)
+                        saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                        return@launch
+                    }
 
-                Log.d("AstroAI", "Calling OpenAI for $featureType reading...")
-                val result = OpenAIService.chatCompletion(
-                    systemPrompt = prompts.first,
-                    userMessage = prompts.second,
-                    temperature = 0.8f
-                )
-
-                withContext(Dispatchers.Main) {
-                    showLoading(false)
-                    when (result) {
+                    Log.d("AstroAI", "Calling OpenAI for $featureType reading...")
+                    when (val result = OpenAIService.chatCompletion(
+                        systemPrompt = prompts.first,
+                        userMessage = prompts.second,
+                        temperature = 0.8f
+                    )) {
                         is OpenAIService.ApiResult.Success -> {
                             val finalReading = if (featureType == "TAROT") {
                                 normalizeTarotReading(result.data)
                             } else {
-                                result.data
+                                result.data.trim()
                             }
-                            Log.d("AstroAI", "AI reading received: ${finalReading.take(100)}...")
-                            aiReadingContext = finalReading
-                            addAIReadingBubble(finalReading)
-                            saveToHistory(featureType, "AI Reading", finalReading)
-                        }
-                        is OpenAIService.ApiResult.Error -> {
-                            Log.e("AstroAI", "AI error: ${result.message}")
-                            if (featureType == "TAROT" && drawnCards.size == 3) {
-                                val fallback = TarotEngine.compactSpreadReading(
-                                    drawnCards,
-                                    getString(R.string.tarot_ai_section_meaning),
-                                    getString(R.string.tarot_ai_section_action),
-                                    getString(R.string.tarot_ai_section_careful)
-                                )
-                                aiReadingContext = fallback
-                                addAIReadingBubble(fallback)
-                                saveToHistory(featureType, "AI Reading", fallback)
+                            if (finalReading.isBlank()) {
+                                val fallback = buildLocalReadingFallback()
+                                addReadingToChat(fallback)
+                                saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
                             } else {
-                                showError(getString(R.string.ai_reading_error))
-                                aiReadingContext = currentResult?.items?.joinToString("\n") {
-                                    "${it.label}: ${it.value} - ${it.description}"
-                                } ?: ""
+                                Log.d("AstroAI", "AI reading received: ${finalReading.take(100)}...")
+                                addReadingToChat(finalReading)
+                                saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), finalReading)
                             }
                         }
                         is OpenAIService.ApiResult.RateLimited -> {
-                            if (featureType == "TAROT" && drawnCards.size == 3) {
-                                val fallback = TarotEngine.compactSpreadReading(
-                                    drawnCards,
-                                    getString(R.string.tarot_ai_section_meaning),
-                                    getString(R.string.tarot_ai_section_action),
-                                    getString(R.string.tarot_ai_section_careful)
-                                )
-                                aiReadingContext = fallback
-                                addAIReadingBubble(fallback)
-                                saveToHistory(featureType, "AI Reading", fallback)
-                            } else {
-                                showError(getString(R.string.ai_rate_limited))
-                                aiReadingContext = currentResult?.items?.joinToString("\n") {
-                                    "${it.label}: ${it.value} - ${it.description}"
-                                } ?: ""
-                            }
+                            val fallback = buildLocalReadingFallback()
+                            addReadingToChat("${getString(R.string.ai_rate_limited)}\n\n$fallback")
+                            saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
                         }
-                        else -> {}
+                        is OpenAIService.ApiResult.Error -> {
+                            Log.e("AstroAI", "AI error: ${result.message}")
+                            val fallback = buildLocalReadingFallback()
+                            addReadingToChat(fallback)
+                            saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                        }
+                        else -> {
+                            val fallback = buildLocalReadingFallback()
+                            addReadingToChat(fallback)
+                            saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.e("AstroAI", "Failed to fetch AI reading", e)
+                    val fallback = buildLocalReadingFallback()
+                    addReadingToChat(fallback)
+                    saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                } finally {
+                    showLoading(false)
                     showQASection()
                     refreshCredits(binding.tvCredits)
                 }
             }
         }
+    }
+
+    private fun addReadingToChat(reading: String) {
+        aiReadingContext = reading
+        addAIReadingBubble(reading)
+    }
+
+    private fun buildLocalReadingFallback(): String {
+        if (featureType == "TAROT" && drawnCards.size == 3) {
+            return TarotEngine.compactSpreadReading(
+                drawnCards,
+                getString(R.string.tarot_ai_section_meaning),
+                getString(R.string.tarot_ai_section_action),
+                getString(R.string.tarot_ai_section_careful)
+            )
+        }
+        return buildResultContext().ifBlank { getString(R.string.ai_reading_error) }
+    }
+
+    private fun buildResultContext(): String {
+        return currentResult?.let { result ->
+            buildString {
+                if (result.title.isNotBlank()) append("${result.title}\n")
+                result.items.forEach { item ->
+                    append("• ${item.label}: ${item.value}\n")
+                }
+                if (result.summary.isNotBlank()) {
+                    append("\n${result.summary}")
+                }
+            }.trim()
+        } ?: ""
+    }
+
+    private fun historyCategoryLabel(): String = when (featureType) {
+        "TAROT" -> getString(R.string.feature_tarot)
+        "NUMEROLOGY" -> getString(R.string.feature_numerology)
+        "KUNDLI" -> getString(R.string.feature_kundli)
+        "SIGN" -> getString(R.string.feature_rashifal)
+        "SUN_SIGN" -> getString(R.string.feature_sunsign)
+        else -> getString(R.string.feature_reading)
     }
 
     private fun buildPromptForFeature(): Pair<String, String>? {
@@ -501,14 +536,22 @@ class FeatureActivity : BaseFeatureActivity() {
             // Check for gibberish BEFORE spending a credit
             when (val gibResult = gibberishTracker.check(q)) {
                 is GibberishTracker.Result.Warning -> {
-                    Snackbar.make(binding.root, gibResult.message, Snackbar.LENGTH_LONG)
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.qa_gibberish_warning, gibResult.count),
+                        Snackbar.LENGTH_LONG
+                    )
                         .setBackgroundTint(resources.getColor(R.color.warning, null))
                         .show()
                     return@setOnClickListener
                 }
                 is GibberishTracker.Result.CreditDeducted -> {
                     useCredit("Gibberish") {
-                        Snackbar.make(binding.root, gibResult.message, Snackbar.LENGTH_LONG)
+                        Snackbar.make(
+                            binding.root,
+                            getString(R.string.qa_gibberish_credit_used),
+                            Snackbar.LENGTH_LONG
+                        )
                             .setBackgroundTint(resources.getColor(R.color.error, null))
                             .show()
                         refreshCredits(binding.tvCredits)
@@ -524,47 +567,55 @@ class FeatureActivity : BaseFeatureActivity() {
                 scrollToBottom()
 
                 lifecycleScope.launch {
-                    val context = aiReadingContext.ifEmpty {
-                        currentResult?.items?.joinToString("\n") {
-                            "${it.label}: ${it.value} - ${it.description}"
-                        } ?: ""
-                    }
+                    try {
+                        ensurePersonaLoaded()
+                        val context = aiReadingContext.ifEmpty { buildResultContext() }
 
-                    Log.d("AstroAI", "Calling OpenAI for follow-up: $q")
-                    val prompts = PromptTemplates.followUpQuestion(
-                        featureType, context, q, locale, persona
-                    )
+                        Log.d("AstroAI", "Calling OpenAI for follow-up: $q")
+                        val prompts = PromptTemplates.followUpQuestion(
+                            featureType, context, q, locale, persona
+                        )
 
-                    val result = OpenAIService.chatCompletion(
-                        systemPrompt = prompts.first,
-                        userMessage = prompts.second,
-                        temperature = 0.7f
-                    )
-
-                    withContext(Dispatchers.Main) {
-                        when (result) {
+                        when (val result = OpenAIService.chatCompletion(
+                            systemPrompt = prompts.first,
+                            userMessage = prompts.second,
+                            temperature = 0.7f
+                        )) {
                             is OpenAIService.ApiResult.Success -> {
-                                Log.d("AstroAI", "AI answer received")
-                                addBotBubble(binding.llChat, result.data)
-                                saveToHistory(
-                                    featureType.lowercase().replaceFirstChar { it.uppercase() },
-                                    q, result.data
-                                )
+                                val answer = result.data.trim()
+                                if (answer.isBlank()) {
+                                    val fallback = generateLocalAnswer(q)
+                                    addBotBubble(binding.llChat, fallback)
+                                    saveToHistory(historyCategoryLabel(), q, fallback)
+                                } else {
+                                    Log.d("AstroAI", "AI answer received")
+                                    addBotBubble(binding.llChat, answer)
+                                    saveToHistory(historyCategoryLabel(), q, answer)
+                                }
                             }
                             is OpenAIService.ApiResult.Error -> {
                                 Log.e("AstroAI", "AI follow-up error: ${result.message}")
                                 val fallback = generateLocalAnswer(q)
                                 addBotBubble(binding.llChat, fallback)
-                                saveToHistory(
-                                    featureType.lowercase().replaceFirstChar { it.uppercase() },
-                                    q, fallback
-                                )
+                                saveToHistory(historyCategoryLabel(), q, fallback)
                             }
                             is OpenAIService.ApiResult.RateLimited -> {
-                                addBotBubble(binding.llChat, getString(R.string.ai_rate_limited))
+                                val fallback = generateLocalAnswer(q)
+                                addBotBubble(binding.llChat, "${getString(R.string.ai_rate_limited)}\n\n$fallback")
+                                saveToHistory(historyCategoryLabel(), q, fallback)
                             }
-                            else -> {}
+                            else -> {
+                                val fallback = generateLocalAnswer(q)
+                                addBotBubble(binding.llChat, fallback)
+                                saveToHistory(historyCategoryLabel(), q, fallback)
+                            }
                         }
+                    } catch (e: Exception) {
+                        Log.e("AstroAI", "Follow-up request failed", e)
+                        val fallback = generateLocalAnswer(q)
+                        addBotBubble(binding.llChat, fallback)
+                        saveToHistory(historyCategoryLabel(), q, fallback)
+                    } finally {
                         refreshCredits(binding.tvCredits)
                         scrollToBottom()
                     }

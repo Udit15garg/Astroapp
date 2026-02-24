@@ -45,6 +45,13 @@ class ResultActivity : BaseFeatureActivity() {
         }
     }
 
+    private suspend fun ensurePersonaLoaded() {
+        if (persona != null) return
+        persona = withContext(Dispatchers.IO) {
+            db.personaDao().findByUser(session.userId)
+        }
+    }
+
     private fun buildResultCards() {
         readings.forEach { reading ->
             val card = LayoutInflater.from(this)
@@ -88,14 +95,22 @@ class ResultActivity : BaseFeatureActivity() {
         // Check for gibberish BEFORE spending a credit
         when (val gibResult = gibberishTracker.check(q)) {
             is GibberishTracker.Result.Warning -> {
-                Snackbar.make(binding.root, gibResult.message, Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.qa_gibberish_warning, gibResult.count),
+                    Snackbar.LENGTH_LONG
+                )
                     .setBackgroundTint(resources.getColor(R.color.warning, null))
                     .show()
                 return
             }
             is GibberishTracker.Result.CreditDeducted -> {
                 useCredit("Gibberish") {
-                    Snackbar.make(binding.root, gibResult.message, Snackbar.LENGTH_LONG)
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.qa_gibberish_credit_used),
+                        Snackbar.LENGTH_LONG
+                    )
                         .setBackgroundTint(resources.getColor(R.color.error, null))
                         .show()
                     refreshCredits(binding.tvCredits)
@@ -111,40 +126,58 @@ class ResultActivity : BaseFeatureActivity() {
             appendChat(getString(R.string.qa_user_prefix, q), isUser = true)
 
             lifecycleScope.launch {
-                val context = readings.joinToString("\n") {
-                    "${it.category}: ${it.score}/10 - ${it.interpretation}"
-                }
+                try {
+                    ensurePersonaLoaded()
+                    val context = readings.joinToString("\n") {
+                        "${it.category}: ${it.score}/10 - ${it.interpretation}"
+                    }
 
-                val locale = LanguageManager.getCurrentLocale(this@ResultActivity)
-                val prompts = PromptTemplates.followUpQuestion(
-                    "Palmistry", context, q, locale, persona
-                )
+                    val locale = LanguageManager.getCurrentLocale(this@ResultActivity)
+                    val prompts = PromptTemplates.followUpQuestion(
+                        "Palmistry", context, q, locale, persona
+                    )
 
-                Log.d("AstroAI", "Calling OpenAI for palm Q&A: $q")
-                val result = OpenAIService.chatCompletion(
-                    systemPrompt = prompts.first,
-                    userMessage = prompts.second,
-                    temperature = 0.7f
-                )
-
-                withContext(Dispatchers.Main) {
-                    when (result) {
+                    Log.d("AstroAI", "Calling OpenAI for palm Q&A: $q")
+                    when (val result = OpenAIService.chatCompletion(
+                        systemPrompt = prompts.first,
+                        userMessage = prompts.second,
+                        temperature = 0.7f
+                    )) {
                         is OpenAIService.ApiResult.Success -> {
-                            Log.d("AstroAI", "AI palm answer received")
-                            appendChat(result.data, isUser = false)
-                            saveToHistory("Palmistry", q, result.data)
+                            val answer = result.data.trim()
+                            if (answer.isBlank()) {
+                                val fallback = PalmAnalyzer.answerQuestion(q, readings)
+                                appendChat(fallback, isUser = false)
+                                saveToHistory(getString(R.string.feature_palmistry), q, fallback)
+                            } else {
+                                Log.d("AstroAI", "AI palm answer received")
+                                appendChat(answer, isUser = false)
+                                saveToHistory(getString(R.string.feature_palmistry), q, answer)
+                            }
                         }
                         is OpenAIService.ApiResult.Error -> {
                             Log.e("AstroAI", "AI palm error: ${result.message}")
                             val fallback = PalmAnalyzer.answerQuestion(q, readings)
                             appendChat(fallback, isUser = false)
-                            saveToHistory("Palmistry", q, fallback)
+                            saveToHistory(getString(R.string.feature_palmistry), q, fallback)
                         }
                         is OpenAIService.ApiResult.RateLimited -> {
-                            appendChat(getString(R.string.ai_rate_limited), isUser = false)
+                            val fallback = PalmAnalyzer.answerQuestion(q, readings)
+                            appendChat("${getString(R.string.ai_rate_limited)}\n\n$fallback", isUser = false)
+                            saveToHistory(getString(R.string.feature_palmistry), q, fallback)
                         }
-                        else -> {}
+                        else -> {
+                            val fallback = PalmAnalyzer.answerQuestion(q, readings)
+                            appendChat(fallback, isUser = false)
+                            saveToHistory(getString(R.string.feature_palmistry), q, fallback)
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.e("AstroAI", "Palm Q&A request failed", e)
+                    val fallback = PalmAnalyzer.answerQuestion(q, readings)
+                    appendChat(fallback, isUser = false)
+                    saveToHistory(getString(R.string.feature_palmistry), q, fallback)
+                } finally {
                     refreshCredits(binding.tvCredits)
                     binding.scrollView.post {
                         binding.scrollView.fullScroll(android.view.View.FOCUS_DOWN)

@@ -56,7 +56,8 @@ class ProfileActivity : BaseFeatureActivity() {
                 val history   = txDao.getByUser(session.userId)
                 val now       = System.currentTimeMillis()
                 val derivedUsed = (purchased + bonus - user.credits).coerceAtLeast(0)
-                val used = maxOf(usedFromTx, derivedUsed)
+                val hasTrackedUsage = history.any { it.type == "USED" }
+                val used = if (hasTrackedUsage) usedFromTx else derivedUsed
 
                 runOnUiThread {
                     // User info

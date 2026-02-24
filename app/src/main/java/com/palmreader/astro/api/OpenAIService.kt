@@ -57,7 +57,8 @@ object OpenAIService {
             result ?: ApiResult.Error("Request timed out. Please try again.", 408)
         } catch (e: Exception) {
             Log.e("OpenAIService", "API call failed: ${e::class.simpleName}: ${e.message}", e)
-            ApiResult.Error("Network error: ${e.message}", -1)
+            val reason = e.message?.takeIf { it.isNotBlank() } ?: "unknown reason"
+            ApiResult.Error("Network error: $reason", -1)
         }
     }
 
@@ -112,15 +113,24 @@ object OpenAIService {
                         InputStreamReader(connection.inputStream)
                     ).use { it.readText() }
 
-                    val json = JSONObject(responseBody)
-                    val content = json
-                        .getJSONArray("choices")
-                        .getJSONObject(0)
-                        .getJSONObject("message")
-                        .getString("content")
-                        .trim()
+                    val content = runCatching {
+                        val json = JSONObject(responseBody)
+                        json.getJSONArray("choices")
+                            .getJSONObject(0)
+                            .getJSONObject("message")
+                            .getString("content")
+                            .trim()
+                    }.getOrElse { parseError ->
+                        Log.e("OpenAIService", "Response parse error: ${parseError.message}")
+                        return ApiResult.Error("Invalid AI response format.", responseCode)
+                    }
 
-                    ApiResult.Success(content)
+                    if (content.isBlank()) {
+                        ApiResult.Error("AI returned an empty response.", responseCode)
+                    } else {
+                        ApiResult.Success(content)
+                    }
+
                 }
             }
         } finally {

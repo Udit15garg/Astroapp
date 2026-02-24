@@ -107,6 +107,8 @@
     <string name="qa_user_prefix">You: %s</string>
     <string name="qa_bot_prefix">Astrologer: %s</string>
     <string name="qa_ask_about">Please ask about:\nHealth, Marriage, Education, Career, Children, Mind, or Luck</string>
+    <string name="qa_gibberish_warning">Your question doesn\'t seem clear. Please type a proper question. (Warning %1$d/3)</string>
+    <string name="qa_gibberish_credit_used">3 unclear questions used 1 credit. Please ask a meaningful question.</string>
 
     <!-- ── Feature Activity ── -->
     <string name="tarot_instruction">Choose three cards and read your future</string>
@@ -243,6 +245,7 @@
 
     <!-- ── AI Integration ── -->
     <string name="ai_loading">Consulting the stars\u2026</string>
+    <string name="ai_reading_label">AI Reading</string>
     <string name="ai_reading_error">Could not generate your reading. Please try again.</string>
     <string name="ai_rate_limited">Too many requests. Please wait a moment and try again.</string>
     <string name="ai_timeout">Taking longer than expected. Please try again.</string>

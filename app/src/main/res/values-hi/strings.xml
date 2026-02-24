@@ -102,6 +102,8 @@
     <string name="qa_user_prefix">आप: %s</string>
     <string name="qa_bot_prefix">ज्योतिषी: %s</string>
     <string name="qa_ask_about">कृपया इनमें से किसी विषय पर पूछें:\nस्वास्थ्य, विवाह, शिक्षा, करियर, संतान, बुद्धि, या किस्मत</string>
+    <string name="qa_gibberish_warning">आपका सवाल स्पष्ट नहीं लग रहा। कृपया सही सवाल लिखें। (चेतावनी %1$d/3)</string>
+    <string name="qa_gibberish_credit_used">3 अस्पष्ट सवालों पर 1 क्रेडिट उपयोग हुआ। कृपया अर्थपूर्ण सवाल पूछें।</string>
 
     <!-- ── फ़ीचर गतिविधि ── -->
     <string name="tarot_instruction">तीन पत्ते चुनें और भविष्य पढ़ें</string>
@@ -139,9 +141,9 @@
     <string name="feature_summary_prefix">नोट: %s</string>
     <string name="feature_read_more">और पढ़ें</string>
     <string name="tarot_insight_title">कार्ड विवरण</string>
-    <string name="tarot_ai_section_meaning">What it means</string>
-    <string name="tarot_ai_section_action">What to do next</string>
-    <string name="tarot_ai_section_careful">Be careful of</string>
+    <string name="tarot_ai_section_meaning">इसका मतलब</string>
+    <string name="tarot_ai_section_action">अब क्या करें</string>
+    <string name="tarot_ai_section_careful">किससे सावधान रहें</string>
 
     <!-- ── सदस्यता ── -->
     <string name="sub_title">प्लान और क्रेडिट</string>
@@ -238,6 +240,7 @@
 
     <!-- ── AI एकीकरण ── -->
     <string name="ai_loading">सितारों से सलाह ली जा रही है\u2026</string>
+    <string name="ai_reading_label">एआई रीडिंग</string>
     <string name="ai_reading_error">रीडिंग तैयार नहीं हो सकी। कृपया पुनः प्रयास करें।</string>
     <string name="ai_rate_limited">बहुत अधिक अनुरोध। कृपया कुछ क्षण रुकें।</string>
     <string name="ai_timeout">अपेक्षा से अधिक समय लग रहा है। कृपया पुनः प्रयास करें।</string>
