@@ -140,24 +140,23 @@ object OpenAIService {
                         InputStreamReader(connection.inputStream)
                     ).use { it.readText() }
 
-                    val content = runCatching {
-                        val json = JSONObject(responseBody)
-                        json.getJSONArray("choices")
-                            .getJSONObject(0)
-                            .getJSONObject("message")
-                            .getString("content")
-                            .trim()
-                    }.getOrElse { parseError ->
+                    val json = runCatching { JSONObject(responseBody) }.getOrElse { parseError ->
                         Log.e("OpenAIService", "Response parse error: ${parseError.message}")
                         return ApiResult.Error("Invalid AI response format.", responseCode)
                     }
+                    val content = json
+                        .optJSONArray("choices")
+                        ?.optJSONObject(0)
+                        ?.optJSONObject("message")
+                        ?.optString("content")
+                        ?.trim()
+                        .orEmpty()
 
                     if (content.isBlank()) {
                         ApiResult.Error("AI returned an empty response.", responseCode)
                     } else {
                         ApiResult.Success(content)
                     }
-
                 }
             }
         } finally {

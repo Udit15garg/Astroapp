@@ -29,6 +29,7 @@ class FeatureActivity : BaseFeatureActivity() {
     private var drawnCards = listOf<DrawnCard>()
     private var revealedCount = 0
     private var featureLoaderInitialized = false
+    private var featureLoaderBroken = false
 
     // Other feature state
     private var currentResult: FeatureResult? = null
@@ -537,6 +538,7 @@ class FeatureActivity : BaseFeatureActivity() {
     private fun showLoading(show: Boolean) {
         binding.btnAnalyze.isEnabled = !show
         binding.btnDrawCards.isEnabled = !show
+        if (show && featureLoaderBroken) return
         toggleFeatureLoader(show)
     }
 
@@ -545,18 +547,36 @@ class FeatureActivity : BaseFeatureActivity() {
         featureLoaderInitialized = true
         val loaderVideoRes = if (featureType == "TAROT") R.raw.cards else R.raw.tap_burst
         binding.vvTarotLoader.setVideoPath("android.resource://$packageName/$loaderVideoRes")
-        binding.vvTarotLoader.setOnPreparedListener { it.isLooping = true }
-        binding.vvTarotLoader.setOnErrorListener { _, _, _ -> false }
+        binding.vvTarotLoader.setOnPreparedListener {
+            it.isLooping = true
+            featureLoaderBroken = false
+        }
+        binding.vvTarotLoader.setOnErrorListener { _, _, _ ->
+            featureLoaderBroken = true
+            binding.tarotLoaderOverlay.visibility = View.GONE
+            true
+        }
     }
 
     private fun toggleFeatureLoader(show: Boolean) {
         if (!featureLoaderInitialized) initFeatureLoader()
+        if (featureLoaderBroken) return
         binding.tarotLoaderOverlay.visibility = if (show) View.VISIBLE else View.GONE
         if (show) {
-            binding.vvTarotLoader.start()
+            try {
+                binding.vvTarotLoader.start()
+            } catch (_: Exception) {
+                featureLoaderBroken = true
+                binding.tarotLoaderOverlay.visibility = View.GONE
+            }
         } else {
-            if (binding.vvTarotLoader.isPlaying) binding.vvTarotLoader.pause()
-            binding.vvTarotLoader.seekTo(0)
+            try {
+                if (binding.vvTarotLoader.isPlaying) binding.vvTarotLoader.pause()
+                binding.vvTarotLoader.seekTo(0)
+            } catch (_: Exception) {
+                featureLoaderBroken = true
+                binding.tarotLoaderOverlay.visibility = View.GONE
+            }
         }
     }
 
@@ -762,15 +782,25 @@ class FeatureActivity : BaseFeatureActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (featureLoaderInitialized && binding.vvTarotLoader.isPlaying) {
-            binding.vvTarotLoader.pause()
+        if (featureLoaderInitialized && !featureLoaderBroken) {
+            try {
+                if (binding.vvTarotLoader.isPlaying) binding.vvTarotLoader.pause()
+            } catch (_: Exception) {
+                featureLoaderBroken = true
+                binding.tarotLoaderOverlay.visibility = View.GONE
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (featureLoaderInitialized && binding.tarotLoaderOverlay.visibility == View.VISIBLE) {
-            binding.vvTarotLoader.start()
+        if (featureLoaderInitialized && !featureLoaderBroken && binding.tarotLoaderOverlay.visibility == View.VISIBLE) {
+            try {
+                binding.vvTarotLoader.start()
+            } catch (_: Exception) {
+                featureLoaderBroken = true
+                binding.tarotLoaderOverlay.visibility = View.GONE
+            }
         }
     }
 
