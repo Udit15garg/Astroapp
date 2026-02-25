@@ -147,7 +147,7 @@ class AuthActivity : AppCompatActivity() {
                 db.creditTransactionDao().insert(
                     CreditTransactionEntity(userId = userId, type = "BONUS", amount = 10, description = "Welcome bonus — 10 free credits")
                 )
-                session.userId = userId
+                session.startSession(userId)
                 runOnUiThread { goHome() }
             } catch (e: Exception) {
                 showError(getString(R.string.auth_signup_error, e.message))
@@ -162,7 +162,7 @@ class AuthActivity : AppCompatActivity() {
                 if (user == null || user.passwordHash != pass.hashCode().toString()) {
                     showError(getString(R.string.auth_invalid_credentials)); return@launch
                 }
-                session.userId = user.id
+                session.startSession(user.id)
                 // Top-up free users who have run out of credits
                 if (user.planType == "FREE" && user.credits == 0) {
                     db.userDao().addCredits(user.id, 5)
@@ -188,9 +188,9 @@ class AuthActivity : AppCompatActivity() {
                     db.creditTransactionDao().insert(
                         CreditTransactionEntity(userId = userId, type = "BONUS", amount = 10, description = "Google sign-up bonus — 10 free credits")
                     )
-                    session.userId = userId
+                    session.startSession(userId)
                 } else {
-                    session.userId = existing.id
+                    session.startSession(existing.id)
                     // Top-up free users who have run out of credits
                     if (existing.planType == "FREE" && existing.credits == 0) {
                         db.userDao().addCredits(existing.id, 5)

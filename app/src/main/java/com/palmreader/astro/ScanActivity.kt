@@ -1,12 +1,16 @@
 package com.palmreader.astro
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatActivity
 import com.palmreader.astro.databinding.ActivityScanBinding
 
@@ -22,6 +26,16 @@ class ScanActivity : AppCompatActivity() {
             onPhotoCaptured(photo)
         } else {
             launchLegacyCamera()
+        }
+    }
+
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            launchCameraInternal()
+        } else {
+            Toast.makeText(this, getString(R.string.scan_camera_unavailable), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -44,7 +58,7 @@ class ScanActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener { finish() }
         binding.btnCamera.setOnClickListener {
-            cameraLauncher.launch(null)
+            ensureCameraPermissionAndLaunch()
         }
 
         binding.btnAnalyze.setOnClickListener {
@@ -77,11 +91,39 @@ class ScanActivity : AppCompatActivity() {
         }
     }
 
-    private fun launchLegacyCamera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(packageManager) != null) {
-            legacyCameraLauncher.launch(intent)
+    private fun ensureCameraPermissionAndLaunch() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            launchCameraInternal()
+            return
+        }
+        val granted = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+        if (granted) {
+            launchCameraInternal()
         } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun launchCameraInternal() {
+        try {
+            cameraLauncher.launch(null)
+        } catch (_: Exception) {
+            launchLegacyCamera()
+        }
+    }
+
+    private fun launchLegacyCamera() {
+        try {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (intent.resolveActivity(packageManager) != null) {
+                legacyCameraLauncher.launch(intent)
+            } else {
+                Toast.makeText(this, getString(R.string.scan_camera_unavailable), Toast.LENGTH_SHORT).show()
+            }
+        } catch (_: Exception) {
             Toast.makeText(this, getString(R.string.scan_camera_unavailable), Toast.LENGTH_SHORT).show()
         }
     }

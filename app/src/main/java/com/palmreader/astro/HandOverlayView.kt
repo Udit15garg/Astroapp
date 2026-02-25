@@ -61,31 +61,34 @@ class HandOverlayView @JvmOverloads constructor(
         handPath.reset()
 
         val centerX = w / 2f
-        val palmTop = h * 0.33f
+        val palmTop = h * 0.35f
         val palmBottom = h * 0.84f
-        val palmHalf = w * 0.25f
+        val palmHalf = w * 0.23f
         val palmRect = RectF(centerX - palmHalf, palmTop, centerX + palmHalf, palmBottom)
         handPath.addRoundRect(palmRect, w * 0.12f, h * 0.08f, Path.Direction.CW)
 
-        val fingerWidth = w * 0.085f
-        val fingerGap = w * 0.02f
-        val fingerHeights = listOf(0.14f, 0.22f, 0.26f, 0.22f, 0.16f)
-        val fingersStartX = centerX - ((5 * fingerWidth + 4 * fingerGap) / 2f)
+        // Four top fingers + thumb = natural 5-finger silhouette.
+        val fingerGap = w * 0.018f
+        val fingerWidths = listOf(0.075f, 0.082f, 0.082f, 0.075f).map { w * it }
+        val fingerHeights = listOf(0.18f, 0.25f, 0.27f, 0.23f)
+        val totalFingerWidth = fingerWidths.sum() + (fingerGap * (fingerWidths.size - 1))
+        val fingersStartX = centerX - totalFingerWidth / 2f + (w * 0.02f)
 
         fingerHeights.forEachIndexed { index, factor ->
-            val left = fingersStartX + index * (fingerWidth + fingerGap)
-            val top = palmTop - h * factor + h * 0.045f
-            val rect = RectF(left, top, left + fingerWidth, palmTop + h * 0.03f)
-            handPath.addRoundRect(rect, fingerWidth * 0.45f, fingerWidth * 0.45f, Path.Direction.CW)
+            val left = fingersStartX + fingerWidths.take(index).sum() + (fingerGap * index)
+            val width = fingerWidths[index]
+            val top = palmTop - h * factor + h * 0.05f
+            val rect = RectF(left, top, left + width, palmTop + h * 0.03f)
+            handPath.addRoundRect(rect, width * 0.46f, width * 0.46f, Path.Direction.CW)
         }
 
         val thumbRect = RectF(
-            centerX - palmHalf - w * 0.12f,
-            palmTop + h * 0.08f,
-            centerX - palmHalf + w * 0.04f,
-            palmTop + h * 0.32f
+            centerX - palmHalf - w * 0.10f,
+            palmTop + h * 0.14f,
+            centerX - palmHalf + w * 0.03f,
+            palmTop + h * 0.34f
         )
-        handPath.addRoundRect(thumbRect, w * 0.05f, w * 0.05f, Path.Direction.CW)
+        handPath.addRoundRect(thumbRect, w * 0.045f, w * 0.045f, Path.Direction.CW)
     }
 
     override fun onDraw(canvas: Canvas) {

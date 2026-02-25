@@ -3,6 +3,7 @@ package com.palmreader.astro
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
@@ -14,6 +15,7 @@ import com.palmreader.astro.api.OpenAIService
 import com.palmreader.astro.api.PromptTemplates
 import com.palmreader.astro.databinding.ActivityResultBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -23,6 +25,7 @@ class ResultActivity : BaseFeatureActivity() {
     private lateinit var readings: List<PalmReading>
     private val gibberishTracker = GibberishTracker()
     private var persona: PersonaEntity? = null
+    private var typingIndicatorView: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +95,13 @@ class ResultActivity : BaseFeatureActivity() {
         val q = binding.etQuestion.text.toString().trim()
         if (q.isEmpty()) return
 
+        if (!isChargeableQuestion(q)) {
+            binding.etQuestion.setText("")
+            appendChat(getString(R.string.qa_user_prefix, q), isUser = true)
+            appendChat(getString(R.string.qa_non_question_hint), isUser = false)
+            return
+        }
+
         // Check for gibberish BEFORE spending a credit
         when (val gibResult = gibberishTracker.check(q)) {
             is GibberishTracker.Result.Warning -> {
@@ -126,6 +136,8 @@ class ResultActivity : BaseFeatureActivity() {
             appendChat(getString(R.string.qa_user_prefix, q), isUser = true)
 
             lifecycleScope.launch {
+                val startedAt = System.currentTimeMillis()
+                showTypingIndicator()
                 try {
                     ensurePersonaLoaded()
                     val context = readings.joinToString("\n") {
@@ -178,13 +190,71 @@ class ResultActivity : BaseFeatureActivity() {
                     appendChat(fallback, isUser = false)
                     saveToHistory(getString(R.string.feature_palmistry), q, fallback)
                 } finally {
+                    val elapsed = System.currentTimeMillis() - startedAt
+                    if (elapsed < 1000L) delay(1000L - elapsed)
+                    hideTypingIndicator()
                     refreshCredits(binding.tvCredits)
                     binding.scrollView.post {
-                        binding.scrollView.fullScroll(android.view.View.FOCUS_DOWN)
+                        binding.scrollView.fullScroll(View.FOCUS_DOWN)
                     }
                 }
             }
         }
+    }
+
+    private fun isChargeableQuestion(text: String): Boolean {
+        val clean = text.trim().lowercase()
+        if (clean.isEmpty()) return false
+        if ("?" in clean) return true
+        val trivial = setOf(
+            "ok", "okay", "kk", "thanks", "thank you", "thx", "good", "good morning", "good night",
+            "nice", "great", "awesome", "hello", "hi", "hii", "hlo", "done", "hmm"
+        )
+        if (clean in trivial) return false
+        return clean.startsWith("what ") ||
+            clean.startsWith("when ") ||
+            clean.startsWith("why ") ||
+            clean.startsWith("how ") ||
+            clean.startsWith("will ") ||
+            clean.startsWith("can ") ||
+            clean.startsWith("should ") ||
+            clean.startsWith("is ") ||
+            clean.startsWith("are ") ||
+            clean.startsWith("do ") ||
+            clean.startsWith("did ") ||
+            clean.startsWith("kya ") ||
+            clean.startsWith("kab ") ||
+            clean.startsWith("kaise ") ||
+            clean.startsWith("kyu ")
+    }
+
+    private fun showTypingIndicator() {
+        if (typingIndicatorView != null) return
+        val tv = TextView(this).apply {
+            text = getString(R.string.qa_typing_indicator)
+            textSize = 16f
+            setPadding(24, 12, 24, 12)
+            setBackgroundResource(R.drawable.bg_chat_bot)
+            setTextColor(ContextCompat.getColor(context, R.color.text_medium))
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).also {
+                it.topMargin = 8
+                it.marginEnd = 80
+                it.gravity = android.view.Gravity.START
+            }
+            layoutParams = lp
+        }
+        typingIndicatorView = tv
+        binding.llChat.addView(tv)
+        binding.scrollView.post { binding.scrollView.fullScroll(View.FOCUS_DOWN) }
+    }
+
+    private fun hideTypingIndicator() {
+        val view = typingIndicatorView ?: return
+        binding.llChat.removeView(view)
+        typingIndicatorView = null
     }
 
     private fun appendChat(text: String, isUser: Boolean) {

@@ -59,7 +59,7 @@
     <string name="home_btn_history">इतिहास</string>
     <string name="home_btn_logout">लॉग आउट</string>
     <string name="profile_setup_title">अपनी प्रोफ़ाइल पूरी करें</string>
-    <string name="profile_setup_message">कृपया एक बार प्रोफ़ाइल और पर्सोना पूरा करें। इसके बाद DOB जैसी जानकारी सभी रीडिंग में अपने-आप भर जाएगी।</string>
+    <string name="profile_setup_message">कृपया एक बार प्रोफ़ाइल पूरी करें। इसके बाद DOB जैसी जानकारी सभी रीडिंग में अपने-आप भर जाएगी।</string>
     <string name="profile_setup_cta">प्रोफ़ाइल भरें</string>
     <string name="profile_setup_later">बाद में</string>
 
@@ -108,6 +108,8 @@
     <string name="qa_ask_about">कृपया इनमें से किसी विषय पर पूछें:\nस्वास्थ्य, विवाह, शिक्षा, करियर, संतान, बुद्धि, या किस्मत</string>
     <string name="qa_gibberish_warning">आपका सवाल स्पष्ट नहीं लग रहा। कृपया सही सवाल लिखें। (चेतावनी %1$d/3)</string>
     <string name="qa_gibberish_credit_used">3 अस्पष्ट सवालों पर 1 क्रेडिट उपयोग हुआ। कृपया अर्थपूर्ण सवाल पूछें।</string>
+    <string name="qa_non_question_hint">कोई क्रेडिट नहीं कटा। भविष्यवाणी के लिए स्पष्ट सवाल पूछें।</string>
+    <string name="qa_typing_indicator">…</string>
 
     <!-- ── फ़ीचर गतिविधि ── -->
     <string name="tarot_instruction">तीन पत्ते चुनें और भविष्य पढ़ें</string>
@@ -131,6 +133,7 @@
     <string name="kundli_time_hint">जन्म समय (HH:MM)</string>
     <string name="kundli_place_hint">जन्म स्थान</string>
     <string name="kundli_missing_fields">नाम और जन्म तिथि ज़रूरी हैं</string>
+    <string name="kundli_invalid_time">सही जन्म समय HH:MM में दर्ज करें (00:00 से 23:59)</string>
     <string name="kundli_analyze">कुंडली बनाएं</string>
     <string name="kundli_result_title">आपकी कुंडली</string>
     <string name="kundli_simplified_note">यह एक सरलीकृत वैदिक रीडिंग है। विस्तृत कुंडली के लिए ज्योतिषी से मिलें।</string>

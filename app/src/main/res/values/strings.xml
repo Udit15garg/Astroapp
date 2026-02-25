@@ -59,7 +59,7 @@
     <string name="home_btn_history">History</string>
     <string name="home_btn_logout">Logout</string>
     <string name="profile_setup_title">Complete Your Profile</string>
-    <string name="profile_setup_message">Please complete your profile and persona once. We will auto-fill details like DOB in all readings.</string>
+    <string name="profile_setup_message">Please complete your profile once. We will auto-fill details like DOB in all readings.</string>
     <string name="profile_setup_cta">Fill Profile</string>
     <string name="profile_setup_later">Later</string>
 
@@ -113,6 +113,8 @@
     <string name="qa_ask_about">Please ask about:\nHealth, Marriage, Education, Career, Children, Mind, or Luck</string>
     <string name="qa_gibberish_warning">Your question doesn\'t seem clear. Please type a proper question. (Warning %1$d/3)</string>
     <string name="qa_gibberish_credit_used">3 unclear questions used 1 credit. Please ask a meaningful question.</string>
+    <string name="qa_non_question_hint">No credit used. Ask a clear question to get a prediction.</string>
+    <string name="qa_typing_indicator">…</string>
 
     <!-- ── Feature Activity ── -->
     <string name="tarot_instruction">Choose three cards and read your future</string>
@@ -136,6 +138,7 @@
     <string name="kundli_time_hint">Birth Time (HH:MM)</string>
     <string name="kundli_place_hint">Birth Place</string>
     <string name="kundli_missing_fields">Name and Date of Birth are required</string>
+    <string name="kundli_invalid_time">Enter valid birth time in HH:MM format (00:00 to 23:59)</string>
     <string name="kundli_analyze">Generate Kundli</string>
     <string name="kundli_result_title">Your Kundli</string>
     <string name="kundli_simplified_note">This is a simplified Vedic reading. For a detailed Kundli, consult an astrologer.</string>

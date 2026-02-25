@@ -3,6 +3,7 @@ package com.palmreader.astro
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -26,6 +27,7 @@ class HomeActivity : AppCompatActivity() {
         db = AppDatabase.get(this)
         session = SessionManager(this)
 
+        binding.btnSubscription.visibility = View.GONE
         loadUser()
         setupButtons()
     }
@@ -39,27 +41,23 @@ class HomeActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val user = db.userDao().findById(session.userId) ?: return@launch
-                val persona = db.personaDao().findByUser(session.userId)
                 val now = System.currentTimeMillis()
                 binding.tvGreeting.text = getString(R.string.home_greeting, user.name)
                 binding.tvCredits.text = if (user.planType == "UNLIMITED" && user.planExpiry > now) "∞" else maxOf(0, user.credits).toString()
-                promptProfileSetupIfNeeded(user, persona)
+                promptProfileSetupIfNeeded(user)
             } catch (e: Exception) {
                 Log.e("HomeActivity", "Failed to load home data", e)
             }
         }
     }
 
-    private fun isProfileSetup(user: UserEntity, persona: PersonaEntity?): Boolean {
-        val basicsReady = user.dob.isNotBlank() && user.birthPlace.isNotBlank()
-        val personaReady = persona != null &&
-            persona.relationshipStatus.isNotBlank() &&
-            persona.occupation.isNotBlank()
-        return basicsReady && personaReady
+    private fun isProfileSetup(user: UserEntity): Boolean {
+        return user.dob.isNotBlank()
     }
 
-    private fun promptProfileSetupIfNeeded(user: UserEntity, persona: PersonaEntity?) {
-        if (isProfileSetup(user, persona) || profilePromptVisible || isFinishing || isDestroyed) return
+    private fun promptProfileSetupIfNeeded(user: UserEntity) {
+        if (session.profilePromptDeferred) return
+        if (isProfileSetup(user) || profilePromptVisible || isFinishing || isDestroyed) return
         if (profileDialog?.isShowing == true) return
 
         profilePromptVisible = true
@@ -71,6 +69,7 @@ class HomeActivity : AppCompatActivity() {
                 startActivity(Intent(this, ProfileActivity::class.java))
             }
             .setNegativeButton(getString(R.string.profile_setup_later)) { _, _ ->
+                session.profilePromptDeferred = true
                 profilePromptVisible = false
             }
             .setOnDismissListener {
@@ -107,9 +106,6 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
         binding.cardCredits.setOnClickListener {
-            startActivity(Intent(this, SubscriptionActivity::class.java))
-        }
-        binding.btnSubscription.setOnClickListener {
             startActivity(Intent(this, SubscriptionActivity::class.java))
         }
         binding.btnLogout.setOnClickListener {

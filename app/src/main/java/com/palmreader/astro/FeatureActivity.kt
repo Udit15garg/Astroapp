@@ -1,6 +1,8 @@
 package com.palmreader.astro
 
 import android.app.DatePickerDialog
+import android.text.Editable
+import android.text.InputFilter
 import android.os.Bundle
 import android.graphics.Typeface
 import android.util.Log
@@ -11,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextWatcher
 import android.text.style.StyleSpan
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +23,7 @@ import com.palmreader.astro.api.OpenAIService
 import com.palmreader.astro.api.PromptTemplates
 import com.palmreader.astro.databinding.ActivityFeatureBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
@@ -44,6 +48,8 @@ class FeatureActivity : BaseFeatureActivity() {
 
     // AI reading context for follow-up questions
     private var aiReadingContext = ""
+    private var typingIndicatorView: TextView? = null
+    private var isFormattingBirthTime = false
 
     // Gibberish tracker per session
     private val gibberishTracker = GibberishTracker()
@@ -397,6 +403,7 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.etDob.isFocusable = false
         binding.etDob.setOnClickListener { pickDate(binding.etDob) }
         binding.btnAnalyze.text = getString(R.string.kundli_analyze)
+        setupBirthTimeInput()
         prefillFeatureInputs()
         binding.btnAnalyze.setOnClickListener {
             val name = binding.etName.text.toString().trim()
@@ -405,6 +412,10 @@ class FeatureActivity : BaseFeatureActivity() {
             val place = binding.etPlace.text.toString().trim()
             if (name.isEmpty() || dob.isEmpty()) {
                 Toast.makeText(this, getString(R.string.kundli_missing_fields), Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (time.isNotEmpty() && !isValidBirthTime(time)) {
+                Toast.makeText(this, getString(R.string.kundli_invalid_time), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             currentResult = KundliEngine.calculate(name, dob, time, place)
@@ -442,7 +453,9 @@ class FeatureActivity : BaseFeatureActivity() {
     private fun callOpenAIForReading() {
         useCredit(featureType) {
             lifecycleScope.launch {
-                showLoading(true)
+                setRequestInFlight(true)
+                val startedAt = System.currentTimeMillis()
+                showTypingIndicator()
                 try {
                     ensurePersonaLoaded()
                     val prompts = buildPromptForFeature()
@@ -498,7 +511,10 @@ class FeatureActivity : BaseFeatureActivity() {
                     addReadingToChat(fallback)
                     saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
                 } finally {
-                    showLoading(false)
+                    val elapsed = System.currentTimeMillis() - startedAt
+                    if (elapsed < 1000L) delay(1000L - elapsed)
+                    hideTypingIndicator()
+                    setRequestInFlight(false)
                     showQASection()
                     refreshCredits(binding.tvCredits)
                 }
@@ -643,6 +659,12 @@ class FeatureActivity : BaseFeatureActivity() {
         toggleFeatureLoader(show)
     }
 
+    private fun setRequestInFlight(inFlight: Boolean) {
+        binding.btnAnalyze.isEnabled = !inFlight
+        binding.btnDrawCards.isEnabled = !inFlight
+        binding.btnSend.isEnabled = !inFlight
+    }
+
     private fun initFeatureLoader() {
         if (featureLoaderInitialized) return
         featureLoaderInitialized = true
@@ -702,6 +724,37 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.llCardResults.addView(card)
     }
 
+    private fun setupBirthTimeInput() {
+        binding.etTime.filters = arrayOf(InputFilter.LengthFilter(5))
+        binding.etTime.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (isFormattingBirthTime) return
+                val raw = s?.toString().orEmpty()
+                val digits = raw.filter { it.isDigit() }.take(4)
+                val formatted = when {
+                    digits.length <= 2 -> digits
+                    else -> "${digits.substring(0, 2)}:${digits.substring(2)}"
+                }
+                if (formatted != raw) {
+                    isFormattingBirthTime = true
+                    binding.etTime.setText(formatted)
+                    binding.etTime.setSelection(formatted.length)
+                    isFormattingBirthTime = false
+                }
+            }
+        })
+    }
+
+    private fun isValidBirthTime(time: String): Boolean {
+        val match = Regex("^(\\d{2}):(\\d{2})$").matchEntire(time) ?: return false
+        val hour = match.groupValues[1].toIntOrNull() ?: return false
+        val minute = match.groupValues[2].toIntOrNull() ?: return false
+        return hour in 0..23 && minute in 0..59
+    }
+
     private fun pickDate(target: EditText) {
         val c = Calendar.getInstance()
         DatePickerDialog(this, { _, y, m, d ->
@@ -759,6 +812,21 @@ class FeatureActivity : BaseFeatureActivity() {
                 return@setOnClickListener
             }
 
+            if (!isChargeableQuestion(q)) {
+                binding.etQuestion.setText("")
+                binding.llQaSection.visibility = View.VISIBLE
+                binding.llInputBar.visibility = View.VISIBLE
+                addUserBubble(binding.llChat, q)
+                val helper = getString(R.string.qa_non_question_hint)
+                addBotBubble(binding.llChat, helper)
+                if (featureType == "TAROT") {
+                    TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = true, text = q))
+                    TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = helper))
+                }
+                scrollToBottom()
+                return@setOnClickListener
+            }
+
             // Check for gibberish BEFORE spending a credit
             when (val gibResult = gibberishTracker.check(q)) {
                 is GibberishTracker.Result.Warning -> {
@@ -794,6 +862,8 @@ class FeatureActivity : BaseFeatureActivity() {
                 scrollToBottom()
 
                 lifecycleScope.launch {
+                    val startedAt = System.currentTimeMillis()
+                    showTypingIndicator()
                     try {
                         ensurePersonaLoaded()
                         val context = aiReadingContext.ifEmpty { buildResultContext() }
@@ -851,12 +921,69 @@ class FeatureActivity : BaseFeatureActivity() {
                         if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                         saveToHistory(historyCategoryLabel(), q, fallback)
                     } finally {
+                        val elapsed = System.currentTimeMillis() - startedAt
+                        if (elapsed < 1000L) delay(1000L - elapsed)
+                        hideTypingIndicator()
                         refreshCredits(binding.tvCredits)
                         scrollToBottom()
                     }
                 }
             }
         }
+    }
+
+    private fun isChargeableQuestion(text: String): Boolean {
+        val clean = text.trim().lowercase()
+        if (clean.isEmpty()) return false
+        if ("?" in clean) return true
+        val trivial = setOf(
+            "ok", "okay", "kk", "thanks", "thank you", "thx", "good", "good morning", "good night",
+            "nice", "great", "awesome", "hello", "hi", "hii", "hlo", "done", "hmm"
+        )
+        if (clean in trivial) return false
+        return clean.startsWith("what ") ||
+            clean.startsWith("when ") ||
+            clean.startsWith("why ") ||
+            clean.startsWith("how ") ||
+            clean.startsWith("will ") ||
+            clean.startsWith("can ") ||
+            clean.startsWith("should ") ||
+            clean.startsWith("is ") ||
+            clean.startsWith("are ") ||
+            clean.startsWith("do ") ||
+            clean.startsWith("did ") ||
+            clean.startsWith("kya ") ||
+            clean.startsWith("kab ") ||
+            clean.startsWith("kaise ") ||
+            clean.startsWith("kyu ")
+    }
+
+    private fun showTypingIndicator() {
+        if (typingIndicatorView != null) return
+        val tv = TextView(this).apply {
+            text = getString(R.string.qa_typing_indicator)
+            textSize = 16f
+            setTextColor(resources.getColor(R.color.text_medium, null))
+            setBackgroundResource(R.drawable.bg_chat_bot)
+            setPadding(24, 12, 24, 12)
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(8, 8, 80, 8) }
+            layoutParams = lp
+        }
+        typingIndicatorView = tv
+        binding.llQaSection.visibility = View.VISIBLE
+        binding.llInputBar.visibility = View.VISIBLE
+        binding.llChat.visibility = View.VISIBLE
+        binding.llChat.addView(tv)
+        scrollToBottom()
+    }
+
+    private fun hideTypingIndicator() {
+        val view = typingIndicatorView ?: return
+        binding.llChat.removeView(view)
+        typingIndicatorView = null
     }
 
     private fun showQASection() {

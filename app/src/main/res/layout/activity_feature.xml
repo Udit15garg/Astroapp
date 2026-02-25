@@ -183,18 +183,20 @@
                             <ImageView
                                 android:id="@+id/imgCardBack1"
                                 android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:scaleType="centerCrop"
+                                android:layout_height="220dp"
+                                android:scaleType="fitCenter"
                                 android:src="@drawable/ic_tarot_card_back"
-                                android:padding="8dp"
+                                android:adjustViewBounds="true"
+                                android:padding="2dp"
                                 android:contentDescription="@string/tarot_card_back" />
 
                             <!-- Card front (revealed) -->
                             <ImageView
                                 android:id="@+id/imgCard1"
                                 android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:scaleType="centerCrop"
+                                android:layout_height="220dp"
+                                android:scaleType="fitCenter"
+                                android:adjustViewBounds="true"
                                 android:visibility="gone"
                                 android:contentDescription="@string/tarot_card_face" />
 
@@ -204,7 +206,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom"
-                                android:background="#99050810"
+                                android:background="#CC050810"
                                 android:paddingStart="8dp"
                                 android:paddingEnd="8dp"
                                 android:paddingTop="4dp"
@@ -240,17 +242,19 @@
                             <ImageView
                                 android:id="@+id/imgCardBack2"
                                 android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:scaleType="centerCrop"
+                                android:layout_height="220dp"
+                                android:scaleType="fitCenter"
                                 android:src="@drawable/ic_tarot_card_back"
-                                android:padding="8dp"
+                                android:adjustViewBounds="true"
+                                android:padding="2dp"
                                 android:contentDescription="@string/tarot_card_back" />
 
                             <ImageView
                                 android:id="@+id/imgCard2"
                                 android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:scaleType="centerCrop"
+                                android:layout_height="220dp"
+                                android:scaleType="fitCenter"
+                                android:adjustViewBounds="true"
                                 android:visibility="gone"
                                 android:contentDescription="@string/tarot_card_face" />
 
@@ -259,7 +263,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom"
-                                android:background="#99050810"
+                                android:background="#CC050810"
                                 android:paddingStart="8dp"
                                 android:paddingEnd="8dp"
                                 android:paddingTop="4dp"
@@ -294,17 +298,19 @@
                             <ImageView
                                 android:id="@+id/imgCardBack3"
                                 android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:scaleType="centerCrop"
+                                android:layout_height="220dp"
+                                android:scaleType="fitCenter"
                                 android:src="@drawable/ic_tarot_card_back"
-                                android:padding="8dp"
+                                android:adjustViewBounds="true"
+                                android:padding="2dp"
                                 android:contentDescription="@string/tarot_card_back" />
 
                             <ImageView
                                 android:id="@+id/imgCard3"
                                 android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:scaleType="centerCrop"
+                                android:layout_height="220dp"
+                                android:scaleType="fitCenter"
+                                android:adjustViewBounds="true"
                                 android:visibility="gone"
                                 android:contentDescription="@string/tarot_card_face" />
 
@@ -313,7 +319,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom"
-                                android:background="#99050810"
+                                android:background="#CC050810"
                                 android:paddingStart="8dp"
                                 android:paddingEnd="8dp"
                                 android:paddingTop="4dp"
