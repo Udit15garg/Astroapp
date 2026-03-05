@@ -272,4 +272,49 @@ $DISCLAIMER
 
         return system to question
     }
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  PALMISTRY VISION — Two-tier image-based palm reading
+    // ─────────────────────────────────────────────────────────────────────
+
+    /**
+     * Tier 1 (cheap/fast): Validates whether the image is an open human palm.
+     * Model: gpt-4o-mini. Expects reply: "VALID" or "INVALID".
+     */
+    fun palmistryValidation(): Pair<String, String> {
+        val system = """
+You are an image classifier. Examine the image and determine if it shows a clear, open human palm held flat facing the camera with fingers extended.
+Reply with exactly one word — no punctuation, no explanation:
+VALID  — if it is a clear, well-lit open human palm
+INVALID — for anything else (fist, back of hand, blurry, too dark, non-hand object, etc.)
+        """.trimIndent()
+        return system to "Is this an open human palm?"
+    }
+
+    /**
+     * Tier 2 (higher quality): Full AI palm line analysis.
+     * Model: gpt-4o. Returns structured data parseable into PalmReading objects.
+     */
+    fun palmistryVisionAnalysis(locale: String = "en", persona: PersonaEntity? = null): Pair<String, String> {
+        val system = """
+You are an expert palmist. Carefully examine the palm image and read the major and minor lines visible.
+${languageInstruction(locale)}
+${personaBlock(persona)}
+Provide readings for exactly these 7 categories based on what you observe in the palm lines and features:
+HEALTH, MARRIAGE, EDUCATION, BRAIN, CHILDREN, CAREER, LUCK
+
+Respond with EXACTLY 7 lines. Each line must follow this format precisely:
+CATEGORY:SCORE:One-sentence interpretation based on the palm lines.
+
+Rules:
+- SCORE is a number from 1 to 10 based on the strength and clarity of the relevant palm features.
+- Interpretation must reference specific palm features you actually see (life line, heart line, head line, fate line, mercury line, sun line, etc.).
+- Keep each interpretation to one clear, warm sentence.
+- Do NOT make specific medical or financial predictions.
+- Do NOT include any extra text, headers, or explanations outside the 7 lines.
+
+$DISCLAIMER
+        """.trimIndent()
+        return system to "Please analyze this palm and provide the 7-line reading."
+    }
 }

@@ -79,23 +79,29 @@
     <string name="feature_reading">Reading</string>
 
     <!-- ── Scan ── -->
-    <string name="scan_title">Take a Palm Photo</string>
-    <string name="scan_instruction">Place your right hand in front of the camera in a well-lit area</string>
+    <string name="scan_title">Palm Scan</string>
+    <string name="scan_header_subtitle">AI-powered palm line reading</string>
+    <string name="scan_instruction">Align your open right palm within the guide, then tap Open Camera</string>
     <string name="btn_camera">Open Camera</string>
     <string name="btn_camera_retake">Retake Photo</string>
-    <string name="btn_analyze">Analyze Palm</string>
+    <string name="btn_analyze">Read My Palm</string>
     <string name="scan_analyzing">Analyzing your palm\u2026</string>
+    <string name="scan_checking_hand">Checking image\u2026</string>
+    <string name="scan_reading_palm">Reading your palm lines\u2026</string>
+    <string name="scan_not_a_palm">Please take a clear photo of your open palm facing the camera.</string>
     <string name="scan_no_photo">Photo capture failed. Please try again.</string>
-    <string name="scan_palm_not_visible">Palm not clearly visible. Place your hand straight.</string>
+    <string name="scan_palm_not_visible">Palm not clearly visible. Place your hand straight in good light.</string>
     <string name="scan_quality_bad">Please improve photo quality and retake.</string>
     <string name="scan_quality_dark">Too dark! Move to a well-lit area or turn on the flashlight.</string>
     <string name="scan_quality_blurry">Photo is blurry! Hold the camera steady and retake.</string>
-    <string name="scan_quality_good">Photo looks good! Tap Analyze Palm.</string>
+    <string name="scan_quality_good">Photo looks good! Tap Read My Palm.</string>
     <string name="scan_error">Analysis error: %s</string>
     <string name="scan_take_photo_first">Take a palm photo first</string>
-    <string name="scan_camera_unavailable">Camera is not available</string>
-    <string name="scan_hand_guide">Place Hand Here</string>
-    <string name="scan_hand_guide_sub">Right hand, well-lit area</string>
+    <string name="scan_camera_unavailable">Camera is not available on this device</string>
+    <string name="scan_camera_permission_denied">Camera permission is required to take a palm photo</string>
+    <string name="scan_hand_guide">Open Palm Here</string>
+    <string name="scan_hand_guide_sub">Fingers spread \u2022 Good light \u2022 Right hand</string>
+    <string name="scan_tips">Tips for best results:\n\u2022 Hold your palm flat and open\n\u2022 Use natural or bright indoor light\n\u2022 Keep camera 20\u201330 cm from hand\n\u2022 Avoid shadows across the palm</string>
 
     <!-- ── Results ── -->
     <string name="result_title">Your Palm Reading</string>

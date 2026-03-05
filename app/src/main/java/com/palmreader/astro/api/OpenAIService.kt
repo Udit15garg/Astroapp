@@ -22,7 +22,9 @@ object OpenAIService {
 
     private const val BASE_URL = "https://api.openai.com/v1/chat/completions"
     private const val MODEL = "gpt-4o-mini"
-    private const val TIMEOUT_MS = 60_000L
+    const val MODEL_VISION_FAST = "gpt-4o-mini"   // cheap: hand validation
+    const val MODEL_VISION_FULL = "gpt-4o"         // full palm analysis
+    private const val TIMEOUT_MS = 90_000L
 
     sealed class ApiResult<out T> {
         data class Success<T>(val data: T) : ApiResult<T>()
@@ -89,6 +91,75 @@ object OpenAIService {
         }
     }
 
+    /**
+     * Vision chat completion — sends an image alongside text to a vision-capable model.
+     * @param imageBase64 Base64-encoded JPEG/PNG image data (without data URI prefix)
+     * @param model Use MODEL_VISION_FAST for quick validation, MODEL_VISION_FULL for analysis
+     */
+    suspend fun visionChatCompletion(
+        systemPrompt: String,
+        userMessage: String,
+        imageBase64: String,
+        model: String = MODEL_VISION_FAST,
+        temperature: Float = 0.3f
+    ): ApiResult<String> = withContext(Dispatchers.IO) {
+        try {
+            val apiKey: String? = BuildConfig.OPENAI_API_KEY
+            if (apiKey.isNullOrBlank() || apiKey == "YOUR_API_KEY_HERE") {
+                return@withContext ApiResult.Error("API key not configured.")
+            }
+            withTimeoutOrNull(TIMEOUT_MS) {
+                try {
+                    makeVisionRequest(apiKey, systemPrompt, userMessage, imageBase64, model, temperature)
+                } catch (e: IOException) {
+                    ApiResult.Error("Network error: ${e.message}", -1)
+                }
+            } ?: ApiResult.Error("Vision request timed out.", 408)
+        } catch (e: Exception) {
+            Log.e("OpenAIService", "Vision API call failed", e)
+            ApiResult.Error("Vision error: ${e.message}", -1)
+        }
+    }
+
+    private fun makeVisionRequest(
+        apiKey: String,
+        systemPrompt: String,
+        userMessage: String,
+        imageBase64: String,
+        model: String,
+        temperature: Float
+    ): ApiResult<String> {
+        val userContent = JSONArray().apply {
+            put(JSONObject().apply {
+                put("type", "text")
+                put("text", userMessage)
+            })
+            put(JSONObject().apply {
+                put("type", "image_url")
+                put("image_url", JSONObject().apply {
+                    put("url", "data:image/jpeg;base64,$imageBase64")
+                    put("detail", "high")
+                })
+            })
+        }
+        val requestBody = JSONObject().apply {
+            put("model", model)
+            put("temperature", temperature.toDouble())
+            put("max_tokens", 800)
+            put("messages", JSONArray().apply {
+                put(JSONObject().apply {
+                    put("role", "system")
+                    put("content", systemPrompt)
+                })
+                put(JSONObject().apply {
+                    put("role", "user")
+                    put("content", userContent)
+                })
+            })
+        }
+        return executeHttpRequest(apiKey, requestBody)
+    }
+
     private fun makeRequest(
         apiKey: String,
         systemPrompt: String,
@@ -111,12 +182,16 @@ object OpenAIService {
             })
         }
 
+        return executeHttpRequest(apiKey, requestBody)
+    }
+
+    private fun executeHttpRequest(apiKey: String, requestBody: JSONObject): ApiResult<String> {
         val connection = (URL(BASE_URL).openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             setRequestProperty("Content-Type", "application/json")
             setRequestProperty("Authorization", "Bearer $apiKey")
             connectTimeout = 15_000
-            readTimeout = 60_000
+            readTimeout = 90_000
             doOutput = true
         }
 

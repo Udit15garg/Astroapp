@@ -28,36 +28,71 @@
             android:tint="@color/brand_gold"
             android:contentDescription="@string/cd_back_button" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/scan_title"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_dark" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scan_title"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_dark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scan_header_subtitle"
+                android:textSize="12sp"
+                android:textColor="@color/text_medium" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="20dp">
 
-        <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="wrap_content"
+        <!-- Status / progress row -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/scan_instruction"
-            android:textSize="14sp"
-            android:textColor="@color/text_medium"
-            android:layout_marginBottom="16dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
 
-        <!-- Preview area + hand guide overlay -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                android:indeterminateTint="@color/primary" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/scan_instruction"
+                android:textSize="13sp"
+                android:textColor="@color/text_medium" />
+        </LinearLayout>
+
+        <!-- Camera preview + hand guide overlay -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="14dp">
 
             <ImageView
                 android:id="@+id/ivPreview"
@@ -67,7 +102,7 @@
                 android:background="@drawable/bg_preview"
                 android:contentDescription="@string/cd_hand_preview" />
 
-            <!-- Dashed hand-boundary guide; hidden after photo is captured -->
+            <!-- Dashed hand-boundary guide — hidden after photo is captured -->
             <com.palmreader.astro.HandOverlayView
                 android:id="@+id/handOverlay"
                 android:layout_width="match_parent"
@@ -75,22 +110,39 @@
 
         </FrameLayout>
 
+        <!-- Quick tips shown before capture -->
+        <TextView
+            android:id="@+id/tvTips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/scan_tips"
+            android:textSize="12sp"
+            android:textColor="@color/text_medium"
+            android:lineSpacingMultiplier="1.4"
+            android:background="@drawable/bg_score_track"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginBottom="14dp" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCamera"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:text="@string/btn_camera"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:backgroundTint="@color/primary"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="10dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAnalyze"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:text="@string/btn_analyze"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:enabled="false"
             android:backgroundTint="@color/secondary" />
+
     </LinearLayout>
 </LinearLayout>

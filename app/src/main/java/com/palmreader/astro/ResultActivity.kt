@@ -60,8 +60,8 @@ class ResultActivity : BaseFeatureActivity() {
             val card = LayoutInflater.from(this)
                 .inflate(R.layout.item_reading, binding.llReadings, false)
 
-            card.findViewById<TextView>(R.id.tvCategory).text =
-                "${reading.category}"
+            card.findViewById<TextView>(R.id.tvEmoji).text = reading.emoji
+            card.findViewById<TextView>(R.id.tvCategory).text = reading.category
             card.findViewById<TextView>(R.id.tvScore).text = "${reading.score}/10"
 
             val bar = card.findViewById<LinearLayout>(R.id.scoreBar)
