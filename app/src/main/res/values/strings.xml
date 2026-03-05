@@ -89,6 +89,9 @@
     <string name="scan_checking_hand">Checking image\u2026</string>
     <string name="scan_reading_palm">Reading your palm lines\u2026</string>
     <string name="scan_not_a_palm">Please take a clear photo of your open palm facing the camera.</string>
+    <string name="scan_ai_unavailable">Palmistry AI is unavailable right now. Please try again.</string>
+    <string name="scan_invalid_response">Could not validate this image. Please retake a clear palm photo.</string>
+    <string name="scan_default_retake_instruction">Show the front side of one open palm, fingers naturally straight, wrist visible, camera parallel to the palm, in bright light.</string>
     <string name="scan_no_photo">Photo capture failed. Please try again.</string>
     <string name="scan_palm_not_visible">Palm not clearly visible. Place your hand straight in good light.</string>
     <string name="scan_quality_bad">Please improve photo quality and retake.</string>
@@ -121,6 +124,10 @@
     <string name="qa_gibberish_credit_used">3 unclear questions used 1 credit. Please ask a meaningful question.</string>
     <string name="qa_non_question_hint">No credit used. Ask a clear question to get a prediction.</string>
     <string name="qa_typing_indicator">…</string>
+    <string name="qa_palm_ai_unavailable">I can't answer right now because palmistry AI is unavailable. Please try again in a moment.</string>
+    <string name="qa_palm_empty_answer">I could not generate a reliable palm answer. Please ask again with a specific question.</string>
+    <string name="qa_palm_marked_image_caption">Uploaded palm image with key palm lines marked:</string>
+    <string name="cd_palm_marked_image">Palm image with marked lines</string>
     <string name="qa_read_more">Read more ▼</string>
     <string name="qa_show_less">Show less ▲</string>
 

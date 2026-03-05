@@ -22,8 +22,9 @@ object OpenAIService {
 
     private const val BASE_URL = "https://api.openai.com/v1/chat/completions"
     private const val MODEL = "gpt-4o-mini"
-    const val MODEL_VISION_FAST = "gpt-4o-mini"   // cheap: hand validation
-    const val MODEL_VISION_FULL = "gpt-4o"         // full palm analysis
+    const val MODEL_VISION_FAST = "gpt-5-mini"   // strict hand validation
+    const val MODEL_VISION_FULL = "gpt-5"        // full palm analysis
+    const val MODEL_PALM_QA = "gpt-5"            // palm follow-up answers
     private const val TIMEOUT_MS = 90_000L
 
     sealed class ApiResult<out T> {
@@ -43,6 +44,7 @@ object OpenAIService {
     suspend fun chatCompletion(
         systemPrompt: String,
         userMessage: String,
+        model: String = MODEL,
         temperature: Float = 0.7f
     ): ApiResult<String> = withContext(Dispatchers.IO) {
         try {
@@ -66,7 +68,7 @@ object OpenAIService {
 
                 val result = withTimeoutOrNull(TIMEOUT_MS) {
                     try {
-                        makeRequest(apiKey, systemPrompt, userMessage, temperature)
+                            makeRequest(apiKey, systemPrompt, userMessage, model, temperature)
                     } catch (e: IOException) {
                         Log.w("OpenAIService", "Network IO error on attempt $attempt: ${e.message}")
                         ApiResult.Error("Network error: ${e.message}", -1)
@@ -164,10 +166,11 @@ object OpenAIService {
         apiKey: String,
         systemPrompt: String,
         userMessage: String,
+        model: String,
         temperature: Float
     ): ApiResult<String> {
         val requestBody = JSONObject().apply {
-            put("model", MODEL)
+            put("model", model)
             put("temperature", temperature.toDouble())
             put("max_tokens", 1500)
             put("messages", JSONArray().apply {

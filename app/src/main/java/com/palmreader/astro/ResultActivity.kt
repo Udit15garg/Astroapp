@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.graphics.BitmapFactory
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
@@ -26,6 +28,7 @@ class ResultActivity : BaseFeatureActivity() {
     private val gibberishTracker = GibberishTracker()
     private var persona: PersonaEntity? = null
     private var typingIndicatorView: TextView? = null
+    private var markedPalmPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +37,13 @@ class ResultActivity : BaseFeatureActivity() {
 
         @Suppress("DEPRECATION")
         readings = intent.getParcelableArrayListExtra<PalmReading>("readings") ?: emptyList()
+        markedPalmPath = intent.getStringExtra("markedPalmPath")
 
         binding.btnBack.setOnClickListener { finish() }
         refreshCredits(binding.tvCredits)
         loadPersona()
         buildResultCards()
+        appendMarkedPalmToChat()
         setupQA()
     }
 
@@ -153,14 +158,15 @@ class ResultActivity : BaseFeatureActivity() {
                     when (val result = OpenAIService.chatCompletion(
                         systemPrompt = prompts.first,
                         userMessage = prompts.second,
+                        model = OpenAIService.MODEL_PALM_QA,
                         temperature = 0.7f
                     )) {
                         is OpenAIService.ApiResult.Success -> {
                             val answer = result.data.trim()
                             if (answer.isBlank()) {
-                                val fallback = PalmAnalyzer.answerQuestion(q, readings)
-                                appendChat(fallback, isUser = false)
-                                saveToHistory(getString(R.string.feature_palmistry), q, fallback)
+                                val msg = getString(R.string.qa_palm_empty_answer)
+                                appendChat(msg, isUser = false)
+                                saveToHistory(getString(R.string.feature_palmistry), q, msg)
                             } else {
                                 Log.d("AstroAI", "AI palm answer received")
                                 appendChat(answer, isUser = false)
@@ -169,26 +175,26 @@ class ResultActivity : BaseFeatureActivity() {
                         }
                         is OpenAIService.ApiResult.Error -> {
                             Log.e("AstroAI", "AI palm error: ${result.message}")
-                            val fallback = PalmAnalyzer.answerQuestion(q, readings)
-                            appendChat(fallback, isUser = false)
-                            saveToHistory(getString(R.string.feature_palmistry), q, fallback)
+                            val msg = getString(R.string.qa_palm_ai_unavailable)
+                            appendChat(msg, isUser = false)
+                            saveToHistory(getString(R.string.feature_palmistry), q, msg)
                         }
                         is OpenAIService.ApiResult.RateLimited -> {
-                            val fallback = PalmAnalyzer.answerQuestion(q, readings)
-                            appendChat("${getString(R.string.ai_rate_limited)}\n\n$fallback", isUser = false)
-                            saveToHistory(getString(R.string.feature_palmistry), q, fallback)
+                            val msg = getString(R.string.ai_rate_limited)
+                            appendChat(msg, isUser = false)
+                            saveToHistory(getString(R.string.feature_palmistry), q, msg)
                         }
                         else -> {
-                            val fallback = PalmAnalyzer.answerQuestion(q, readings)
-                            appendChat(fallback, isUser = false)
-                            saveToHistory(getString(R.string.feature_palmistry), q, fallback)
+                            val msg = getString(R.string.qa_palm_ai_unavailable)
+                            appendChat(msg, isUser = false)
+                            saveToHistory(getString(R.string.feature_palmistry), q, msg)
                         }
                     }
                 } catch (e: Exception) {
                     Log.e("AstroAI", "Palm Q&A request failed", e)
-                    val fallback = PalmAnalyzer.answerQuestion(q, readings)
-                    appendChat(fallback, isUser = false)
-                    saveToHistory(getString(R.string.feature_palmistry), q, fallback)
+                    val msg = getString(R.string.qa_palm_ai_unavailable)
+                    appendChat(msg, isUser = false)
+                    saveToHistory(getString(R.string.feature_palmistry), q, msg)
                 } finally {
                     val elapsed = System.currentTimeMillis() - startedAt
                     if (elapsed < 1000L) delay(1000L - elapsed)
@@ -280,5 +286,45 @@ class ResultActivity : BaseFeatureActivity() {
             layoutParams = lp
         }
         binding.llChat.addView(tv)
+    }
+
+    private fun appendMarkedPalmToChat() {
+        val path = markedPalmPath ?: return
+        val bitmap = BitmapFactory.decodeFile(path) ?: return
+
+        val caption = TextView(this).apply {
+            text = getString(R.string.qa_palm_marked_image_caption)
+            textSize = 14f
+            setPadding(24, 16, 24, 10)
+            setBackgroundResource(R.drawable.bg_chat_bot)
+            setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).also {
+                it.topMargin = 8
+                it.marginEnd = 80
+                it.gravity = android.view.Gravity.START
+            }
+        }
+        binding.llChat.addView(caption)
+
+        val image = ImageView(this).apply {
+            setImageBitmap(bitmap)
+            adjustViewBounds = true
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            contentDescription = getString(R.string.cd_palm_marked_image)
+            setBackgroundResource(R.drawable.bg_chat_bot)
+            setPadding(10, 10, 10, 10)
+            layoutParams = LinearLayout.LayoutParams(
+                resources.displayMetrics.widthPixels * 3 / 4,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).also {
+                it.topMargin = 6
+                it.marginEnd = 80
+                it.gravity = android.view.Gravity.START
+            }
+        }
+        binding.llChat.addView(image)
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
 import com.palmreader.astro.api.OpenAIService
 import com.palmreader.astro.api.PromptTemplates
@@ -25,12 +27,26 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 
 class ScanActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityScanBinding
     private var capturedBitmap: Bitmap? = null
     private var photoUri: Uri? = null
+
+    private data class ValidationGate(
+        val decision: String,
+        val reason: String,
+        val instruction: String
+    )
+
+    private data class VisionParseResult(
+        val status: String,
+        val reason: String?,
+        val instruction: String?,
+        val readings: List<PalmReading>
+    )
 
     // Full-resolution camera via FileProvider URI
     private val cameraLauncher = registerForActivityResult(
@@ -59,7 +75,7 @@ class ScanActivity : AppCompatActivity() {
     ) { result ->
         @Suppress("DEPRECATION")
         val photo = result.data?.extras?.get("data") as? Bitmap
-        if (photo != null) onPhotoCaptured(photo)
+        if (photo != null) onPhotoCaptured(normalizeLegacyBitmap(photo))
         else setStatus(getString(R.string.scan_no_photo), isError = true)
     }
 
@@ -126,9 +142,59 @@ class ScanActivity : AppCompatActivity() {
             val rawMax = maxOf(opts.outWidth, opts.outHeight)
             val sampleSize = if (rawMax > maxEdge) Integer.highestOneBit(rawMax / maxEdge) else 1
             val decodeOpts = BitmapFactory.Options().apply { inSampleSize = sampleSize }
-            contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, decodeOpts) }
+            val decoded = contentResolver.openInputStream(uri)?.use {
+                BitmapFactory.decodeStream(it, null, decodeOpts)
+            } ?: return@withContext null
+            val exifOrientation = contentResolver.openInputStream(uri)?.use { stream ->
+                ExifInterface(stream).getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )
+            } ?: ExifInterface.ORIENTATION_NORMAL
+            applyExifOrientation(decoded, exifOrientation)
         } catch (e: Exception) {
             Log.e("ScanActivity", "Failed to load bitmap", e); null
+        }
+    }
+
+    private fun normalizeLegacyBitmap(photo: Bitmap): Bitmap {
+        if (photo.width > photo.height * 1.2f) {
+            return rotateBitmap(photo, 90f)
+        }
+        return photo
+    }
+
+    private fun applyExifOrientation(bitmap: Bitmap, orientation: Int): Bitmap {
+        val matrix = Matrix()
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.preScale(-1f, 1f)
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.preScale(1f, -1f)
+            ExifInterface.ORIENTATION_TRANSPOSE -> {
+                matrix.preScale(-1f, 1f)
+                matrix.postRotate(270f)
+            }
+            ExifInterface.ORIENTATION_TRANSVERSE -> {
+                matrix.preScale(-1f, 1f)
+                matrix.postRotate(90f)
+            }
+            else -> return bitmap
+        }
+        return try {
+            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        } catch (_: Exception) {
+            bitmap
+        }
+    }
+
+    private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
+        return try {
+            val matrix = Matrix().apply { postRotate(degrees) }
+            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        } catch (_: Exception) {
+            bitmap
         }
     }
 
@@ -169,16 +235,37 @@ class ScanActivity : AppCompatActivity() {
                     model = OpenAIService.MODEL_VISION_FAST
                 )
 
-                val isHand: Boolean? = when (validationResult) {
-                    is OpenAIService.ApiResult.Success ->
-                        validationResult.data.trim().uppercase().let { r ->
-                            r.startsWith("VALID") && !r.startsWith("INVALID")
-                        }
-                    else -> null // API unavailable — skip validation, proceed anyway
+                val validation = when (validationResult) {
+                    is OpenAIService.ApiResult.Success -> parseValidationGate(validationResult.data)
+                    is OpenAIService.ApiResult.RateLimited -> {
+                        setStatus(getString(R.string.ai_rate_limited), isError = true)
+                        return@launch
+                    }
+                    is OpenAIService.ApiResult.Error -> {
+                        setStatus(getString(R.string.scan_ai_unavailable), isError = true)
+                        return@launch
+                    }
+                    else -> {
+                        setStatus(getString(R.string.scan_ai_unavailable), isError = true)
+                        return@launch
+                    }
                 }
 
-                if (isHand == false) {
-                    setStatus(getString(R.string.scan_not_a_palm), isError = true)
+                if (validation == null) {
+                    setStatus(getString(R.string.scan_invalid_response), isError = true)
+                    return@launch
+                }
+
+                if (validation.decision != "VALID") {
+                    val rejectMessage = buildString {
+                        append(getString(R.string.scan_not_a_palm))
+                        if (validation.reason.isNotBlank()) append("\nReason: ${validation.reason}")
+                        val retake = validation.instruction.ifBlank {
+                            getString(R.string.scan_default_retake_instruction)
+                        }
+                        append("\nRetake: $retake")
+                    }
+                    setStatus(rejectMessage, isError = true)
                     return@launch
                 }
 
@@ -193,19 +280,46 @@ class ScanActivity : AppCompatActivity() {
                     model = OpenAIService.MODEL_VISION_FULL
                 )
 
-                val readings = when (analysisResult) {
-                    is OpenAIService.ApiResult.Success -> parseAIReadings(analysisResult.data)
-                    else -> emptyList()
+                val parsed = when (analysisResult) {
+                    is OpenAIService.ApiResult.Success -> parseVisionAnalysis(analysisResult.data)
+                    is OpenAIService.ApiResult.RateLimited -> {
+                        setStatus(getString(R.string.ai_rate_limited), isError = true)
+                        return@launch
+                    }
+                    is OpenAIService.ApiResult.Error -> {
+                        setStatus(getString(R.string.scan_ai_unavailable), isError = true)
+                        return@launch
+                    }
+                    else -> {
+                        setStatus(getString(R.string.scan_ai_unavailable), isError = true)
+                        return@launch
+                    }
                 }
 
-                val finalReadings = readings.ifEmpty {
-                    Log.w("ScanActivity", "AI readings empty, using local fallback")
-                    PalmAnalyzer.analyze(bmp)
+                if (parsed == null) {
+                    setStatus(getString(R.string.scan_invalid_response), isError = true)
+                    return@launch
                 }
 
-                if (finalReadings.isNotEmpty()) {
+                if (parsed.status == "REUPLOAD") {
+                    val reuploadMsg = buildString {
+                        append(getString(R.string.scan_palm_not_visible))
+                        parsed.reason?.takeIf { it.isNotBlank() }?.let { append("\nReason: $it") }
+                        val retake = parsed.instruction?.takeIf { it.isNotBlank() }
+                            ?: getString(R.string.scan_default_retake_instruction)
+                        append("\nRetake: $retake")
+                    }
+                    setStatus(reuploadMsg, isError = true)
+                    return@launch
+                }
+
+                if (parsed.readings.size == 7) {
+                    val markedPalmPath = withContext(Dispatchers.IO) { saveMarkedPalmImage(bmp) }
                     startActivity(Intent(this@ScanActivity, ResultActivity::class.java).apply {
-                        putParcelableArrayListExtra("readings", ArrayList(finalReadings))
+                        putParcelableArrayListExtra("readings", ArrayList(parsed.readings))
+                        if (!markedPalmPath.isNullOrBlank()) {
+                            putExtra("markedPalmPath", markedPalmPath)
+                        }
                     })
                 } else {
                     setStatus(getString(R.string.scan_palm_not_visible), isError = true)
@@ -229,6 +343,71 @@ class ScanActivity : AppCompatActivity() {
         return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
     }
 
+    private fun saveMarkedPalmImage(bitmap: Bitmap): String? {
+        return try {
+            val marked = PalmLineOverlay.drawAnnotated(bitmap)
+            val scaled = scaleBitmapForChat(marked, maxEdge = 1000)
+            val dir = File(cacheDir, "palm_images").also { it.mkdirs() }
+            val file = File(dir, "marked_${System.currentTimeMillis()}.jpg")
+            FileOutputStream(file).use { out ->
+                scaled.compress(Bitmap.CompressFormat.JPEG, 85, out)
+            }
+            file.absolutePath
+        } catch (e: Exception) {
+            Log.w("ScanActivity", "Failed to save marked palm image: ${e.message}")
+            null
+        }
+    }
+
+    private fun scaleBitmapForChat(bitmap: Bitmap, maxEdge: Int): Bitmap {
+        val max = maxOf(bitmap.width, bitmap.height)
+        if (max <= maxEdge) return bitmap
+        val ratio = maxEdge.toFloat() / max.toFloat()
+        val newW = (bitmap.width * ratio).toInt().coerceAtLeast(1)
+        val newH = (bitmap.height * ratio).toInt().coerceAtLeast(1)
+        return Bitmap.createScaledBitmap(bitmap, newW, newH, true)
+    }
+
+    private fun parseValidationGate(raw: String): ValidationGate? {
+        val fields = parseKeyValueLines(raw)
+        val decision = fields["DECISION"]?.uppercase() ?: return null
+        val reason = fields["REASON"].orEmpty()
+        val instruction = fields["INSTRUCTION"].orEmpty()
+        return ValidationGate(decision = decision, reason = reason, instruction = instruction)
+    }
+
+    private fun parseVisionAnalysis(raw: String): VisionParseResult? {
+        val fields = parseKeyValueLines(raw)
+        val status = fields["STATUS"]?.uppercase() ?: return null
+        if (status == "REUPLOAD") {
+            return VisionParseResult(
+                status = status,
+                reason = fields["REASON"],
+                instruction = fields["INSTRUCTION"],
+                readings = emptyList()
+            )
+        }
+        if (status != "OK") return null
+        return VisionParseResult(
+            status = status,
+            reason = null,
+            instruction = null,
+            readings = parseAIReadings(raw)
+        )
+    }
+
+    private fun parseKeyValueLines(raw: String): Map<String, String> {
+        return raw.lines()
+            .mapNotNull { line ->
+                val idx = line.indexOf(':')
+                if (idx <= 0) return@mapNotNull null
+                val key = line.substring(0, idx).trim().uppercase()
+                val value = line.substring(idx + 1).trim()
+                key to value
+            }
+            .toMap()
+    }
+
     /** Parses AI response lines of format "CATEGORY:SCORE:Interpretation sentence." */
     private fun parseAIReadings(raw: String): List<PalmReading> {
         val emojiMap = mapOf(
@@ -245,6 +424,7 @@ class ScanActivity : AppCompatActivity() {
                 val parts = line.trim().split(":", limit = 3)
                 if (parts.size < 3) return@mapNotNull null
                 val cat = parts[0].trim().uppercase()
+                if (cat !in emojiMap.keys) return@mapNotNull null
                 val score = parts[1].trim().toIntOrNull()?.coerceIn(1, 10) ?: return@mapNotNull null
                 val interp = parts[2].trim().ifBlank { return@mapNotNull null }
                 PalmReading(
@@ -255,6 +435,7 @@ class ScanActivity : AppCompatActivity() {
                     emoji = emojiMap[cat] ?: "✨"
                 )
             }
+            .distinctBy { it.category }
     }
 
     // ── UI state helpers ──────────────────────────────────────────────────
