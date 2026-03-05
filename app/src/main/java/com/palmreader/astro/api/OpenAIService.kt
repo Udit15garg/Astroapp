@@ -20,12 +20,17 @@ import kotlinx.coroutines.withTimeoutOrNull
  */
 object OpenAIService {
 
-    private const val BASE_URL = "https://api.openai.com/v1/chat/completions"
+    private const val OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions"
     private const val MODEL = "gpt-4o-mini"
     const val MODEL_VISION_FAST = "gpt-5-mini"   // strict hand validation
     const val MODEL_VISION_FULL = "gpt-5"        // full palm analysis
     const val MODEL_PALM_QA = "gpt-5"            // palm follow-up answers
     private const val TIMEOUT_MS = 90_000L
+
+    private data class RequestTransport(
+        val endpoint: String,
+        val authHeader: String?
+    )
 
     sealed class ApiResult<out T> {
         data class Success<T>(val data: T) : ApiResult<T>()
@@ -48,13 +53,9 @@ object OpenAIService {
         temperature: Float = 0.7f
     ): ApiResult<String> = withContext(Dispatchers.IO) {
         try {
-            val apiKey: String? = BuildConfig.OPENAI_API_KEY
-
-            if (apiKey.isNullOrBlank() || apiKey == "YOUR_API_KEY_HERE") {
-                return@withContext ApiResult.Error(
-                    "API key not configured. Add OPENAI_API_KEY to local.properties."
-                )
-            }
+            val transport = resolveTransport() ?: return@withContext ApiResult.Error(
+                "AI backend not configured. Set OPENAI_PROXY_URL (preferred) or OPENAI_API_KEY for local testing."
+            )
 
             var lastResult: ApiResult<String> = ApiResult.Error("Unknown error", -1)
             var backoffMs = 2_000L
@@ -68,7 +69,7 @@ object OpenAIService {
 
                 val result = withTimeoutOrNull(TIMEOUT_MS) {
                     try {
-                            makeRequest(apiKey, systemPrompt, userMessage, model, temperature)
+                            makeRequest(transport, systemPrompt, userMessage, model, temperature)
                     } catch (e: IOException) {
                         Log.w("OpenAIService", "Network IO error on attempt $attempt: ${e.message}")
                         ApiResult.Error("Network error: ${e.message}", -1)
@@ -106,13 +107,12 @@ object OpenAIService {
         temperature: Float = 0.3f
     ): ApiResult<String> = withContext(Dispatchers.IO) {
         try {
-            val apiKey: String? = BuildConfig.OPENAI_API_KEY
-            if (apiKey.isNullOrBlank() || apiKey == "YOUR_API_KEY_HERE") {
-                return@withContext ApiResult.Error("API key not configured.")
-            }
+            val transport = resolveTransport() ?: return@withContext ApiResult.Error(
+                "AI backend not configured. Set OPENAI_PROXY_URL (preferred) or OPENAI_API_KEY for local testing."
+            )
             withTimeoutOrNull(TIMEOUT_MS) {
                 try {
-                    makeVisionRequest(apiKey, systemPrompt, userMessage, imageBase64, model, temperature)
+                    makeVisionRequest(transport, systemPrompt, userMessage, imageBase64, model, temperature)
                 } catch (e: IOException) {
                     ApiResult.Error("Network error: ${e.message}", -1)
                 }
@@ -123,8 +123,26 @@ object OpenAIService {
         }
     }
 
+    private fun resolveTransport(): RequestTransport? {
+        val proxyUrl = BuildConfig.OPENAI_PROXY_URL.trim()
+        if (proxyUrl.isNotBlank()) {
+            val proxyToken = BuildConfig.OPENAI_PROXY_TOKEN.trim()
+            val auth = if (proxyToken.isBlank()) null else "Bearer $proxyToken"
+            return RequestTransport(endpoint = proxyUrl, authHeader = auth)
+        }
+
+        val apiKey = BuildConfig.OPENAI_API_KEY
+        val keyConfigured = !apiKey.isNullOrBlank() && apiKey != "YOUR_API_KEY_HERE"
+        val directAllowed = BuildConfig.DEBUG || BuildConfig.ALLOW_DIRECT_OPENAI
+        if (!directAllowed || !keyConfigured) return null
+        return RequestTransport(
+            endpoint = OPENAI_CHAT_URL,
+            authHeader = "Bearer $apiKey"
+        )
+    }
+
     private fun makeVisionRequest(
-        apiKey: String,
+        transport: RequestTransport,
         systemPrompt: String,
         userMessage: String,
         imageBase64: String,
@@ -159,11 +177,11 @@ object OpenAIService {
                 })
             })
         }
-        return executeHttpRequest(apiKey, requestBody)
+        return executeHttpRequest(transport, requestBody)
     }
 
     private fun makeRequest(
-        apiKey: String,
+        transport: RequestTransport,
         systemPrompt: String,
         userMessage: String,
         model: String,
@@ -185,14 +203,14 @@ object OpenAIService {
             })
         }
 
-        return executeHttpRequest(apiKey, requestBody)
+        return executeHttpRequest(transport, requestBody)
     }
 
-    private fun executeHttpRequest(apiKey: String, requestBody: JSONObject): ApiResult<String> {
-        val connection = (URL(BASE_URL).openConnection() as HttpURLConnection).apply {
+    private fun executeHttpRequest(transport: RequestTransport, requestBody: JSONObject): ApiResult<String> {
+        val connection = (URL(transport.endpoint).openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             setRequestProperty("Content-Type", "application/json")
-            setRequestProperty("Authorization", "Bearer $apiKey")
+            transport.authHeader?.let { setRequestProperty("Authorization", it) }
             connectTimeout = 15_000
             readTimeout = 90_000
             doOutput = true
