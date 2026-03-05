@@ -15,5 +15,6 @@ data class UserEntity(
     val profilePhotoUri: String = "",
     val credits: Int = 10,         // 10 free questions on signup
     val planType: String = "FREE", // FREE | BASIC | UNLIMITED
-    val planExpiry: Long = 0L
+    val planExpiry: Long = 0L,
+    val lastFreeTopupAt: Long = 0L // anti-abuse guard for free top-up
 )

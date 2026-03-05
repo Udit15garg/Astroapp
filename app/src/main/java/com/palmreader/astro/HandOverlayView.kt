@@ -61,34 +61,44 @@ class HandOverlayView @JvmOverloads constructor(
         handPath.reset()
 
         val centerX = w / 2f
-        val palmTop = h * 0.35f
-        val palmBottom = h * 0.84f
-        val palmHalf = w * 0.23f
+        val palmTop = h * 0.37f
+        val palmBottom = h * 0.86f
+        val palmHalf = w * 0.22f
         val palmRect = RectF(centerX - palmHalf, palmTop, centerX + palmHalf, palmBottom)
-        handPath.addRoundRect(palmRect, w * 0.12f, h * 0.08f, Path.Direction.CW)
+        handPath.addRoundRect(palmRect, w * 0.11f, h * 0.07f, Path.Direction.CW)
 
-        // Four top fingers + thumb = natural 5-finger silhouette.
-        val fingerGap = w * 0.018f
-        val fingerWidths = listOf(0.075f, 0.082f, 0.082f, 0.075f).map { w * it }
-        val fingerHeights = listOf(0.18f, 0.25f, 0.27f, 0.23f)
-        val totalFingerWidth = fingerWidths.sum() + (fingerGap * (fingerWidths.size - 1))
-        val fingersStartX = centerX - totalFingerWidth / 2f + (w * 0.02f)
+        // Four fingers (index to pinky) with natural height curve.
+        val fingerGap = w * 0.013f
+        val fingerWidths = listOf(0.078f, 0.084f, 0.082f, 0.068f).map { w * it }
+        val fingerHeights = listOf(0.23f, 0.29f, 0.27f, 0.20f)
+        val totalFingerWidth = fingerWidths.sum() + fingerGap * (fingerWidths.size - 1)
+        val fingersStartX = centerX - totalFingerWidth / 2f
 
         fingerHeights.forEachIndexed { index, factor ->
             val left = fingersStartX + fingerWidths.take(index).sum() + (fingerGap * index)
             val width = fingerWidths[index]
-            val top = palmTop - h * factor + h * 0.05f
-            val rect = RectF(left, top, left + width, palmTop + h * 0.03f)
-            handPath.addRoundRect(rect, width * 0.46f, width * 0.46f, Path.Direction.CW)
+            val top = palmTop - h * factor + h * 0.035f
+            val rect = RectF(left, top, left + width, palmTop + h * 0.018f)
+            handPath.addRoundRect(rect, width * 0.48f, width * 0.48f, Path.Direction.CW)
         }
 
-        val thumbRect = RectF(
-            centerX - palmHalf - w * 0.10f,
-            palmTop + h * 0.14f,
-            centerX - palmHalf + w * 0.03f,
-            palmTop + h * 0.34f
-        )
-        handPath.addRoundRect(thumbRect, w * 0.045f, w * 0.045f, Path.Direction.CW)
+        // Curved thumb side (single natural lobe to avoid robotic look).
+        val thumb = Path().apply {
+            moveTo(centerX - palmHalf + w * 0.01f, palmTop + h * 0.16f)
+            cubicTo(
+                centerX - palmHalf - w * 0.12f, palmTop + h * 0.22f,
+                centerX - palmHalf - w * 0.11f, palmTop + h * 0.36f,
+                centerX - palmHalf + w * 0.01f, palmTop + h * 0.40f
+            )
+            lineTo(centerX - palmHalf + w * 0.04f, palmTop + h * 0.33f)
+            cubicTo(
+                centerX - palmHalf - w * 0.03f, palmTop + h * 0.29f,
+                centerX - palmHalf - w * 0.03f, palmTop + h * 0.24f,
+                centerX - palmHalf + w * 0.04f, palmTop + h * 0.20f
+            )
+            close()
+        }
+        handPath.addPath(thumb)
     }
 
     override fun onDraw(canvas: Canvas) {

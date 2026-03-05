@@ -163,9 +163,9 @@ class AuthActivity : AppCompatActivity() {
                     showError(getString(R.string.auth_invalid_credentials)); return@launch
                 }
                 session.startSession(user.id)
-                // Top-up free users who have run out of credits
-                if (user.planType == "FREE" && user.credits == 0) {
-                    db.userDao().addCredits(user.id, 5)
+                if (shouldGrantFreeTopUp(user)) {
+                    val now = System.currentTimeMillis()
+                    db.userDao().addCreditsWithTopupStamp(user.id, 5, now)
                     db.creditTransactionDao().insert(
                         CreditTransactionEntity(userId = user.id, type = "BONUS", amount = 5, description = "Daily top-up — 5 free credits")
                     )
@@ -191,9 +191,9 @@ class AuthActivity : AppCompatActivity() {
                     session.startSession(userId)
                 } else {
                     session.startSession(existing.id)
-                    // Top-up free users who have run out of credits
-                    if (existing.planType == "FREE" && existing.credits == 0) {
-                        db.userDao().addCredits(existing.id, 5)
+                    if (shouldGrantFreeTopUp(existing)) {
+                        val now = System.currentTimeMillis()
+                        db.userDao().addCreditsWithTopupStamp(existing.id, 5, now)
                         db.creditTransactionDao().insert(
                             CreditTransactionEntity(userId = existing.id, type = "BONUS", amount = 5, description = "Daily top-up — 5 free credits")
                         )
@@ -204,6 +204,13 @@ class AuthActivity : AppCompatActivity() {
                 showError(getString(R.string.auth_account_error, e.message))
             }
         }
+    }
+
+    private fun shouldGrantFreeTopUp(user: UserEntity): Boolean {
+        if (user.planType != "FREE" || user.credits > 0) return false
+        val now = System.currentTimeMillis()
+        val twentyFourHours = 24L * 60L * 60L * 1000L
+        return now - user.lastFreeTopupAt >= twentyFourHours
     }
 
     private fun goHome() {

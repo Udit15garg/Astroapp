@@ -19,6 +19,9 @@ interface UserDao {
     @Query("UPDATE users SET credits = credits + :amount WHERE id = :userId")
     suspend fun addCredits(userId: Long, amount: Int)
 
+    @Query("UPDATE users SET credits = credits + :amount, lastFreeTopupAt = :timestamp WHERE id = :userId")
+    suspend fun addCreditsWithTopupStamp(userId: Long, amount: Int, timestamp: Long)
+
     @Query("UPDATE users SET credits = :credits, planType = :planType, planExpiry = :expiry WHERE id = :userId")
     suspend fun updatePlan(userId: Long, credits: Int, planType: String, expiry: Long)
 

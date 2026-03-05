@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [UserEntity::class, HistoryEntity::class, CreditTransactionEntity::class, PersonaEntity::class],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -21,24 +21,74 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
 
+        private fun tableExists(db: SupportSQLiteDatabase, tableName: String): Boolean {
+            return db.query(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                arrayOf(tableName)
+            ).use { it.moveToFirst() }
+        }
+
+        private fun columnExists(db: SupportSQLiteDatabase, tableName: String, columnName: String): Boolean {
+            return db.query("PRAGMA table_info(`$tableName`)").use { cursor ->
+                val nameIndex = cursor.getColumnIndex("name")
+                while (cursor.moveToNext()) {
+                    if (nameIndex >= 0 && cursor.getString(nameIndex) == columnName) return@use true
+                }
+                false
+            }
+        }
+
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                if (!tableExists(db, "credit_transactions")) {
+                    db.execSQL(
+                        """CREATE TABLE IF NOT EXISTS `credit_transactions` (
+                            `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            `userId` INTEGER NOT NULL,
+                            `type` TEXT NOT NULL,
+                            `amount` INTEGER NOT NULL,
+                            `description` TEXT NOT NULL,
+                            `timestamp` INTEGER NOT NULL
+                        )"""
+                    )
+                }
+                if (!columnExists(db, "users", "planType")) {
+                    db.execSQL("ALTER TABLE users ADD COLUMN planType TEXT NOT NULL DEFAULT 'FREE'")
+                }
+                if (!columnExists(db, "users", "planExpiry")) {
+                    db.execSQL("ALTER TABLE users ADD COLUMN planExpiry INTEGER NOT NULL DEFAULT 0")
+                }
+            }
+        }
+
         private val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE users ADD COLUMN dob TEXT NOT NULL DEFAULT ''")
-                db.execSQL("ALTER TABLE users ADD COLUMN birthPlace TEXT NOT NULL DEFAULT ''")
-                db.execSQL("ALTER TABLE users ADD COLUMN mobile TEXT NOT NULL DEFAULT ''")
-                db.execSQL("ALTER TABLE users ADD COLUMN profilePhotoUri TEXT NOT NULL DEFAULT ''")
-                db.execSQL(
-                    """CREATE TABLE IF NOT EXISTS `persona` (
-                        `userId` INTEGER NOT NULL,
-                        `dob` TEXT NOT NULL,
-                        `relationshipStatus` TEXT NOT NULL,
-                        `occupation` TEXT NOT NULL,
-                        `lifeGoal` TEXT NOT NULL,
-                        `biggestConcern` TEXT NOT NULL,
-                        `updatedAt` INTEGER NOT NULL,
-                        PRIMARY KEY(`userId`)
-                    )"""
-                )
+                if (!columnExists(db, "users", "dob")) {
+                    db.execSQL("ALTER TABLE users ADD COLUMN dob TEXT NOT NULL DEFAULT ''")
+                }
+                if (!columnExists(db, "users", "birthPlace")) {
+                    db.execSQL("ALTER TABLE users ADD COLUMN birthPlace TEXT NOT NULL DEFAULT ''")
+                }
+                if (!columnExists(db, "users", "mobile")) {
+                    db.execSQL("ALTER TABLE users ADD COLUMN mobile TEXT NOT NULL DEFAULT ''")
+                }
+                if (!columnExists(db, "users", "profilePhotoUri")) {
+                    db.execSQL("ALTER TABLE users ADD COLUMN profilePhotoUri TEXT NOT NULL DEFAULT ''")
+                }
+                if (!tableExists(db, "persona")) {
+                    db.execSQL(
+                        """CREATE TABLE IF NOT EXISTS `persona` (
+                            `userId` INTEGER NOT NULL,
+                            `dob` TEXT NOT NULL,
+                            `relationshipStatus` TEXT NOT NULL,
+                            `occupation` TEXT NOT NULL,
+                            `lifeGoal` TEXT NOT NULL,
+                            `biggestConcern` TEXT NOT NULL,
+                            `updatedAt` INTEGER NOT NULL,
+                            PRIMARY KEY(`userId`)
+                        )"""
+                    )
+                }
             }
         }
 
@@ -68,11 +118,18 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                if (!columnExists(db, "users", "lastFreeTopupAt")) {
+                    db.execSQL("ALTER TABLE users ADD COLUMN lastFreeTopupAt INTEGER NOT NULL DEFAULT 0")
+                }
+            }
+        }
+
         fun get(context: Context): AppDatabase =
             INSTANCE ?: synchronized(this) {
                 Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "astro_db")
-                    .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
-                    .fallbackToDestructiveMigration() // dev-only; use Migration objects in production
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                     .build()
                     .also { INSTANCE = it }
             }
