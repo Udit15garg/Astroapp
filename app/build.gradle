@@ -23,8 +23,14 @@ android {
         versionCode 4
         versionName "4.0"
 
-        // OpenAI API key from local.properties — in production, proxy through a backend server
+        // AI configuration from local.properties
+        // Prefer proxy in release builds; direct key is for local testing only.
         buildConfigField "String", "OPENAI_API_KEY", "\"${localProperties.getProperty('OPENAI_API_KEY', 'YOUR_API_KEY_HERE')}\""
+        buildConfigField "String", "OPENAI_PROXY_URL", "\"${localProperties.getProperty('OPENAI_PROXY_URL', '')}\""
+        buildConfigField "String", "OPENAI_PROXY_TOKEN", "\"${localProperties.getProperty('OPENAI_PROXY_TOKEN', '')}\""
+        buildConfigField "boolean", "ALLOW_DIRECT_OPENAI", "${localProperties.getProperty('ALLOW_DIRECT_OPENAI', 'false')}"
+        buildConfigField "String", "PRIVACY_POLICY_URL", "\"${localProperties.getProperty('PRIVACY_POLICY_URL', '')}\""
+        buildConfigField "String", "TERMS_URL", "\"${localProperties.getProperty('TERMS_URL', '')}\""
     }
 
     buildTypes {
