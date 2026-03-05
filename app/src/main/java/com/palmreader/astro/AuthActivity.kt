@@ -142,7 +142,7 @@ class AuthActivity : AppCompatActivity() {
                     showError(getString(R.string.auth_email_exists)); return@launch
                 }
                 val userId = db.userDao().insert(
-                    UserEntity(name = name, email = email, passwordHash = pass.hashCode().toString(), credits = 10)
+                    UserEntity(name = name, email = email, passwordHash = PasswordHasher.hash(pass), credits = 10)
                 )
                 db.creditTransactionDao().insert(
                     CreditTransactionEntity(userId = userId, type = "BONUS", amount = 10, description = "Welcome bonus — 10 free credits")
@@ -159,8 +159,11 @@ class AuthActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val user = db.userDao().findByEmail(email)
-                if (user == null || user.passwordHash != pass.hashCode().toString()) {
+                if (user == null || !isPasswordValid(pass, user.passwordHash)) {
                     showError(getString(R.string.auth_invalid_credentials)); return@launch
+                }
+                if (isLegacyHash(user.passwordHash)) {
+                    db.userDao().updatePassword(user.id, PasswordHasher.hash(pass))
                 }
                 session.startSession(user.id)
                 if (shouldGrantFreeTopUp(user)) {
@@ -183,7 +186,7 @@ class AuthActivity : AppCompatActivity() {
                 val existing = db.userDao().findByEmail(email)
                 if (existing == null) {
                     val userId = db.userDao().insert(
-                        UserEntity(name = name, email = email, passwordHash = googleId, credits = 10)
+                        UserEntity(name = name, email = email, passwordHash = "google:$googleId", credits = 10)
                     )
                     db.creditTransactionDao().insert(
                         CreditTransactionEntity(userId = userId, type = "BONUS", amount = 10, description = "Google sign-up bonus — 10 free credits")
@@ -211,6 +214,17 @@ class AuthActivity : AppCompatActivity() {
         val now = System.currentTimeMillis()
         val twentyFourHours = 24L * 60L * 60L * 1000L
         return now - user.lastFreeTopupAt >= twentyFourHours
+    }
+
+    private fun isPasswordValid(inputPassword: String, storedHash: String): Boolean {
+        if (storedHash.startsWith("google:")) return false
+        if (PasswordHasher.verify(inputPassword, storedHash)) return true
+        return isLegacyHash(storedHash) && storedHash == inputPassword.hashCode().toString()
+    }
+
+    private fun isLegacyHash(storedHash: String): Boolean {
+        if (storedHash.startsWith("pbkdf2$") || storedHash.startsWith("google:")) return false
+        return storedHash == storedHash.toIntOrNull()?.toString()
     }
 
     private fun goHome() {

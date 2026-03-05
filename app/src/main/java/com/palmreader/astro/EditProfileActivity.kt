@@ -89,7 +89,7 @@ class EditProfileActivity : BaseFeatureActivity() {
                     profilePhotoUri = selectedPhotoUri
                 )
                 if (newPassword.isNotBlank()) {
-                    db.userDao().updatePassword(session.userId, newPassword.hashCode().toString())
+                    db.userDao().updatePassword(session.userId, PasswordHasher.hash(newPassword))
                 }
                 runOnUiThread {
                     Toast.makeText(this@EditProfileActivity, getString(R.string.profile_saved), Toast.LENGTH_SHORT).show()

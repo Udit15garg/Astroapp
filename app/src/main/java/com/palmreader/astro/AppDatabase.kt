@@ -23,8 +23,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         private fun tableExists(db: SupportSQLiteDatabase, tableName: String): Boolean {
             return db.query(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
-                arrayOf(tableName)
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='$tableName'"
             ).use { it.moveToFirst() }
         }
 
@@ -99,7 +98,9 @@ abstract class AppDatabase : RoomDatabase() {
                 ).use { it.moveToFirst() }
 
                 if (hasPersonaTable) {
-                    db.execSQL("ALTER TABLE persona ADD COLUMN aiSummary TEXT NOT NULL DEFAULT ''")
+                    if (!columnExists(db, "persona", "aiSummary")) {
+                        db.execSQL("ALTER TABLE persona ADD COLUMN aiSummary TEXT NOT NULL DEFAULT ''")
+                    }
                 } else {
                     db.execSQL(
                         """CREATE TABLE IF NOT EXISTS `persona` (
