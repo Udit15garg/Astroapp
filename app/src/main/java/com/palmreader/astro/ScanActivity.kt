@@ -242,7 +242,7 @@ class ScanActivity : AppCompatActivity() {
                         return@launch
                     }
                     is OpenAIService.ApiResult.Error -> {
-                        setStatus(getString(R.string.scan_ai_unavailable), isError = true)
+                        setStatus(buildAiUnavailableMessage(validationResult.message), isError = true)
                         return@launch
                     }
                     else -> {
@@ -287,7 +287,7 @@ class ScanActivity : AppCompatActivity() {
                         return@launch
                     }
                     is OpenAIService.ApiResult.Error -> {
-                        setStatus(getString(R.string.scan_ai_unavailable), isError = true)
+                        setStatus(buildAiUnavailableMessage(analysisResult.message), isError = true)
                         return@launch
                     }
                     else -> {
@@ -406,6 +406,13 @@ class ScanActivity : AppCompatActivity() {
                 key to value
             }
             .toMap()
+    }
+
+    private fun buildAiUnavailableMessage(detail: String): String {
+        if (!BuildConfig.DEBUG) return getString(R.string.scan_ai_unavailable)
+        val clean = detail.substringBefore('\n').trim().take(160)
+        if (clean.isBlank()) return getString(R.string.scan_ai_unavailable)
+        return "${getString(R.string.scan_ai_unavailable)}\n$clean"
     }
 
     /** Parses AI response lines of format "CATEGORY:SCORE:Interpretation sentence." */

@@ -165,7 +165,7 @@ object OpenAIService {
         val requestBody = JSONObject().apply {
             put("model", model)
             put("temperature", temperature.toDouble())
-            put("max_tokens", 800)
+            putTokenLimit(this, model, 800)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
                     put("role", "system")
@@ -190,7 +190,7 @@ object OpenAIService {
         val requestBody = JSONObject().apply {
             put("model", model)
             put("temperature", temperature.toDouble())
-            put("max_tokens", 1500)
+            putTokenLimit(this, model, 1500)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
                     put("role", "system")
@@ -204,6 +204,14 @@ object OpenAIService {
         }
 
         return executeHttpRequest(transport, requestBody)
+    }
+
+    private fun putTokenLimit(body: JSONObject, model: String, limit: Int) {
+        if (model.startsWith("gpt-5")) {
+            body.put("max_completion_tokens", limit)
+        } else {
+            body.put("max_tokens", limit)
+        }
     }
 
     private fun executeHttpRequest(transport: RequestTransport, requestBody: JSONObject): ApiResult<String> {
