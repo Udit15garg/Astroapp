@@ -1,6 +1,7 @@
 package com.palmreader.astro
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -96,11 +97,17 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun setupAbout() {
         binding.btnPrivacyPolicy.setOnClickListener {
-            startActivity(Intent(this, PrivacyPolicyActivity::class.java))
+            openPolicy(
+                externalUrl = BuildConfig.PRIVACY_POLICY_URL,
+                isTerms = false
+            )
         }
 
         binding.btnTerms.setOnClickListener {
-            startActivity(Intent(this, PrivacyPolicyActivity::class.java))
+            openPolicy(
+                externalUrl = BuildConfig.TERMS_URL,
+                isTerms = true
+            )
         }
 
         try {
@@ -109,6 +116,20 @@ class SettingsActivity : AppCompatActivity() {
         } catch (_: Exception) {
             binding.tvVersion.text = getString(R.string.settings_version, "1.0")
         }
+    }
+
+    private fun openPolicy(externalUrl: String, isTerms: Boolean) {
+        val url = externalUrl.trim()
+        if (url.startsWith("https://", ignoreCase = true)) {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            if (browserIntent.resolveActivity(packageManager) != null) {
+                startActivity(browserIntent)
+                return
+            }
+        }
+        startActivity(Intent(this, PrivacyPolicyActivity::class.java).apply {
+            putExtra("is_terms", isTerms)
+        })
     }
 
     private fun setupDangerZone() {
