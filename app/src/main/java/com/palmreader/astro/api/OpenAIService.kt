@@ -164,7 +164,7 @@ object OpenAIService {
         }
         val requestBody = JSONObject().apply {
             put("model", model)
-            put("temperature", temperature.toDouble())
+            putTemperatureIfSupported(this, model, temperature)
             putTokenLimit(this, model, 800)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
@@ -189,7 +189,7 @@ object OpenAIService {
     ): ApiResult<String> {
         val requestBody = JSONObject().apply {
             put("model", model)
-            put("temperature", temperature.toDouble())
+            putTemperatureIfSupported(this, model, temperature)
             putTokenLimit(this, model, 1500)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
@@ -212,6 +212,12 @@ object OpenAIService {
         } else {
             body.put("max_tokens", limit)
         }
+    }
+
+    private fun putTemperatureIfSupported(body: JSONObject, model: String, temperature: Float) {
+        // gpt-5 family currently only supports default temperature; omit explicit parameter.
+        if (model.startsWith("gpt-5")) return
+        body.put("temperature", temperature.toDouble())
     }
 
     private fun executeHttpRequest(transport: RequestTransport, requestBody: JSONObject): ApiResult<String> {
@@ -237,7 +243,8 @@ object OpenAIService {
                     val errorBody = connection.errorStream?.let { stream ->
                         BufferedReader(InputStreamReader(stream)).use { it.readText() }
                     } ?: "Unknown error"
-                    ApiResult.Error("API error ($responseCode): $errorBody", responseCode)
+                    val detail = extractApiErrorMessage(errorBody)
+                    ApiResult.Error("API error ($responseCode): $detail", responseCode)
                 }
                 else -> {
                     val responseBody = BufferedReader(
@@ -266,5 +273,12 @@ object OpenAIService {
         } finally {
             connection.disconnect()
         }
+    }
+
+    private fun extractApiErrorMessage(raw: String): String {
+        val parsed = runCatching {
+            JSONObject(raw).optJSONObject("error")?.optString("message").orEmpty()
+        }.getOrDefault("")
+        return parsed.ifBlank { raw.take(300) }
     }
 }
