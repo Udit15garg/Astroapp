@@ -121,8 +121,14 @@
     <string name="qa_gibberish_credit_used">3 unclear questions used 1 credit. Please ask a meaningful question.</string>
     <string name="qa_non_question_hint">No credit used. Ask a clear question to get a prediction.</string>
     <string name="qa_typing_indicator">…</string>
+    <string name="qa_read_more">Read more ▼</string>
+    <string name="qa_show_less">Show less ▲</string>
 
     <!-- ── Feature Activity ── -->
+    <string name="tarot_session_title">Previous Session Found</string>
+    <string name="tarot_session_message">You have an unfinished tarot reading. Would you like to continue where you left off?</string>
+    <string name="tarot_session_continue">Continue</string>
+    <string name="tarot_session_new">Start Fresh</string>
     <string name="tarot_instruction">Choose three cards and read your future</string>
     <string name="tarot_draw">Draw Cards</string>
     <string name="tarot_redraw">Redraw Cards</string>

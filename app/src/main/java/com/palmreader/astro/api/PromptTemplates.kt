@@ -243,7 +243,8 @@ $DISCLAIMER
         context: String,
         question: String,
         locale: String = "en",
-        persona: PersonaEntity? = null
+        persona: PersonaEntity? = null,
+        history: List<Pair<String, String>> = emptyList()
     ): Pair<String, String> {
         val roleDescription = when (featureType.uppercase()) {
             "TAROT" -> "a master tarot reader continuing a reading session. Stay in character — reference the cards that were drawn, their imagery, and their elemental energies"
@@ -253,17 +254,27 @@ $DISCLAIMER
             else -> "a knowledgeable astrologer answering a follow-up question about a ${featureType.lowercase()} reading"
         }
 
+        val historyBlock = if (history.isNotEmpty()) {
+            val recentExchanges = history.takeLast(3).joinToString("\n") { (q, a) ->
+                "User asked: $q\nYou replied: ${a.take(150)}"
+            }
+            "\nRecent conversation:\n$recentExchanges\n"
+        } else ""
+
         val system = """
 You are $roleDescription.
 ${languageInstruction(locale)}
 ${personaBlock(persona)}
-Context from the previous reading:
+Context from the reading:
 $context
+$historyBlock
+Answer the user's question directly. Do NOT give a generic answer — relate everything specifically to their question and the reading context above.
 
-Guidelines:
-- Answer the specific question based on the reading context.
-- Be insightful and specific (3-5 sentences). Avoid generic answers.
-- Reference specific elements from the reading context in your answer.
+Format your response EXACTLY as:
+SHORT: <1-2 sentences directly answering the question>
+DETAILS: <3-4 sentences of deeper insight referencing specific reading elements>
+
+Rules:
 - Do NOT make specific medical or financial predictions.
 - $NO_MARKDOWN
 
@@ -271,6 +282,14 @@ $DISCLAIMER
         """.trimIndent()
 
         return system to question
+    }
+
+    fun personaSummaryPrompt(featureType: String, exchanges: List<Pair<String, String>>): Pair<String, String> {
+        val history = exchanges.joinToString("\n") { (q, a) -> "Q: $q\nA: ${a.take(200)}" }
+        val system = """
+You are an assistant that creates concise user profiles for personalized readings. Based on the following Q&A exchanges from a $featureType reading, write a 2-3 sentence summary capturing the user's key life concerns, goals, and context. Be factual, specific, and brief.
+        """.trimIndent()
+        return system to "Session exchanges:\n$history\n\nSummary (2-3 sentences only):"
     }
 
     // ─────────────────────────────────────────────────────────────────────

@@ -55,7 +55,8 @@ class SubscriptionActivity : BaseFeatureActivity() {
                 lifecycleScope.launch {
                     try {
                         val expiry = System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000
-                        db.userDao().updatePlan(session.userId, 10, "BASIC", expiry)
+                        db.userDao().addCredits(session.userId, 10)
+                        db.userDao().updatePlanMeta(session.userId, "BASIC", expiry)
                         db.creditTransactionDao().insert(CreditTransactionEntity(
                             userId = session.userId, type = "PLAN_ACTIVATED", amount = 10,
                             description = "₹99 Basic Monthly — 10 credits/month activated"
@@ -73,7 +74,8 @@ class SubscriptionActivity : BaseFeatureActivity() {
                 lifecycleScope.launch {
                     try {
                         val expiry = System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000
-                        db.userDao().updatePlan(session.userId, 999, "UNLIMITED", expiry)
+                        db.userDao().addCredits(session.userId, 999)
+                        db.userDao().updatePlanMeta(session.userId, "UNLIMITED", expiry)
                         db.creditTransactionDao().insert(CreditTransactionEntity(
                             userId = session.userId, type = "PLAN_ACTIVATED", amount = 999,
                             description = "₹199 Unlimited Monthly — unlimited questions"

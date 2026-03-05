@@ -116,8 +116,14 @@
     <string name="qa_gibberish_credit_used">3 अस्पष्ट सवालों पर 1 क्रेडिट उपयोग हुआ। कृपया अर्थपूर्ण सवाल पूछें।</string>
     <string name="qa_non_question_hint">कोई क्रेडिट नहीं कटा। भविष्यवाणी के लिए स्पष्ट सवाल पूछें।</string>
     <string name="qa_typing_indicator">…</string>
+    <string name="qa_read_more">और पढ़ें ▼</string>
+    <string name="qa_show_less">कम करें ▲</string>
 
     <!-- ── फ़ीचर गतिविधि ── -->
+    <string name="tarot_session_title">पिछला सत्र मिला</string>
+    <string name="tarot_session_message">आपकी एक अधूरी टैरो रीडिंग है। क्या आप वहीं से जारी रखना चाहते हैं?</string>
+    <string name="tarot_session_continue">जारी रखें</string>
+    <string name="tarot_session_new">नया शुरू करें</string>
     <string name="tarot_instruction">तीन पत्ते चुनें और भविष्य पढ़ें</string>
     <string name="tarot_draw">पत्ते निकालें</string>
     <string name="tarot_redraw">फिर से निकालें</string>

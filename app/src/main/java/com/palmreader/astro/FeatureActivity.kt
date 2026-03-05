@@ -57,6 +57,9 @@ class FeatureActivity : BaseFeatureActivity() {
     // User persona for personalized readings
     private var persona: PersonaEntity? = null
 
+    // Conversation history for contextual follow-up answers (question, answer)
+    private val conversationHistory = mutableListOf<Pair<String, String>>()
+
     private val locale: String
         get() = LanguageManager.getCurrentLocale(this)
 
@@ -170,44 +173,17 @@ class FeatureActivity : BaseFeatureActivity() {
 
         // ── Restore existing session (user navigated back then returned) ──────
         if (TarotSessionStore.hasSession()) {
-            drawnCards = TarotSessionStore.drawnCards
-            revealedCount = TarotSessionStore.revealedCount
-            aiReadingContext = TarotSessionStore.aiReadingContext
-
-            binding.llCardLabels.visibility = View.VISIBLE
-            binding.llCards.visibility = View.VISIBLE
-            binding.btnDrawCards.text = getString(R.string.tarot_redraw)
-
-            // Restore card visuals without animation
-            val cardViews = listOf(
-                Triple(binding.imgCardBack1, binding.imgCard1, binding.tvCardName1),
-                Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
-                Triple(binding.imgCardBack3, binding.imgCard3, binding.tvCardName3)
-            )
-            drawnCards.take(cardViews.size).forEachIndexed { i, drawn ->
-                val (back, face, name) = cardViews[i]
-                if (i < revealedCount) {
-                    back.visibility = View.GONE
-                    if (drawn.card.imageRes != 0) face.setImageResource(drawn.card.imageRes)
-                    else face.setImageResource(R.drawable.ic_tarot_card_back)
-                    face.scaleY = if (drawn.isReversed) -1f else 1f
-                    face.visibility = View.VISIBLE
-                    name.text = drawn.displayName
-                    name.visibility = View.VISIBLE
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(getString(R.string.tarot_session_title))
+                .setMessage(getString(R.string.tarot_session_message))
+                .setPositiveButton(getString(R.string.tarot_session_continue)) { _, _ ->
+                    restoreTarotSession(positions)
                 }
-            }
-
-            // Restore card result items
-            TarotSessionStore.savedCardResults.forEach { (pos, drawn) -> addCardResultView(pos, drawn) }
-            if (TarotSessionStore.savedCardResults.isNotEmpty()) {
-                binding.llCardResults.visibility = View.VISIBLE
-            }
-
-            // Rebuild chat from store
-            rebuildChatFromStore()
-
-            if (TarotSessionStore.chatMessages.isNotEmpty()) binding.llQaSection.visibility = View.VISIBLE
-            if (revealedCount == 3 && aiReadingContext.isNotEmpty()) binding.llInputBar.visibility = View.VISIBLE
+                .setNegativeButton(getString(R.string.tarot_session_new)) { _, _ ->
+                    TarotSessionStore.clear()
+                }
+                .setCancelable(false)
+                .show()
         }
 
         // ── Draw / Redraw button ─────────────────────────────────────────────
@@ -295,10 +271,46 @@ class FeatureActivity : BaseFeatureActivity() {
 
     private fun buildDrawEventText(isRedraw: Boolean, cards: List<DrawnCard>, positions: List<String>): String {
         val prefix = if (isRedraw) "⟳  New spread drawn" else "✦  Cards drawn"
-        val cardList = cards.mapIndexed { i, drawn ->
-            "${positions.getOrElse(i) { "Card ${i + 1}" }}: ${drawn.displayName}"
-        }.joinToString("  ·  ")
-        return "$prefix  —  $cardList"
+        val slotList = positions.take(cards.size).joinToString("  ·  ")
+        return "$prefix  —  $slotList  (tap each card to reveal)"
+    }
+
+    private fun restoreTarotSession(positions: List<String>) {
+        drawnCards = TarotSessionStore.drawnCards
+        revealedCount = TarotSessionStore.revealedCount
+        aiReadingContext = TarotSessionStore.aiReadingContext
+
+        binding.llCardLabels.visibility = View.VISIBLE
+        binding.llCards.visibility = View.VISIBLE
+        binding.btnDrawCards.text = getString(R.string.tarot_redraw)
+
+        val cardViews = listOf(
+            Triple(binding.imgCardBack1, binding.imgCard1, binding.tvCardName1),
+            Triple(binding.imgCardBack2, binding.imgCard2, binding.tvCardName2),
+            Triple(binding.imgCardBack3, binding.imgCard3, binding.tvCardName3)
+        )
+        drawnCards.take(cardViews.size).forEachIndexed { i, drawn ->
+            val (back, face, name) = cardViews[i]
+            if (i < revealedCount) {
+                back.visibility = View.GONE
+                if (drawn.card.imageRes != 0) face.setImageResource(drawn.card.imageRes)
+                else face.setImageResource(R.drawable.ic_tarot_card_back)
+                face.scaleY = if (drawn.isReversed) -1f else 1f
+                face.visibility = View.VISIBLE
+                name.text = drawn.displayName
+                name.visibility = View.VISIBLE
+            }
+        }
+
+        TarotSessionStore.savedCardResults.forEach { (pos, drawn) -> addCardResultView(pos, drawn) }
+        if (TarotSessionStore.savedCardResults.isNotEmpty()) {
+            binding.llCardResults.visibility = View.VISIBLE
+        }
+
+        rebuildChatFromStore()
+
+        if (TarotSessionStore.chatMessages.isNotEmpty()) binding.llQaSection.visibility = View.VISIBLE
+        if (revealedCount == 3 && aiReadingContext.isNotEmpty()) binding.llInputBar.visibility = View.VISIBLE
     }
 
     private fun addTarotEventBubble(text: String) {
@@ -669,7 +681,7 @@ class FeatureActivity : BaseFeatureActivity() {
         if (featureLoaderInitialized) return
         featureLoaderInitialized = true
         val loaderVideoRes = if (featureType == "TAROT") R.raw.cards else R.raw.tap_burst
-        binding.vvTarotLoader.setVideoPath("android.resource://$packageName/$loaderVideoRes")
+        binding.vvTarotLoader.setVideoURI(android.net.Uri.parse("android.resource://$packageName/$loaderVideoRes"))
         binding.vvTarotLoader.setOnPreparedListener {
             it.isLooping = true
             featureLoaderBroken = false
@@ -867,10 +879,12 @@ class FeatureActivity : BaseFeatureActivity() {
                     try {
                         ensurePersonaLoaded()
                         val context = aiReadingContext.ifEmpty { buildResultContext() }
+                        // Auto-detect Hindi script in the question
+                        val questionLocale = if (q.any { it.code in 0x0900..0x097F }) "hi" else locale
 
                         Log.d("AstroAI", "Calling OpenAI for follow-up: $q")
                         val prompts = PromptTemplates.followUpQuestion(
-                            featureType, context, q, locale, persona
+                            featureType, context, q, questionLocale, persona, conversationHistory
                         )
 
                         when (val result = OpenAIService.chatCompletion(
@@ -885,12 +899,23 @@ class FeatureActivity : BaseFeatureActivity() {
                                     addBotBubble(binding.llChat, fallback)
                                     if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                                     saveToHistory(historyCategoryLabel(), q, fallback)
+                                    conversationHistory.add(q to fallback)
                                 } else {
-                                    val cleanedAnswer = normalizeDisplayText(answer)
+                                    val (short, details) = parseShortDetails(answer)
+                                    val displayText = normalizeDisplayText(answer)
                                     Log.d("AstroAI", "AI answer received")
-                                    addBotBubble(binding.llChat, cleanedAnswer)
-                                    if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = cleanedAnswer))
-                                    saveToHistory(historyCategoryLabel(), q, cleanedAnswer)
+                                    if (short.isNotBlank() && details.isNotBlank()) {
+                                        addShortLongAnswerBubble(
+                                            normalizeDisplayText(short),
+                                            normalizeDisplayText(details)
+                                        )
+                                    } else {
+                                        addBotBubble(binding.llChat, displayText)
+                                    }
+                                    if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = displayText))
+                                    saveToHistory(historyCategoryLabel(), q, displayText)
+                                    conversationHistory.add(q to displayText)
+                                    maybeUpdatePersonaSummary()
                                 }
                             }
                             is OpenAIService.ApiResult.Error -> {
@@ -899,6 +924,7 @@ class FeatureActivity : BaseFeatureActivity() {
                                 addBotBubble(binding.llChat, fallback)
                                 if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                                 saveToHistory(historyCategoryLabel(), q, fallback)
+                                conversationHistory.add(q to fallback)
                             }
                             is OpenAIService.ApiResult.RateLimited -> {
                                 val fallback = normalizeDisplayText(generateLocalAnswer(q))
@@ -906,12 +932,14 @@ class FeatureActivity : BaseFeatureActivity() {
                                 addBotBubble(binding.llChat, rateLimitedText)
                                 if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = rateLimitedText))
                                 saveToHistory(historyCategoryLabel(), q, fallback)
+                                conversationHistory.add(q to fallback)
                             }
                             else -> {
                                 val fallback = normalizeDisplayText(generateLocalAnswer(q))
                                 addBotBubble(binding.llChat, fallback)
                                 if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                                 saveToHistory(historyCategoryLabel(), q, fallback)
+                                conversationHistory.add(q to fallback)
                             }
                         }
                     } catch (e: Exception) {
@@ -920,6 +948,7 @@ class FeatureActivity : BaseFeatureActivity() {
                         addBotBubble(binding.llChat, fallback)
                         if (featureType == "TAROT") TarotSessionStore.chatMessages.add(TarotChatMessage(isUser = false, text = fallback))
                         saveToHistory(historyCategoryLabel(), q, fallback)
+                        conversationHistory.add(q to fallback)
                     } finally {
                         val elapsed = System.currentTimeMillis() - startedAt
                         if (elapsed < 1000L) delay(1000L - elapsed)
@@ -1038,6 +1067,106 @@ class FeatureActivity : BaseFeatureActivity() {
             binding.vvTarotLoader.stopPlayback()
         }
         super.onDestroy()
+    }
+
+    /** Parses "SHORT: ...\nDETAILS: ..." format from AI response. Returns Pair(short, details). */
+    private fun parseShortDetails(raw: String): Pair<String, String> {
+        val shortRegex = Regex("(?i)SHORT:\\s*(.*?)(?=\\nDETAILS:|$)", RegexOption.DOT_MATCHES_ALL)
+        val detailsRegex = Regex("(?i)DETAILS:\\s*(.*)", RegexOption.DOT_MATCHES_ALL)
+        val short = shortRegex.find(raw)?.groupValues?.get(1)?.trim() ?: ""
+        val details = detailsRegex.find(raw)?.groupValues?.get(1)?.trim() ?: ""
+        return short to details
+    }
+
+    /** Displays AI answer as a two-part bubble: bold short answer + expandable details. */
+    private fun addShortLongAnswerBubble(short: String, details: String) {
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setBackgroundResource(R.drawable.bg_chat_bot)
+            setPadding(24, 16, 24, 16)
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { setMargins(8, 8, 80, 8) }
+            layoutParams = lp
+        }
+
+        val shortTv = TextView(this).apply {
+            text = toStyledHeadings(short)
+            textSize = 13f
+            setTextColor(resources.getColor(R.color.text_dark, null))
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+        }
+        container.addView(shortTv)
+
+        val detailsTv = TextView(this).apply {
+            text = details
+            textSize = 13f
+            setTextColor(resources.getColor(R.color.text_dark, null))
+            setLineSpacing(4f, 1f)
+            setPadding(0, 8, 0, 4)
+            visibility = View.GONE
+        }
+        container.addView(detailsTv)
+
+        val expandBtn = TextView(this).apply {
+            text = getString(R.string.qa_read_more)
+            textSize = 12f
+            setTextColor(resources.getColor(R.color.primary, null))
+            setPadding(0, 6, 0, 0)
+        }
+        container.addView(expandBtn)
+
+        expandBtn.setOnClickListener {
+            if (detailsTv.visibility == View.GONE) {
+                detailsTv.visibility = View.VISIBLE
+                expandBtn.text = getString(R.string.qa_show_less)
+            } else {
+                detailsTv.visibility = View.GONE
+                expandBtn.text = getString(R.string.qa_read_more)
+            }
+            scrollToBottom()
+        }
+
+        binding.llChat.addView(container)
+        binding.llChat.visibility = View.VISIBLE
+        scrollToBottom()
+    }
+
+    /** After every 5 Q&A pairs, asynchronously update persona.aiSummary with a conversation summary. */
+    private fun maybeUpdatePersonaSummary() {
+        if (conversationHistory.size % 5 != 0 || conversationHistory.isEmpty()) return
+        val snapshot = conversationHistory.toList()
+        lifecycleScope.launch {
+            try {
+                val persona = ensurePersonaLoadedAndGet() ?: return@launch
+                val prompts = PromptTemplates.personaSummaryPrompt(featureType, snapshot)
+                when (val result = OpenAIService.chatCompletion(
+                    systemPrompt = prompts.first,
+                    userMessage = prompts.second,
+                    temperature = 0.3f
+                )) {
+                    is OpenAIService.ApiResult.Success -> {
+                        val summary = result.data.trim().take(400)
+                        if (summary.isNotBlank()) {
+                            val updated = persona.copy(aiSummary = summary, updatedAt = System.currentTimeMillis())
+                            withContext(Dispatchers.IO) { db.personaDao().upsert(updated) }
+                            this@FeatureActivity.persona = updated
+                            Log.d("AstroAI", "Persona summary updated")
+                        }
+                    }
+                    else -> { /* silent failure — not critical */ }
+                }
+            } catch (e: Exception) {
+                Log.w("AstroAI", "Persona summary update failed", e)
+            }
+        }
+    }
+
+    private suspend fun ensurePersonaLoadedAndGet(): PersonaEntity? {
+        if (persona != null) return persona
+        persona = withContext(Dispatchers.IO) { db.personaDao().findByUser(session.userId) }
+        return persona
     }
 
     private fun showTarotInterpretationDialog(position: String, card: TarotCard) {
