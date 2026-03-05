@@ -1092,7 +1092,7 @@ class FeatureActivity : BaseFeatureActivity() {
                 .replace(Regex("^\\d+[.)]\\s*"), "")
                 .trim()
             if (bullet.isBlank()) return@forEach
-            if (sections[current]!!.size < 4) {
+            if (sections[current]!!.size < 3) {
                 sections[current]!!.add(shrinkBullet(bullet))
             }
         }
@@ -1101,7 +1101,7 @@ class FeatureActivity : BaseFeatureActivity() {
         ensureTarotSectionSize(sections[actionTitle]!!, fallback.actionSection)
         ensureTarotSectionSize(sections[carefulTitle]!!, fallback.carefulSection)
 
-        return buildString {
+        val result = buildString {
             append("$meaningTitle\n")
             sections[meaningTitle]!!.forEach { append("• $it\n") }
             append("\n$actionTitle\n")
@@ -1109,17 +1109,27 @@ class FeatureActivity : BaseFeatureActivity() {
             append("\n$carefulTitle\n")
             sections[carefulTitle]!!.forEach { append("• $it\n") }
         }.trim()
+        return truncateTo100Words(result)
+    }
+
+    private fun truncateTo100Words(text: String): String {
+        val words = text.split(Regex("\\s+")).filter { it.isNotBlank() }
+        if (words.size <= 100) return text
+        // Find the last bullet boundary within 100 words to avoid cutting mid-sentence
+        val truncated = words.take(100).joinToString(" ")
+        val lastBullet = truncated.lastIndexOf("•")
+        return if (lastBullet > 0) truncated.substring(0, lastBullet).trimEnd() else truncated
     }
 
     private fun ensureTarotSectionSize(target: MutableList<String>, fallback: List<String>) {
         fallback.forEach { candidate ->
-            if (target.size >= 4) return
+            if (target.size >= 3) return
             val compact = shrinkBullet(candidate)
             if (target.none { it.equals(compact, ignoreCase = true) }) {
                 target.add(compact)
             }
         }
-        while (target.size < 4) {
+        while (target.size < 3) {
             target.add(getString(R.string.tarot_fallback_calm))
         }
     }
@@ -1134,6 +1144,11 @@ class FeatureActivity : BaseFeatureActivity() {
             .trim()
 
         if (clean.isEmpty()) return clean
+        // Cap at 10 words to keep bullets concise
+        val words = clean.split(" ")
+        if (words.size > 10) {
+            clean = words.take(10).joinToString(" ").trimEnd('.', ',', ';')
+        }
         if (!(clean.endsWith(".") || clean.endsWith("!") || clean.endsWith("?"))) {
             clean += "."
         }

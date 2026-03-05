@@ -45,8 +45,7 @@ ${personaBlock(persona)}
 The querent has drawn a three-card spread (Past, Present, Future):
 $cardDescriptions
 
-Write in simple language.
-Keep all points complete; never end with "...".
+Write in simple language. Keep total response under 100 words.
 $NO_MARKDOWN
 
 Use exactly these headings:
@@ -55,10 +54,9 @@ What to do next
 Be careful of
 
 For each heading:
-- Give 4 bullet points.
-- Keep tone mostly positive with one realistic caution.
+- Give 3 short bullet points (8-10 words each).
 - Mention the drawn cards naturally.
-- Keep each bullet short but complete.
+- Keep tone warm and practical.
 
 Rules:
 - Do NOT make specific medical, legal, or financial predictions.

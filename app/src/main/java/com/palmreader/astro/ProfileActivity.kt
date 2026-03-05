@@ -33,7 +33,6 @@ class ProfileActivity : BaseFeatureActivity() {
         binding.btnEditPersona.setOnClickListener {
             startActivity(Intent(this, PersonaActivity::class.java))
         }
-        loadProfile()
     }
 
     override fun onResume() {
@@ -116,7 +115,6 @@ class ProfileActivity : BaseFeatureActivity() {
                 runOnUiThread { showError(getString(R.string.profile_data_error, e.message)) }
             }
         }
-        loadPersona()
     }
 
     private fun loadPersona() {
