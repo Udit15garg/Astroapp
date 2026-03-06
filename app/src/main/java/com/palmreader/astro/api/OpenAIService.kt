@@ -116,7 +116,9 @@ object OpenAIService {
         userMessage: String,
         imageBase64: String,
         model: String = MODEL_VISION_FAST,
-        temperature: Float = 0.3f
+        temperature: Float = 0.3f,
+        imageDetail: String = "high",
+        timeoutMs: Long = TIMEOUT_MS
     ): ApiResult<String> = withContext(Dispatchers.IO) {
         try {
             val transport = resolveTransport() ?: return@withContext ApiResult.Error(
@@ -130,9 +132,17 @@ object OpenAIService {
                     delay(backoffMs)
                     backoffMs *= 2
                 }
-                val result = withTimeoutOrNull(TIMEOUT_MS) {
+                val result = withTimeoutOrNull(timeoutMs) {
                     try {
-                        makeVisionRequest(transport, systemPrompt, userMessage, imageBase64, model, temperature)
+                        makeVisionRequest(
+                            transport = transport,
+                            systemPrompt = systemPrompt,
+                            userMessage = userMessage,
+                            imageBase64 = imageBase64,
+                            model = model,
+                            temperature = temperature,
+                            imageDetail = imageDetail
+                        )
                     } catch (e: IOException) {
                         ApiResult.Error("Network error: ${e.message}", -1)
                     }
@@ -150,9 +160,17 @@ object OpenAIService {
             val fallbackModel = fallbackModelForEmpty(model)
             if (fallbackModel != null && isEmptyResponseError(lastResult)) {
                 Log.w("OpenAIService", "Primary vision model '$model' returned empty output. Retrying with '$fallbackModel'.")
-                return@withContext withTimeoutOrNull(TIMEOUT_MS) {
+                return@withContext withTimeoutOrNull(timeoutMs) {
                     try {
-                        makeVisionRequest(transport, systemPrompt, userMessage, imageBase64, fallbackModel, temperature)
+                        makeVisionRequest(
+                            transport = transport,
+                            systemPrompt = systemPrompt,
+                            userMessage = userMessage,
+                            imageBase64 = imageBase64,
+                            model = fallbackModel,
+                            temperature = temperature,
+                            imageDetail = imageDetail
+                        )
                     } catch (e: IOException) {
                         ApiResult.Error("Network error: ${e.message}", -1)
                     }
@@ -190,7 +208,8 @@ object OpenAIService {
         userMessage: String,
         imageBase64: String,
         model: String,
-        temperature: Float
+        temperature: Float,
+        imageDetail: String
     ): ApiResult<String> {
         val userContent = JSONArray().apply {
             put(JSONObject().apply {
@@ -201,7 +220,7 @@ object OpenAIService {
                 put("type", "image_url")
                 put("image_url", JSONObject().apply {
                     put("url", "data:image/jpeg;base64,$imageBase64")
-                    put("detail", "high")
+                    put("detail", imageDetail)
                 })
             })
         }
@@ -209,6 +228,7 @@ object OpenAIService {
             put("model", model)
             putTemperatureIfSupported(this, model, temperature)
             putTokenLimit(this, model, 1200)
+            putReasoningEffortIfSupported(this, model)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
                     put("role", "system")
@@ -234,6 +254,7 @@ object OpenAIService {
             put("model", model)
             putTemperatureIfSupported(this, model, temperature)
             putTokenLimit(this, model, 1500)
+            putReasoningEffortIfSupported(this, model)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
                     put("role", "system")
@@ -263,7 +284,14 @@ object OpenAIService {
         body.put("temperature", temperature.toDouble())
     }
 
+    private fun putReasoningEffortIfSupported(body: JSONObject, model: String) {
+        if (!model.startsWith("gpt-5")) return
+        // Encourage concise structured output for parser reliability.
+        body.put("reasoning_effort", "low")
+    }
+
     private fun executeHttpRequest(transport: RequestTransport, requestBody: JSONObject): ApiResult<String> {
+        val startedAt = System.currentTimeMillis()
         val connection = (URL(transport.endpoint).openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             setRequestProperty("Content-Type", "application/json")
@@ -279,6 +307,11 @@ object OpenAIService {
             }
 
             val responseCode = connection.responseCode
+            val elapsed = System.currentTimeMillis() - startedAt
+            Log.d(
+                "OpenAIService",
+                "POST ${transport.endpoint} model=${requestBody.optString("model")} status=$responseCode elapsedMs=$elapsed"
+            )
 
             when {
                 responseCode == 429 -> ApiResult.RateLimited
@@ -287,7 +320,7 @@ object OpenAIService {
                         BufferedReader(InputStreamReader(stream)).use { it.readText() }
                     } ?: "Unknown error"
                     val detail = extractApiErrorMessage(errorBody)
-                    ApiResult.Error("API error ($responseCode): $detail", responseCode)
+                    ApiResult.Error("API error ($responseCode) at ${transport.endpoint}: $detail", responseCode)
                 }
                 else -> {
                     val responseBody = BufferedReader(
