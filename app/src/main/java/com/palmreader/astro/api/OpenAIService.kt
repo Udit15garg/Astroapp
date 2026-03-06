@@ -86,6 +86,18 @@ object OpenAIService {
                 }
             }
 
+            val fallbackModel = fallbackModelForEmpty(model)
+            if (fallbackModel != null && isEmptyResponseError(lastResult)) {
+                Log.w("OpenAIService", "Primary model '$model' returned empty output. Retrying with '$fallbackModel'.")
+                return@withContext withTimeoutOrNull(TIMEOUT_MS) {
+                    try {
+                        makeRequest(transport, systemPrompt, userMessage, fallbackModel, temperature)
+                    } catch (e: IOException) {
+                        ApiResult.Error("Network error: ${e.message}", -1)
+                    }
+                } ?: ApiResult.Error("Request timed out. Please try again.", 408)
+            }
+
             lastResult
         } catch (e: Exception) {
             Log.e("OpenAIService", "API call failed: ${e::class.simpleName}: ${e.message}", e)
@@ -110,13 +122,44 @@ object OpenAIService {
             val transport = resolveTransport() ?: return@withContext ApiResult.Error(
                 "AI backend not configured. Set OPENAI_PROXY_URL (preferred) or OPENAI_API_KEY for local testing."
             )
-            withTimeoutOrNull(TIMEOUT_MS) {
-                try {
-                    makeVisionRequest(transport, systemPrompt, userMessage, imageBase64, model, temperature)
-                } catch (e: IOException) {
-                    ApiResult.Error("Network error: ${e.message}", -1)
+            var lastResult: ApiResult<String> = ApiResult.Error("Unknown vision error", -1)
+            var backoffMs = 1_500L
+            for (attempt in 0..1) {
+                if (attempt > 0) {
+                    Log.w("OpenAIService", "Retrying vision after ${backoffMs}ms (attempt $attempt)")
+                    delay(backoffMs)
+                    backoffMs *= 2
                 }
-            } ?: ApiResult.Error("Vision request timed out.", 408)
+                val result = withTimeoutOrNull(TIMEOUT_MS) {
+                    try {
+                        makeVisionRequest(transport, systemPrompt, userMessage, imageBase64, model, temperature)
+                    } catch (e: IOException) {
+                        ApiResult.Error("Network error: ${e.message}", -1)
+                    }
+                } ?: ApiResult.Error("Vision request timed out.", 408)
+
+                lastResult = result
+                when {
+                    result is ApiResult.Success -> return@withContext result
+                    result is ApiResult.RateLimited -> return@withContext result
+                    result is ApiResult.Error && result.code in 400..499 -> return@withContext result
+                    // retry on network/timeouts/empty response (code=200 error)
+                }
+            }
+
+            val fallbackModel = fallbackModelForEmpty(model)
+            if (fallbackModel != null && isEmptyResponseError(lastResult)) {
+                Log.w("OpenAIService", "Primary vision model '$model' returned empty output. Retrying with '$fallbackModel'.")
+                return@withContext withTimeoutOrNull(TIMEOUT_MS) {
+                    try {
+                        makeVisionRequest(transport, systemPrompt, userMessage, imageBase64, fallbackModel, temperature)
+                    } catch (e: IOException) {
+                        ApiResult.Error("Network error: ${e.message}", -1)
+                    }
+                } ?: ApiResult.Error("Vision request timed out.", 408)
+            }
+
+            lastResult
         } catch (e: Exception) {
             Log.e("OpenAIService", "Vision API call failed", e)
             ApiResult.Error("Vision error: ${e.message}", -1)
@@ -165,7 +208,7 @@ object OpenAIService {
         val requestBody = JSONObject().apply {
             put("model", model)
             putTemperatureIfSupported(this, model, temperature)
-            putTokenLimit(this, model, 800)
+            putTokenLimit(this, model, 1200)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
                     put("role", "system")
@@ -255,18 +298,23 @@ object OpenAIService {
                         Log.e("OpenAIService", "Response parse error: ${parseError.message}")
                         return ApiResult.Error("Invalid AI response format.", responseCode)
                     }
-                    val content = json
-                        .optJSONArray("choices")
-                        ?.optJSONObject(0)
-                        ?.optJSONObject("message")
-                        ?.optString("content")
-                        ?.trim()
-                        .orEmpty()
+                    val choice = json.optJSONArray("choices")?.optJSONObject(0)
+                    val message = choice?.optJSONObject("message")
+                    val finishReason = choice?.optString("finish_reason").orEmpty()
+                    val content = extractAssistantContent(message)
+                    val refusal = message?.optString("refusal").orEmpty().trim()
 
-                    if (content.isBlank()) {
-                        ApiResult.Error("AI returned an empty response.", responseCode)
+                    val finalText = when {
+                        content.isNotBlank() -> content
+                        refusal.isNotBlank() -> refusal
+                        else -> ""
+                    }
+
+                    if (finalText.isBlank()) {
+                        val hint = if (finishReason.isNotBlank()) " (finish_reason=$finishReason)" else ""
+                        ApiResult.Error("AI returned an empty response$hint.", responseCode)
                     } else {
-                        ApiResult.Success(content)
+                        ApiResult.Success(finalText)
                     }
                 }
             }
@@ -275,10 +323,57 @@ object OpenAIService {
         }
     }
 
+    private fun extractAssistantContent(message: JSONObject?): String {
+        if (message == null) return ""
+        val contentAny = message.opt("content")
+        return when (contentAny) {
+            is String -> contentAny.trim()
+            is JSONArray -> {
+                buildString {
+                    for (i in 0 until contentAny.length()) {
+                        val part = contentAny.opt(i)
+                        when (part) {
+                            is JSONObject -> {
+                                val text = part.optString("text").trim()
+                                if (text.isNotBlank()) {
+                                    if (isNotEmpty()) append('\n')
+                                    append(text)
+                                }
+                            }
+                            is String -> {
+                                val text = part.trim()
+                                if (text.isNotBlank()) {
+                                    if (isNotEmpty()) append('\n')
+                                    append(text)
+                                }
+                            }
+                        }
+                    }
+                }.trim()
+            }
+            else -> ""
+        }
+    }
+
     private fun extractApiErrorMessage(raw: String): String {
         val parsed = runCatching {
             JSONObject(raw).optJSONObject("error")?.optString("message").orEmpty()
         }.getOrDefault("")
         return parsed.ifBlank { raw.take(300) }
+    }
+
+    private fun isEmptyResponseError(result: ApiResult<String>): Boolean {
+        return result is ApiResult.Error &&
+            result.code == 200 &&
+            result.message.contains("empty response", ignoreCase = true)
+    }
+
+    private fun fallbackModelForEmpty(primaryModel: String): String? {
+        return when (primaryModel) {
+            MODEL_VISION_FAST -> "gpt-4o-mini"
+            MODEL_VISION_FULL -> "gpt-4o"
+            MODEL_PALM_QA -> "gpt-4o-mini"
+            else -> if (primaryModel.startsWith("gpt-5")) "gpt-4o-mini" else null
+        }
     }
 }
