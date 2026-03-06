@@ -298,7 +298,7 @@ You are an assistant that creates concise user profiles for personalized reading
 
     /**
      * Tier 1 (cheap/fast): Validates whether the image is an open human palm.
-     * Model: gpt-5-mini. Returns strict decision + retake guidance.
+     * Model: gpt-4o-mini. Returns strict decision + retake guidance.
      */
     fun palmistryValidation(): Pair<String, String> {
         val system = """

@@ -46,7 +46,6 @@ def load_api_key(local_properties: Path) -> str:
 def call_vision(api_key: str, model: str, system: str, user: str, image_b64: str, detail: str, max_comp_tokens: int):
     body = {
         "model": model,
-        "max_completion_tokens": max_comp_tokens,
         "messages": [
             {"role": "system", "content": system},
             {
@@ -59,7 +58,10 @@ def call_vision(api_key: str, model: str, system: str, user: str, image_b64: str
         ],
     }
     if model.startswith("gpt-5"):
+        body["max_completion_tokens"] = max_comp_tokens
         body["reasoning_effort"] = "low"
+    else:
+        body["max_tokens"] = max_comp_tokens
 
     req = urllib.request.Request(
         ENDPOINT,
@@ -111,12 +113,12 @@ def run_case(api_key: str, image_path: Path):
 
     v = call_vision(
         api_key=api_key,
-        model="gpt-5-mini",
+        model="gpt-4o-mini",
         system=VALIDATION_SYSTEM,
         user="Classify this image for palm reading readiness.",
         image_b64=b64,
         detail="low",
-        max_comp_tokens=800,
+        max_comp_tokens=600,
     )
     print(f"[Validation] ok={v['ok']} ms={v['elapsed_ms']} finish={v['finish_reason']}")
     if v["ok"]:

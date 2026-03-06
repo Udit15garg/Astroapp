@@ -34,6 +34,7 @@ class ScanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScanBinding
     private var capturedBitmap: Bitmap? = null
     private var photoUri: Uri? = null
+    private var lastFlashFired: Boolean? = null
     private var analysisRunId: String = ""
 
     private data class ValidationGate(
@@ -56,7 +57,10 @@ class ScanActivity : AppCompatActivity() {
         if (success && photoUri != null) {
             lifecycleScope.launch {
                 val bmp = loadScaledBitmap(photoUri!!)
-                if (bmp != null) onPhotoCaptured(bmp)
+                if (bmp != null) {
+                    lastFlashFired = readExifFlashFired(photoUri!!)
+                    onPhotoCaptured(bmp)
+                }
                 else setStatus(getString(R.string.scan_no_photo), isError = true)
             }
         } else {
@@ -76,7 +80,10 @@ class ScanActivity : AppCompatActivity() {
     ) { result ->
         @Suppress("DEPRECATION")
         val photo = result.data?.extras?.get("data") as? Bitmap
-        if (photo != null) onPhotoCaptured(normalizeLegacyBitmap(photo))
+        if (photo != null) {
+            lastFlashFired = null
+            onPhotoCaptured(normalizeLegacyBitmap(photo))
+        }
         else setStatus(getString(R.string.scan_no_photo), isError = true)
     }
 
@@ -134,12 +141,12 @@ class ScanActivity : AppCompatActivity() {
 
     // ── Photo handling ────────────────────────────────────────────────────
 
-    /** Loads image from URI, downscaled to max 1280px on the long edge for API efficiency. */
+    /** Loads image from URI, downscaled to max 1536px on the long edge for palm-line clarity. */
     private suspend fun loadScaledBitmap(uri: Uri): Bitmap? = withContext(Dispatchers.IO) {
         try {
             val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, opts) }
-            val maxEdge = 1280
+            val maxEdge = 1536
             val rawMax = maxOf(opts.outWidth, opts.outHeight)
             val sampleSize = if (rawMax > maxEdge) Integer.highestOneBit(rawMax / maxEdge) else 1
             val decodeOpts = BitmapFactory.Options().apply { inSampleSize = sampleSize }
@@ -155,6 +162,19 @@ class ScanActivity : AppCompatActivity() {
             applyExifOrientation(decoded, exifOrientation)
         } catch (e: Exception) {
             Log.e("ScanActivity", "Failed to load bitmap", e); null
+        }
+    }
+
+    private fun readExifFlashFired(uri: Uri): Boolean? {
+        return try {
+            val flashValue = contentResolver.openInputStream(uri)?.use { stream ->
+                ExifInterface(stream).getAttributeInt(ExifInterface.TAG_FLASH, -1)
+            } ?: -1
+            if (flashValue < 0) return null
+            (flashValue and 0x1) == 1
+        } catch (e: Exception) {
+            Log.w("ScanActivity", "Failed to read flash EXIF: ${e.message}")
+            null
         }
     }
 
@@ -217,6 +237,19 @@ class ScanActivity : AppCompatActivity() {
     }
 
     private fun checkImageQuality(bmp: Bitmap) {
+        val flashState = lastFlashFired
+        if (flashState != true) {
+            PalmistryEventLogger.log(
+                this,
+                "flash_requirement_failed",
+                mapOf("flash_fired" to (flashState?.toString() ?: "unknown"))
+            )
+            setStatus(getString(R.string.scan_flash_required), isError = true)
+            binding.btnAnalyze.isEnabled = false
+            binding.btnCamera.text = getString(R.string.btn_camera_retake)
+            return
+        }
+
         val quality = ImageQualityChecker.check(bmp)
         val isGood = quality == ImageQualityChecker.Quality.GOOD
         PalmistryEventLogger.log(
@@ -270,10 +303,12 @@ class ScanActivity : AppCompatActivity() {
                     imageBase64 = base64,
                     model = OpenAIService.MODEL_VISION_FAST,
                     imageDetail = "low",
-                    timeoutMs = 45_000L
+                    maxOutputTokens = 220,
+                    timeoutMs = 12_000L,
+                    maxRetries = 0
                 )
 
-                val validation = when (validationResult) {
+                val validationRaw = when (validationResult) {
                     is OpenAIService.ApiResult.Success -> {
                         PalmistryEventLogger.log(
                             this@ScanActivity,
@@ -283,7 +318,7 @@ class ScanActivity : AppCompatActivity() {
                                 "raw_preview" to validationResult.data.take(240)
                             )
                         )
-                        parseValidationGate(validationResult.data)
+                        validationResult.data
                     }
                     is OpenAIService.ApiResult.RateLimited -> {
                         PalmistryEventLogger.log(
@@ -309,14 +344,20 @@ class ScanActivity : AppCompatActivity() {
                     }
                 }
 
-                if (validation == null) {
+                val validation = parseValidationGate(validationRaw)
+                    ?: inferValidationGate(validationRaw)
+                    ?: ValidationGate(
+                        decision = "VALID",
+                        reason = "Validation format was non-standard; proceeding to analysis.",
+                        instruction = ""
+                    )
+
+                if (validation.decision.isBlank()) {
                     PalmistryEventLogger.log(
                         this@ScanActivity,
                         "validation_parse_failed",
-                        mapOf("run_id" to analysisRunId)
+                        mapOf("run_id" to analysisRunId, "raw_preview" to validationRaw.take(240))
                     )
-                    setStatus(getString(R.string.scan_invalid_response), isError = true)
-                    return@launch
                 }
                 PalmistryEventLogger.log(
                     this@ScanActivity,
@@ -359,8 +400,10 @@ class ScanActivity : AppCompatActivity() {
                     userMessage = palmUser,
                     imageBase64 = base64,
                     model = OpenAIService.MODEL_VISION_FULL,
-                    imageDetail = "high",
-                    timeoutMs = 75_000L
+                    imageDetail = "auto",
+                    maxOutputTokens = 1400,
+                    timeoutMs = 40_000L,
+                    maxRetries = 0
                 )
 
                 val parsed = when (analysisResult) {
@@ -453,7 +496,7 @@ class ScanActivity : AppCompatActivity() {
                 )
                 clearProgressState()
                 binding.btnAnalyze.isEnabled = capturedBitmap?.let {
-                    ImageQualityChecker.check(it) == ImageQualityChecker.Quality.GOOD
+                    lastFlashFired == true && ImageQualityChecker.check(it) == ImageQualityChecker.Quality.GOOD
                 } ?: false
                 binding.btnCamera.isEnabled = true
             }
@@ -462,7 +505,7 @@ class ScanActivity : AppCompatActivity() {
 
     private fun bitmapToBase64(bmp: Bitmap): String {
         val out = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.JPEG, 80, out)
+        bmp.compress(Bitmap.CompressFormat.JPEG, 90, out)
         return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
     }
 
@@ -509,21 +552,49 @@ class ScanActivity : AppCompatActivity() {
         return ValidationGate(decision = decision, reason = reason, instruction = instruction)
     }
 
+    private fun inferValidationGate(raw: String): ValidationGate? {
+        val text = raw.lowercase()
+        val invalidHits = listOf(
+            "invalid", "not a palm", "not palm", "not a hand", "back of hand", "claw",
+            "fist", "multiple hand", "two hand", "unclear", "not visible", "obscured", "blurry"
+        ).any { it in text }
+        if (invalidHits) {
+            return ValidationGate(
+                decision = "INVALID",
+                reason = extractFirstSentence(raw).ifBlank { "Palm image is not suitable for strict reading." },
+                instruction = extractRetakeLine(raw)
+            )
+        }
+
+        val validHits = listOf(
+            "valid", "open palm", "inner palm", "single hand", "palm facing", "readiness", "looks clear"
+        ).any { it in text }
+        if (validHits) {
+            return ValidationGate(
+                decision = "VALID",
+                reason = extractFirstSentence(raw).ifBlank { "Palm appears usable." },
+                instruction = ""
+            )
+        }
+        return null
+    }
+
     private fun parseVisionAnalysis(raw: String): VisionParseResult? {
         val fields = parseKeyValueLines(raw)
         val parsedReadings = parseAIReadings(raw)
         val status = fields["STATUS"]?.uppercase()
             ?: when {
                 Regex("\\bREUPLOAD\\b", RegexOption.IGNORE_CASE).containsMatchIn(raw) -> "REUPLOAD"
-                parsedReadings.size >= 5 -> "OK"
+                parsedReadings.isNotEmpty() -> "OK"
+                looksLikeReuploadText(raw) -> "REUPLOAD"
                 else -> null
             }
             ?: return null
         if (status == "REUPLOAD") {
             return VisionParseResult(
                 status = status,
-                reason = fields["REASON"],
-                instruction = fields["INSTRUCTION"],
+                reason = fields["REASON"] ?: extractFirstSentence(raw),
+                instruction = fields["INSTRUCTION"] ?: extractRetakeLine(raw),
                 readings = emptyList()
             )
         }
@@ -558,6 +629,76 @@ class ScanActivity : AppCompatActivity() {
 
     /** Parses AI response lines of format "CATEGORY:SCORE:Interpretation sentence." */
     private fun parseAIReadings(raw: String): List<PalmReading> {
+        val emojiMap = mapOf(
+            "HEALTH" to "❤️", "MARRIAGE" to "💑", "EDUCATION" to "📚",
+            "BRAIN" to "🧠", "CHILDREN" to "👶", "CAREER" to "💼", "LUCK" to "⭐"
+        )
+        val hindiMap = mapOf(
+            "HEALTH" to "Swasthya", "MARRIAGE" to "Vivah", "EDUCATION" to "Shiksha",
+            "BRAIN" to "Buddhi", "CHILDREN" to "Santaan", "CAREER" to "Career", "LUCK" to "Kismat"
+        )
+        val patternWithScore = Regex(
+            """(?i)^\s*-?\s*(HEALTH|MARRIAGE|EDUCATION|BRAIN|CHILDREN|CAREER|LUCK)\s*[:\-]\s*(\d{1,2})\s*[:\-]\s*(.+)$"""
+        )
+        val patternNoScore = Regex(
+            """(?i)^\s*-?\s*(HEALTH|MARRIAGE|EDUCATION|BRAIN|CHILDREN|CAREER|LUCK)\s*[:\-]\s*(.+)$"""
+        )
+        return raw.lines()
+            .mapNotNull { line ->
+                val trimmed = line.trim()
+                val withScore = patternWithScore.find(trimmed)
+                if (withScore != null) {
+                    val cat = withScore.groupValues[1].uppercase()
+                    val score = withScore.groupValues[2].toIntOrNull()?.coerceIn(1, 10) ?: return@mapNotNull null
+                    val interp = withScore.groupValues[3].trim().ifBlank { return@mapNotNull null }
+                    return@mapNotNull PalmReading(
+                        category = cat.lowercase().replaceFirstChar { it.uppercase() },
+                        categoryHindi = hindiMap[cat] ?: cat.lowercase().replaceFirstChar { it.uppercase() },
+                        score = score,
+                        interpretation = interp,
+                        emoji = emojiMap[cat] ?: "✨"
+                    )
+                }
+                val noScore = patternNoScore.find(trimmed) ?: return@mapNotNull null
+                val cat = noScore.groupValues[1].uppercase()
+                val interp = noScore.groupValues[2].trim().ifBlank { return@mapNotNull null }
+                val fallbackScore = 6
+                PalmReading(
+                    category = cat.lowercase().replaceFirstChar { it.uppercase() },
+                    categoryHindi = hindiMap[cat] ?: cat.lowercase().replaceFirstChar { it.uppercase() },
+                    score = fallbackScore,
+                    interpretation = interp,
+                    emoji = emojiMap[cat] ?: "✨"
+                )
+            }
+            .distinctBy { it.category }
+    }
+
+    private fun extractFirstSentence(raw: String): String {
+        return raw.lines()
+            .map { it.trim() }
+            .firstOrNull { it.isNotBlank() && !it.contains("STATUS", true) && !it.contains("DECISION", true) }
+            ?.take(180)
+            .orEmpty()
+    }
+
+    private fun extractRetakeLine(raw: String): String {
+        val line = raw.lines().firstOrNull {
+            val t = it.lowercase()
+            "retake" in t || "reupload" in t || "upload" in t || "angle" in t || "palm" in t
+        }?.trim().orEmpty()
+        return if (line.isBlank()) getString(R.string.scan_default_retake_instruction) else line.take(220)
+    }
+
+    private fun looksLikeReuploadText(raw: String): Boolean {
+        val t = raw.lowercase()
+        return listOf(
+            "retake", "reupload", "not clear", "not visible", "unclear",
+            "obscured", "blur", "poor lighting", "not readable", "try again"
+        ).any { it in t }
+    }
+
+    private fun parseAIReadingsLegacy(raw: String): List<PalmReading> {
         val emojiMap = mapOf(
             "HEALTH" to "❤️", "MARRIAGE" to "💑", "EDUCATION" to "📚",
             "BRAIN" to "🧠", "CHILDREN" to "👶", "CAREER" to "💼", "LUCK" to "⭐"

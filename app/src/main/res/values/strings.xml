@@ -91,6 +91,7 @@
     <string name="scan_not_a_palm">Please take a clear photo of your open palm facing the camera.</string>
     <string name="scan_ai_unavailable">Palmistry AI is unavailable right now. Please try again.</string>
     <string name="scan_invalid_response">Could not validate this image. Please retake a clear palm photo.</string>
+    <string name="scan_flash_required">Flash is mandatory for palm scan. Turn ON flash and retake the photo.</string>
     <string name="scan_default_retake_instruction">Show the front side of one open palm, fingers naturally straight, wrist visible, camera parallel to the palm, in bright light.</string>
     <string name="scan_no_photo">Photo capture failed. Please try again.</string>
     <string name="scan_palm_not_visible">Palm not clearly visible. Place your hand straight in good light.</string>

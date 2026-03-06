@@ -22,7 +22,7 @@ object OpenAIService {
 
     private const val OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions"
     private const val MODEL = "gpt-4o-mini"
-    const val MODEL_VISION_FAST = "gpt-5-mini"   // strict hand validation
+    const val MODEL_VISION_FAST = "gpt-4o-mini"  // fast strict hand validation
     const val MODEL_VISION_FULL = "gpt-5"        // full palm analysis
     const val MODEL_PALM_QA = "gpt-5"            // palm follow-up answers
     private const val TIMEOUT_MS = 90_000L
@@ -118,7 +118,9 @@ object OpenAIService {
         model: String = MODEL_VISION_FAST,
         temperature: Float = 0.3f,
         imageDetail: String = "high",
-        timeoutMs: Long = TIMEOUT_MS
+        maxOutputTokens: Int = 900,
+        timeoutMs: Long = TIMEOUT_MS,
+        maxRetries: Int = 1
     ): ApiResult<String> = withContext(Dispatchers.IO) {
         try {
             val transport = resolveTransport() ?: return@withContext ApiResult.Error(
@@ -126,7 +128,8 @@ object OpenAIService {
             )
             var lastResult: ApiResult<String> = ApiResult.Error("Unknown vision error", -1)
             var backoffMs = 1_500L
-            for (attempt in 0..1) {
+            val retries = maxRetries.coerceIn(0, 2)
+            for (attempt in 0..retries) {
                 if (attempt > 0) {
                     Log.w("OpenAIService", "Retrying vision after ${backoffMs}ms (attempt $attempt)")
                     delay(backoffMs)
@@ -141,7 +144,8 @@ object OpenAIService {
                             imageBase64 = imageBase64,
                             model = model,
                             temperature = temperature,
-                            imageDetail = imageDetail
+                            imageDetail = imageDetail,
+                            maxOutputTokens = maxOutputTokens
                         )
                     } catch (e: IOException) {
                         ApiResult.Error("Network error: ${e.message}", -1)
@@ -169,7 +173,8 @@ object OpenAIService {
                             imageBase64 = imageBase64,
                             model = fallbackModel,
                             temperature = temperature,
-                            imageDetail = imageDetail
+                            imageDetail = imageDetail,
+                            maxOutputTokens = maxOutputTokens
                         )
                     } catch (e: IOException) {
                         ApiResult.Error("Network error: ${e.message}", -1)
@@ -209,7 +214,8 @@ object OpenAIService {
         imageBase64: String,
         model: String,
         temperature: Float,
-        imageDetail: String
+        imageDetail: String,
+        maxOutputTokens: Int
     ): ApiResult<String> {
         val userContent = JSONArray().apply {
             put(JSONObject().apply {
@@ -227,7 +233,7 @@ object OpenAIService {
         val requestBody = JSONObject().apply {
             put("model", model)
             putTemperatureIfSupported(this, model, temperature)
-            putTokenLimit(this, model, 1200)
+            putTokenLimit(this, model, maxOutputTokens.coerceIn(64, 4000))
             putReasoningEffortIfSupported(this, model)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {
@@ -403,7 +409,7 @@ object OpenAIService {
 
     private fun fallbackModelForEmpty(primaryModel: String): String? {
         return when (primaryModel) {
-            MODEL_VISION_FAST -> "gpt-4o-mini"
+            MODEL_VISION_FAST -> "gpt-4o"
             MODEL_VISION_FULL -> "gpt-4o"
             MODEL_PALM_QA -> "gpt-4o-mini"
             else -> if (primaryModel.startsWith("gpt-5")) "gpt-4o-mini" else null
