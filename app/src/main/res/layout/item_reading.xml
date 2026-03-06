@@ -17,21 +17,13 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Category row: emoji + name + score -->
+        <!-- Compact score row: category + marks -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="10dp">
-
-            <TextView
-                android:id="@+id/tvEmoji"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:layout_marginEnd="10dp" />
+            android:layout_marginBottom="8dp">
 
             <TextView
                 android:id="@+id/tvCategory"
@@ -57,7 +49,6 @@
             android:layout_width="match_parent"
             android:layout_height="8dp"
             android:background="@drawable/bg_score_track"
-            android:layout_marginBottom="10dp"
             android:clipToPadding="false">
 
             <View
@@ -66,14 +57,6 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_score_fill" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvInterpretation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:textColor="@color/text_medium"
-            android:lineSpacingMultiplier="1.5" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

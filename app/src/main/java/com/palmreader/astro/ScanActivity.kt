@@ -141,12 +141,12 @@ class ScanActivity : AppCompatActivity() {
 
     // ── Photo handling ────────────────────────────────────────────────────
 
-    /** Loads image from URI, downscaled to max 1536px on the long edge for palm-line clarity. */
+    /** Loads image from URI, downscaled to configured max edge for palm-line clarity. */
     private suspend fun loadScaledBitmap(uri: Uri): Bitmap? = withContext(Dispatchers.IO) {
         try {
             val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, opts) }
-            val maxEdge = 1536
+            val maxEdge = AppConfig.Palmistry.SCAN_MAX_EDGE_PX
             val rawMax = maxOf(opts.outWidth, opts.outHeight)
             val sampleSize = if (rawMax > maxEdge) Integer.highestOneBit(rawMax / maxEdge) else 1
             val decodeOpts = BitmapFactory.Options().apply { inSampleSize = sampleSize }
@@ -302,9 +302,9 @@ class ScanActivity : AppCompatActivity() {
                     userMessage = valUser,
                     imageBase64 = base64,
                     model = OpenAIService.MODEL_VISION_FAST,
-                    imageDetail = "low",
-                    maxOutputTokens = 220,
-                    timeoutMs = 12_000L,
+                    imageDetail = AppConfig.Palmistry.VALIDATION_IMAGE_DETAIL,
+                    maxOutputTokens = AppConfig.Palmistry.VALIDATION_MAX_OUTPUT_TOKENS,
+                    timeoutMs = AppConfig.Palmistry.VALIDATION_TIMEOUT_MS,
                     maxRetries = 0
                 )
 
@@ -401,9 +401,9 @@ class ScanActivity : AppCompatActivity() {
                     userMessage = palmUser,
                     imageBase64 = base64,
                     model = OpenAIService.MODEL_VISION_FULL,
-                    imageDetail = "high",
-                    maxOutputTokens = 1400,
-                    timeoutMs = 40_000L,
+                    imageDetail = AppConfig.Palmistry.ANALYSIS_IMAGE_DETAIL,
+                    maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
+                    timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
                     maxRetries = 0
                 )
 
@@ -506,17 +506,17 @@ class ScanActivity : AppCompatActivity() {
 
     private fun bitmapToBase64(bmp: Bitmap): String {
         val out = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.JPEG, 90, out)
+        bmp.compress(Bitmap.CompressFormat.JPEG, AppConfig.Palmistry.SCAN_UPLOAD_JPEG_QUALITY, out)
         return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
     }
 
     private fun saveCapturedPalmImage(bitmap: Bitmap): String? {
         return try {
-            val scaled = scaleBitmapForChat(bitmap, maxEdge = 1000)
+            val scaled = scaleBitmapForChat(bitmap, maxEdge = AppConfig.Palmistry.CHAT_IMAGE_MAX_EDGE_PX)
             val dir = File(cacheDir, "palm_images").also { it.mkdirs() }
             val file = File(dir, "captured_${System.currentTimeMillis()}.jpg")
             FileOutputStream(file).use { out ->
-                scaled.compress(Bitmap.CompressFormat.JPEG, 85, out)
+                scaled.compress(Bitmap.CompressFormat.JPEG, AppConfig.Palmistry.CHAT_IMAGE_JPEG_QUALITY, out)
             }
             file.absolutePath
         } catch (e: Exception) {

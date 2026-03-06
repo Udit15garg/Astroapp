@@ -66,20 +66,19 @@ class ResultActivity : BaseFeatureActivity() {
             val card = LayoutInflater.from(this)
                 .inflate(R.layout.item_reading, binding.llReadings, false)
 
-            card.findViewById<TextView>(R.id.tvEmoji).text = reading.emoji
             card.findViewById<TextView>(R.id.tvCategory).text = reading.category
-            card.findViewById<TextView>(R.id.tvScore).text = "${reading.score}/10"
+            card.findViewById<TextView>(R.id.tvScore).text =
+                "${reading.score}/${AppConfig.ResultCards.SCORE_MAX}"
 
             val bar = card.findViewById<LinearLayout>(R.id.scoreBar)
             val filled = card.findViewById<android.view.View>(R.id.scoreFill)
             filled.layoutParams = filled.layoutParams.also { it.width = 0 }
             filled.post {
                 filled.layoutParams = filled.layoutParams.also {
-                    it.width = (bar.width * reading.score / 10f).toInt()
+                    it.width = (bar.width * reading.score / AppConfig.ResultCards.SCORE_MAX.toFloat()).toInt()
                 }
             }
 
-            card.findViewById<TextView>(R.id.tvInterpretation).text = reading.interpretation
             binding.llReadings.addView(card)
         }
     }
@@ -199,7 +198,9 @@ class ResultActivity : BaseFeatureActivity() {
                     saveToHistory(getString(R.string.feature_palmistry), q, msg)
                 } finally {
                     val elapsed = System.currentTimeMillis() - startedAt
-                    if (elapsed < 1000L) delay(1000L - elapsed)
+                    if (elapsed < AppConfig.Chat.MIN_TYPING_LOADER_MS) {
+                        delay(AppConfig.Chat.MIN_TYPING_LOADER_MS - elapsed)
+                    }
                     hideTypingIndicator()
                     refreshCredits(binding.tvCredits)
                     binding.scrollView.post {
@@ -340,7 +341,7 @@ class ResultActivity : BaseFeatureActivity() {
             text.contains("The Bad", ignoreCase = true) &&
             text.contains("What to do", ignoreCase = true) &&
             text.contains("Conclusion", ignoreCase = true)
-        if (hasTemplate) return text
+        if (hasTemplate) return withGoodBadSpacing(text)
 
         val shortLine = Regex("(?im)^\\s*SHORT\\s*[:\\-]\\s*(.+)$")
             .find(text)?.groupValues?.getOrNull(1)?.trim()
@@ -362,7 +363,7 @@ class ResultActivity : BaseFeatureActivity() {
             append(details.take(220).ifBlank {
                 "Your signs show strong potential for progress and stability."
             })
-            append('\n')
+            append(AppConfig.Chat.GOOD_BAD_SECTION_GAP)
             append("The Bad ❌ - ")
             append("Watch for overthinking, delays, or mixed signals before decisions.")
             append('\n')
@@ -371,6 +372,13 @@ class ResultActivity : BaseFeatureActivity() {
             append('\n')
             append("Conclusion - ")
             append("You are on a good path; stay patient, practical, and confident.")
-        }
+        }.let(::withGoodBadSpacing)
+    }
+
+    private fun withGoodBadSpacing(text: String): String {
+        return text.replace(
+            Regex("(?im)\\n+\\s*(The Bad\\s*❌?\\s*-)"),
+            "${AppConfig.Chat.GOOD_BAD_SECTION_GAP}\$1"
+        )
     }
 }

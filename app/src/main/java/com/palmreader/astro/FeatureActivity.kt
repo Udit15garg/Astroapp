@@ -524,7 +524,9 @@ class FeatureActivity : BaseFeatureActivity() {
                     saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
                 } finally {
                     val elapsed = System.currentTimeMillis() - startedAt
-                    if (elapsed < 1000L) delay(1000L - elapsed)
+                    if (elapsed < AppConfig.Chat.MIN_TYPING_LOADER_MS) {
+                        delay(AppConfig.Chat.MIN_TYPING_LOADER_MS - elapsed)
+                    }
                     hideTypingIndicator()
                     setRequestInFlight(false)
                     showQASection()
@@ -951,7 +953,9 @@ class FeatureActivity : BaseFeatureActivity() {
                         conversationHistory.add(q to fallback)
                     } finally {
                         val elapsed = System.currentTimeMillis() - startedAt
-                        if (elapsed < 1000L) delay(1000L - elapsed)
+                        if (elapsed < AppConfig.Chat.MIN_TYPING_LOADER_MS) {
+                            delay(AppConfig.Chat.MIN_TYPING_LOADER_MS - elapsed)
+                        }
                         hideTypingIndicator()
                         refreshCredits(binding.tvCredits)
                         scrollToBottom()
