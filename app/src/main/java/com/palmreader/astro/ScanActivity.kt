@@ -344,13 +344,14 @@ class ScanActivity : AppCompatActivity() {
                     }
                 }
 
-                val validation = parseValidationGate(validationRaw)
+                val parsedValidation = parseValidationGate(validationRaw)
                     ?: inferValidationGate(validationRaw)
                     ?: ValidationGate(
                         decision = "VALID",
                         reason = "Validation format was non-standard; proceeding to analysis.",
                         instruction = ""
                     )
+                val validation = overrideHandednessFalseReject(parsedValidation, validationRaw)
 
                 if (validation.decision.isBlank()) {
                     PalmistryEventLogger.log(
@@ -400,7 +401,7 @@ class ScanActivity : AppCompatActivity() {
                     userMessage = palmUser,
                     imageBase64 = base64,
                     model = OpenAIService.MODEL_VISION_FULL,
-                    imageDetail = "auto",
+                    imageDetail = "high",
                     maxOutputTokens = 1400,
                     timeoutMs = 40_000L,
                     maxRetries = 0
@@ -470,11 +471,11 @@ class ScanActivity : AppCompatActivity() {
                 }
 
                 if (parsed.readings.size == 7) {
-                    val markedPalmPath = withContext(Dispatchers.IO) { saveMarkedPalmImage(bmp) }
+                    val capturedPalmPath = withContext(Dispatchers.IO) { saveCapturedPalmImage(bmp) }
                     startActivity(Intent(this@ScanActivity, ResultActivity::class.java).apply {
                         putParcelableArrayListExtra("readings", ArrayList(parsed.readings))
-                        if (!markedPalmPath.isNullOrBlank()) {
-                            putExtra("markedPalmPath", markedPalmPath)
+                        if (!capturedPalmPath.isNullOrBlank()) {
+                            putExtra("capturedPalmPath", capturedPalmPath)
                         }
                     })
                 } else {
@@ -509,18 +510,17 @@ class ScanActivity : AppCompatActivity() {
         return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
     }
 
-    private fun saveMarkedPalmImage(bitmap: Bitmap): String? {
+    private fun saveCapturedPalmImage(bitmap: Bitmap): String? {
         return try {
-            val marked = PalmLineOverlay.drawAnnotated(bitmap)
-            val scaled = scaleBitmapForChat(marked, maxEdge = 1000)
+            val scaled = scaleBitmapForChat(bitmap, maxEdge = 1000)
             val dir = File(cacheDir, "palm_images").also { it.mkdirs() }
-            val file = File(dir, "marked_${System.currentTimeMillis()}.jpg")
+            val file = File(dir, "captured_${System.currentTimeMillis()}.jpg")
             FileOutputStream(file).use { out ->
                 scaled.compress(Bitmap.CompressFormat.JPEG, 85, out)
             }
             file.absolutePath
         } catch (e: Exception) {
-            Log.w("ScanActivity", "Failed to save marked palm image: ${e.message}")
+            Log.w("ScanActivity", "Failed to save captured palm image: ${e.message}")
             null
         }
     }
@@ -577,6 +577,56 @@ class ScanActivity : AppCompatActivity() {
             )
         }
         return null
+    }
+
+    private fun overrideHandednessFalseReject(
+        validation: ValidationGate,
+        raw: String
+    ): ValidationGate {
+        if (!shouldOverrideHandednessReject(validation, raw)) return validation
+        PalmistryEventLogger.log(
+            this,
+            "validation_handedness_override",
+            mapOf(
+                "reason" to validation.reason.take(160),
+                "instruction" to validation.instruction.take(160)
+            )
+        )
+        return validation.copy(
+            decision = "VALID",
+            reason = "Accepted: open inner palm can be either left or right hand.",
+            instruction = ""
+        )
+    }
+
+    private fun shouldOverrideHandednessReject(
+        validation: ValidationGate,
+        raw: String
+    ): Boolean {
+        if (validation.decision == "VALID") return false
+        val text = buildString {
+            append(raw)
+            append('\n')
+            append(validation.reason)
+            append('\n')
+            append(validation.instruction)
+        }.lowercase()
+
+        val handednessSignals = listOf(
+            "right hand", "left hand", "right palm", "left palm",
+            "thumb on right", "thumb on left", "thumb appears",
+            "mirrored", "mirror image", "mirror", "orientation",
+            "wrong side", "opposite side"
+        ).any { it in text }
+        if (!handednessSignals) return false
+
+        val hardInvalidSignals = listOf(
+            "back of hand", "back-hand", "not a palm", "not palm", "not a hand",
+            "claw", "curled fingers", "fist", "multiple hand", "two hand",
+            "non-hand object", "no hand", "object"
+        ).any { it in text }
+
+        return !hardInvalidSignals
     }
 
     private fun parseVisionAnalysis(raw: String): VisionParseResult? {

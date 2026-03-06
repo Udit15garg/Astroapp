@@ -246,9 +246,10 @@ $DISCLAIMER
         persona: PersonaEntity? = null,
         history: List<Pair<String, String>> = emptyList()
     ): Pair<String, String> {
-        val roleDescription = when (featureType.uppercase()) {
+        val upperFeature = featureType.uppercase()
+        val roleDescription = when (upperFeature) {
             "TAROT" -> "a master tarot reader continuing a reading session. Stay in character — reference the cards that were drawn, their imagery, and their elemental energies"
-            "PALMISTRY" -> "an expert palmist continuing a palm reading consultation"
+            "PALMISTRY" -> "a deeply experienced palmist continuing a one-to-one consultation with empathy"
             "KUNDLI" -> "a Vedic astrologer continuing a Kundli consultation"
             "NUMEROLOGY" -> "a numerology expert continuing a reading session"
             else -> "a knowledgeable astrologer answering a follow-up question about a ${featureType.lowercase()} reading"
@@ -260,6 +261,35 @@ $DISCLAIMER
             }
             "\nRecent conversation:\n$recentExchanges\n"
         } else ""
+
+        if (upperFeature == "PALMISTRY") {
+            val palmSystem = """
+You are $roleDescription.
+${languageInstruction(locale)}
+${personaBlock(persona)}
+Context from the reading:
+$context
+$historyBlock
+Answer the user's question in simple, human, caring language. Be direct, specific, and practical.
+Do NOT sound robotic or generic.
+
+Format your response EXACTLY as:
+Short Answer - <1 clear sentence that directly answers the question>
+Detailed Answer -
+The Good ✅ - <1-2 short sentences with supportive positives from the reading>
+The Bad ❌ - <1 short sentence with realistic caution>
+What to do - <1 sentence with practical next steps>
+Conclusion - <1 warm, supportive closing sentence>
+
+Rules:
+- Keep total answer under 140 words.
+- Do NOT make specific medical or financial predictions.
+- $NO_MARKDOWN
+
+$DISCLAIMER
+            """.trimIndent()
+            return palmSystem to question
+        }
 
         val system = """
 You are $roleDescription.
@@ -304,6 +334,8 @@ You are an assistant that creates concise user profiles for personalized reading
         val system = """
 You are a strict palm image gatekeeper for palmistry.
 Accept ONLY when the image clearly shows the inner palm (front side), open hand, fingers naturally extended, major palm lines visible, and good focus/light.
+Both LEFT hand and RIGHT hand are valid.
+Thumb can appear on either side due to hand choice or camera mirroring; do NOT reject based only on thumb side/orientation.
 Reject if any of these occur: back of hand, claw/curled fingers, fist, side angle, multiple hands, heavy shadow, blur, tilt, cut-off palm, non-hand object.
 
 Output EXACTLY 3 lines:

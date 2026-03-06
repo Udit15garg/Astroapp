@@ -127,8 +127,8 @@
     <string name="qa_typing_indicator">…</string>
     <string name="qa_palm_ai_unavailable">I cannot answer right now because palmistry AI is unavailable. Please try again in a moment.</string>
     <string name="qa_palm_empty_answer">I could not generate a reliable palm answer. Please ask again with a specific question.</string>
-    <string name="qa_palm_marked_image_caption">Uploaded palm image with key palm lines marked:</string>
-    <string name="cd_palm_marked_image">Palm image with marked lines</string>
+    <string name="qa_palm_marked_image_caption">Uploaded palm image:</string>
+    <string name="cd_palm_marked_image">Uploaded palm image</string>
     <string name="qa_read_more">Read more ▼</string>
     <string name="qa_show_less">Show less ▲</string>
 

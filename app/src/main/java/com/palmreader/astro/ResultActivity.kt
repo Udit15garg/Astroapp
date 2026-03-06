@@ -28,7 +28,7 @@ class ResultActivity : BaseFeatureActivity() {
     private val gibberishTracker = GibberishTracker()
     private var persona: PersonaEntity? = null
     private var typingIndicatorView: TextView? = null
-    private var markedPalmPath: String? = null
+    private var capturedPalmPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +37,14 @@ class ResultActivity : BaseFeatureActivity() {
 
         @Suppress("DEPRECATION")
         readings = intent.getParcelableArrayListExtra<PalmReading>("readings") ?: emptyList()
-        markedPalmPath = intent.getStringExtra("markedPalmPath")
+        capturedPalmPath = intent.getStringExtra("capturedPalmPath")
+            ?: intent.getStringExtra("markedPalmPath")
 
         binding.btnBack.setOnClickListener { finish() }
         refreshCredits(binding.tvCredits)
         loadPersona()
         buildResultCards()
-        appendMarkedPalmToChat()
+        appendCapturedPalmToChat()
         setupQA()
     }
 
@@ -169,8 +170,9 @@ class ResultActivity : BaseFeatureActivity() {
                                 saveToHistory(getString(R.string.feature_palmistry), q, msg)
                             } else {
                                 Log.d("AstroAI", "AI palm answer received")
-                                appendChat(answer, isUser = false)
-                                saveToHistory(getString(R.string.feature_palmistry), q, answer)
+                                val formatted = normalizePalmQaAnswer(answer)
+                                appendChat(formatted, isUser = false)
+                                saveToHistory(getString(R.string.feature_palmistry), q, formatted)
                             }
                         }
                         is OpenAIService.ApiResult.Error -> {
@@ -288,8 +290,8 @@ class ResultActivity : BaseFeatureActivity() {
         binding.llChat.addView(tv)
     }
 
-    private fun appendMarkedPalmToChat() {
-        val path = markedPalmPath ?: return
+    private fun appendCapturedPalmToChat() {
+        val path = capturedPalmPath ?: return
         val bitmap = BitmapFactory.decodeFile(path) ?: return
 
         val caption = TextView(this).apply {
@@ -326,5 +328,49 @@ class ResultActivity : BaseFeatureActivity() {
             }
         }
         binding.llChat.addView(image)
+    }
+
+    private fun normalizePalmQaAnswer(raw: String): String {
+        val text = raw.replace("\r\n", "\n").trim()
+        if (text.isBlank()) return text
+
+        val hasTemplate = text.contains("Short Answer -", ignoreCase = true) &&
+            text.contains("Detailed Answer -", ignoreCase = true) &&
+            text.contains("The Good", ignoreCase = true) &&
+            text.contains("The Bad", ignoreCase = true) &&
+            text.contains("What to do", ignoreCase = true) &&
+            text.contains("Conclusion", ignoreCase = true)
+        if (hasTemplate) return text
+
+        val shortLine = Regex("(?im)^\\s*SHORT\\s*[:\\-]\\s*(.+)$")
+            .find(text)?.groupValues?.getOrNull(1)?.trim()
+            ?: text.lines().firstOrNull { it.isNotBlank() }?.trim().orEmpty()
+        val details = Regex("(?is)DETAILS\\s*[:\\-]\\s*(.+)$")
+            .find(text)?.groupValues?.getOrNull(1)?.trim()
+            ?: text
+
+        return buildString {
+            append("Short Answer - ")
+            append(
+                shortLine.ifBlank {
+                    "You have positive momentum, with a few areas needing care."
+                }
+            )
+            append('\n')
+            append("Detailed Answer -\n")
+            append("The Good ✅ - ")
+            append(details.take(220).ifBlank {
+                "Your signs show strong potential for progress and stability."
+            })
+            append('\n')
+            append("The Bad ❌ - ")
+            append("Watch for overthinking, delays, or mixed signals before decisions.")
+            append('\n')
+            append("What to do - ")
+            append("Take small consistent steps, communicate clearly, and review progress weekly.")
+            append('\n')
+            append("Conclusion - ")
+            append("You are on a good path; stay patient, practical, and confident.")
+        }
     }
 }
