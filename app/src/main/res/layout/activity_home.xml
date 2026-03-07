@@ -176,7 +176,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="6 mystical paths await you"
+                android:text="The Baba sees 6 sacred paths before you"
                 android:textSize="13sp"
                 android:textColor="@color/text_medium"
                 android:layout_marginBottom="20dp" />
@@ -264,7 +264,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="✦  Camera · AI Powered"
+                                android:text="✦  Reveals: Love \u00b7 Career \u00b7 Health \u00b7 Destiny"
                                 android:textSize="11sp"
                                 android:textColor="@color/icon_palmistry"
                                 android:layout_marginTop="12dp" />

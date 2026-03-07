@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ── Midnight Celestial Theme ── -->
+    <!-- ── Baba Ji Mystical Theme ── -->
 
-    <!-- Primary (Royal Blue) -->
-    <color name="primary">#2E5BFF</color>
-    <color name="primary_dark">#1A3FCC</color>
-    <color name="on_primary">#FFFFFF</color>
-    <color name="primary_container">#1A2340</color>
-    <color name="on_primary_container">#B0C4FF</color>
+    <!-- Primary (Saffron — replaces Royal Blue) -->
+    <color name="primary">#E8890A</color>
+    <color name="primary_dark">#C9720A</color>
+    <color name="on_primary">#FFF8E7</color>
+    <color name="primary_container">#2E1804</color>
+    <color name="on_primary_container">#FFD080</color>
 
     <!-- Secondary (Gold) -->
-    <color name="secondary">#F3C46B</color>
-    <color name="secondary_dark">#D4A74B</color>
-    <color name="on_secondary">#1A1A0A</color>
-    <color name="secondary_container">#3D3420</color>
-    <color name="on_secondary_container">#FFE4A0</color>
+    <color name="secondary">#F5C030</color>
+    <color name="secondary_dark">#D4A020</color>
+    <color name="on_secondary">#1A1200</color>
+    <color name="secondary_container">#3A2A00</color>
+    <color name="on_secondary_container">#FFE580</color>
 
     <!-- Tertiary -->
-    <color name="tertiary">#F3C46B</color>
-    <color name="on_tertiary">#1A1A0A</color>
-    <color name="tertiary_container">#3D3420</color>
-    <color name="on_tertiary_container">#FFE4A0</color>
+    <color name="tertiary">#F5C030</color>
+    <color name="on_tertiary">#1A1200</color>
+    <color name="tertiary_container">#3A2A00</color>
+    <color name="on_tertiary_container">#FFE580</color>
 
     <!-- Error -->
     <color name="error">#FF4D4D</color>
@@ -29,84 +29,84 @@
     <color name="on_error_container">#FFDAD6</color>
 
     <!-- Surface / Background -->
-    <color name="bg_warm">#05060A</color>
-    <color name="surface">#070B16</color>
-    <color name="on_surface">#EBEBEB</color>
-    <color name="surface_variant">#121620</color>
-    <color name="on_surface_variant">#9E9E9E</color>
-    <color name="surface_container">#0F1220</color>
-    <color name="surface_container_high">#1A1E2E</color>
-    <color name="surface_container_low">#0A0D18</color>
+    <color name="bg_warm">#07040F</color>
+    <color name="surface">#0D0820</color>
+    <color name="on_surface">#FFF2D7</color>
+    <color name="surface_variant">#150E22</color>
+    <color name="on_surface_variant">#FFD296</color>
+    <color name="surface_container">#110C1E</color>
+    <color name="surface_container_high">#1A1430</color>
+    <color name="surface_container_low">#0A0718</color>
 
     <!-- Outline -->
-    <color name="outline">#1D2130</color>
-    <color name="outline_variant">#2A2E3E</color>
+    <color name="outline">#3A2208</color>
+    <color name="outline_variant">#4A2E0A</color>
 
     <!-- Text -->
-    <color name="text_dark">#EBEBEB</color>
-    <color name="text_medium">#9E9E9E</color>
-    <color name="text_light">#666666</color>
+    <color name="text_dark">#FFF2D7</color>
+    <color name="text_medium">#FFD296</color>
+    <color name="text_light">#A07840</color>
 
     <!-- Chat -->
-    <color name="chat_user_bg">#0E1740</color>
-    <color name="chat_user_border">#1A2F80</color>
-    <color name="chat_bot_bg">#121620</color>
-    <color name="chat_bot_border">#1D2130</color>
+    <color name="chat_user_bg">#2E1804</color>
+    <color name="chat_user_border">#E8890A</color>
+    <color name="chat_bot_bg">#150E22</color>
+    <color name="chat_bot_border">#3A1A60</color>
 
     <!-- Score bar -->
-    <color name="score_track">#1D2130</color>
-    <color name="score_fill">#2E5BFF</color>
+    <color name="score_track">#2E1804</color>
+    <color name="score_fill">#E8890A</color>
 
     <!-- Divider -->
-    <color name="divider">#181C26</color>
+    <color name="divider">#2A1806</color>
 
     <!-- Glass card -->
-    <color name="glass_card">#121620</color>
-    <color name="glass_card_border">#1D2130</color>
+    <color name="glass_card">#130C1E</color>
+    <color name="glass_card_border">#3A2208</color>
 
-    <!-- Feature card backgrounds (dark tinted variants) -->
-    <color name="card_palmistry">#121620</color>
-    <color name="card_tarot">#121620</color>
-    <color name="card_numerology">#121620</color>
-    <color name="card_kundli">#121620</color>
-    <color name="card_rashifal">#121620</color>
-    <color name="card_sunsign">#121620</color>
+    <!-- Feature card backgrounds (warm dark tinted) -->
+    <color name="card_palmistry">#130C1E</color>
+    <color name="card_tarot">#130C1E</color>
+    <color name="card_numerology">#130C1E</color>
+    <color name="card_kundli">#130C1E</color>
+    <color name="card_rashifal">#130C1E</color>
+    <color name="card_sunsign">#130C1E</color>
 
     <!-- Card text -->
-    <color name="card_text_title">#EBEBEB</color>
-    <color name="card_text_subtitle">#9E9E9E</color>
+    <color name="card_text_title">#FFF2D7</color>
+    <color name="card_text_subtitle">#FFD296</color>
 
     <!-- Status colors -->
     <color name="success">#81C784</color>
     <color name="warning">#FFD54F</color>
-    <color name="info">#64B5F6</color>
+    <color name="info">#FFB74D</color>
 
     <!-- Splash/brand -->
-    <color name="brand_navy">#05060A</color>
-    <color name="brand_gold">#F3C46B</color>
+    <color name="brand_navy">#07040F</color>
+    <color name="brand_gold">#F5C030</color>
 
     <!-- Button colors -->
-    <color name="btn_send_bg">#1E1A10</color>
-    <color name="btn_send_border">#33291A</color>
-    <color name="btn_secondary_bg">#0F1220</color>
+    <color name="btn_send_bg">#2E1804</color>
+    <color name="btn_send_border">#E8890A</color>
+    <color name="btn_secondary_bg">#150E22</color>
 
     <!-- Input -->
-    <color name="input_bg">#0F1220</color>
-    <color name="input_border">#1D2130</color>
-    <color name="input_hint">#595959</color>
+    <color name="input_bg">#110C1E</color>
+    <color name="input_border">#3A2208</color>
+    <color name="input_hint">#806040</color>
 
     <!-- Subscription plan card backgrounds -->
-    <color name="plan_basic">#141828</color>
-    <color name="plan_premium">#1A1430</color>
-    <color name="plan_unlimited">#0F1A14</color>
+    <color name="plan_basic">#1A1004</color>
+    <color name="plan_premium">#1A1030</color>
+    <color name="plan_unlimited">#0F1A08</color>
 
     <!-- ── Per-feature design tokens ── -->
 
-    <!-- Palmistry (Cobalt Blue) -->
-    <color name="card_palmistry_bg">#0B1329</color>
-    <color name="card_palmistry_border">#1E3F7A</color>
-    <color name="icon_palmistry">#7EB5FF</color>
-    <color name="icon_bg_palmistry">#1A2855</color>
+    <!-- Palmistry (Saffron Flame) -->
+    <color name="card_palmistry_bg">#1A0E04</color>
+    <color name="card_palmistry_border">#7A4A10</color>
+    <color name="icon_palmistry">#FFBE5C</color>
+    <color name="icon_bg_palmistry">#2E1808</color>
 
     <!-- Tarot (Royal Purple) -->
     <color name="card_tarot_bg">#130B28</color>
@@ -139,8 +139,8 @@
     <color name="icon_bg_sunsign">#0F2E30</color>
 
     <!-- Premium Banner -->
-    <color name="banner_gold_bg">#18120A</color>
-    <color name="banner_gold_border">#F3C46B</color>
+    <color name="banner_gold_bg">#1A1004</color>
+    <color name="banner_gold_border">#F5C030</color>
 
     <!-- Subscription plan premium badge -->
     <color name="plan_premium_border">#7A4A10</color>
