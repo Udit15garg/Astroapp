@@ -13,5 +13,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: theme.radius.card,
     padding: theme.spacing(2),
+    // subtle inner warmth
+    shadowColor: theme.colors.gold,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 2,
   },
 });

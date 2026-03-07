@@ -9,18 +9,15 @@ import { SvgXml } from "react-native-svg";
 import { useAppState } from "../state/AppState";
 import { HandProfile } from "../types";
 
-const PALM_SVG = require("../../assets/svg/palm-guide.svg");
-
 export function PalmCaptureScreen({ navigation }: any) {
   const { upsertHand } = useAppState();
 
-  // Load SVG content (metro can import as asset but not raw string). We'll inline a minimal XML string for reliability.
   const xml = useMemo(() => (`
 <svg xmlns="http://www.w3.org/2000/svg" width="360" height="520" viewBox="0 0 360 520">
   <defs>
     <style>
-      .s{fill:none;stroke:rgba(255,255,255,0.55);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:6 10}
-      .t{fill:none;stroke:rgba(243,196,107,0.55);stroke-width:2;stroke-linecap:round;stroke-dasharray:2 10}
+      .s{fill:none;stroke:rgba(232,137,10,0.55);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:6 10}
+      .t{fill:none;stroke:rgba(245,192,48,0.55);stroke-width:2;stroke-linecap:round;stroke-dasharray:2 10}
     </style>
   </defs>
   <path class="s" d="M120 420c-24-34-33-70-30-110 4-45 16-75 18-120 2-40-6-74 16-92 20-16 38 6 40 32 2 24-2 44-2 68" />
@@ -35,30 +32,45 @@ export function PalmCaptureScreen({ navigation }: any) {
 
   return (
     <CelestialBackground>
+      {/* Sacred header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Capture</Text>
-        <Text style={styles.subtitle}>Place your palm inside the guide.</Text>
+        <Text style={styles.symbol}>🖐</Text>
+        <Text style={styles.title}>Show Your Palm</Text>
+        <Text style={styles.subtitle}>
+          "Place your open hand inside the sacred guide, dear child. The Baba must see your lines clearly."
+        </Text>
       </View>
 
       <View style={styles.body}>
+        {/* Tips */}
+        <View style={styles.tipsRow}>
+          {["☀️ Good light", "✋ Palm flat", "🚫 No shadows"].map((t) => (
+            <View key={t} style={styles.tipPill}>
+              <Text style={styles.tipText}>{t}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Camera mock with mystical SVG overlay */}
         <GlassCard style={{ padding: 0, overflow: "hidden" }}>
           <View style={styles.cameraMock}>
-            {/* Replace this with Expo Camera later. */}
             <View style={styles.overlay}>
               <SvgXml xml={xml} width="100%" height="100%" />
             </View>
-            <Text style={styles.cameraNote}>Camera preview (mock)</Text>
+            <View style={styles.cameraNote}>
+              <Text style={styles.cameraNoteText}>Camera preview</Text>
+            </View>
           </View>
         </GlassCard>
 
         <View style={{ gap: theme.spacing(1), marginTop: theme.spacing(2) }}>
           <PrimaryButton
-            title="Save hand"
+            title="✦  The Baba Has Seen Enough"
             onPress={async () => {
               const id = "hand-" + Math.random().toString(16).slice(2);
               const hand: HandProfile = {
                 id,
-                name: "New Hand",
+                name: "My Palm",
                 createdAt: Date.now(),
                 lastAnalyzedAt: Date.now(),
                 imageUri: "https://picsum.photos/402/602",
@@ -67,7 +79,7 @@ export function PalmCaptureScreen({ navigation }: any) {
               navigation.navigate("HandChat", { handId: id });
             }}
           />
-          <SecondaryButton title="Back" onPress={() => navigation.goBack()} />
+          <SecondaryButton title="← Return" onPress={() => navigation.goBack()} />
         </View>
       </View>
     </CelestialBackground>
@@ -75,16 +87,49 @@ export function PalmCaptureScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingTop: theme.spacing(4), paddingHorizontal: theme.spacing(2) },
-  title: { color: theme.colors.text, fontSize: 26, fontWeight: "900" },
-  subtitle: { color: theme.colors.muted, marginTop: 6 },
+  header: {
+    paddingTop: theme.spacing(3),
+    paddingHorizontal: theme.spacing(2),
+    alignItems: "center",
+    paddingBottom: theme.spacing(1),
+  },
+  symbol: { fontSize: 32, marginBottom: 6 },
+  title: { color: theme.colors.text, fontSize: 22, fontWeight: "900" },
+  subtitle: {
+    color: theme.colors.muted,
+    marginTop: 6,
+    fontSize: 13,
+    fontStyle: "italic",
+    textAlign: "center",
+    lineHeight: 20,
+  },
   body: { padding: theme.spacing(2) },
+  tipsRow: { flexDirection: "row", gap: 8, marginBottom: theme.spacing(1.5), flexWrap: "wrap" },
+  tipPill: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: theme.radius.pill,
+    backgroundColor: "rgba(232,137,10,0.10)",
+    borderWidth: 1,
+    borderColor: "rgba(232,137,10,0.22)",
+  },
+  tipText: { color: theme.colors.muted, fontSize: 11 },
   cameraMock: {
-    height: 520,
-    backgroundColor: "rgba(255,255,255,0.03)",
+    height: 440,
+    backgroundColor: "rgba(232,137,10,0.03)",
     alignItems: "center",
     justifyContent: "center",
   },
   overlay: { ...StyleSheet.absoluteFillObject, padding: 18 },
-  cameraNote: { color: theme.colors.muted, position: "absolute", bottom: 12 },
+  cameraNote: {
+    position: "absolute",
+    bottom: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: theme.radius.pill,
+    backgroundColor: "rgba(7,4,15,0.60)",
+    borderWidth: 1,
+    borderColor: "rgba(232,137,10,0.18)",
+  },
+  cameraNoteText: { color: theme.colors.muted, fontSize: 11 },
 });

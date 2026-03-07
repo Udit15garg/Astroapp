@@ -22,11 +22,11 @@ const styles = StyleSheet.create({
   btn: {
     borderRadius: theme.radius.btn,
     borderWidth: 1,
-    borderColor: theme.colors.cardBorder,
-    backgroundColor: "rgba(255,255,255,0.03)",
-    paddingVertical: 14,
+    borderColor: "rgba(245,192,48,0.22)",
+    backgroundColor: "rgba(232,137,10,0.05)",
+    paddingVertical: 15,
     alignItems: "center",
     justifyContent: "center",
   },
-  txt: { color: theme.colors.text, fontWeight: "800", fontSize: 14 },
+  txt: { color: theme.colors.muted, fontWeight: "800", fontSize: 14 },
 });

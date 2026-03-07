@@ -19,7 +19,7 @@ export function PrimaryButton({
       disabled={disabled}
       style={[
         styles.btn,
-        disabled ? { opacity: 0.4 } : null,
+        disabled ? { opacity: 0.35 } : null,
         style,
       ]}
     >
@@ -31,10 +31,17 @@ export function PrimaryButton({
 const styles = StyleSheet.create({
   btn: {
     borderRadius: theme.radius.btn,
-    backgroundColor: theme.colors.royal,
-    paddingVertical: 14,
+    backgroundColor: theme.colors.saffron,
+    paddingVertical: 15,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(245,192,48,0.40)",
+    shadowColor: theme.colors.gold,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  txt: { color: "white", fontWeight: "900", fontSize: 14 },
+  txt: { color: "#FFF8E7", fontWeight: "900", fontSize: 14, letterSpacing: 0.3 },
 });
