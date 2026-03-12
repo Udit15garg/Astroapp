@@ -19,7 +19,7 @@ object PromptTemplates {
         else -> "Respond in English."
     }
 
-    private const val DISCLAIMER = "Keep the tone warm, insightful, and encouraging. This reading is for entertainment and self-reflection purposes."
+    private const val DISCLAIMER = "Keep the tone clear, practical, and encouraging. This reading is for entertainment and self-reflection purposes."
     private const val NO_MARKDOWN = "Use plain text headings and bullets only. Do not use markdown symbols like **, ##, or backticks."
 
     private fun personaBlock(persona: PersonaEntity?): String {
@@ -248,8 +248,8 @@ $DISCLAIMER
     ): Pair<String, String> {
         val upperFeature = featureType.uppercase()
         val roleDescription = when (upperFeature) {
-            "TAROT" -> "a master tarot reader continuing a reading session. Stay in character — reference the cards that were drawn, their imagery, and their elemental energies"
-            "PALMISTRY" -> "a deeply experienced palmist continuing a one-to-one consultation with empathy"
+            "TAROT" -> "a tarot reader continuing a session. Reference the cards that were drawn and explain them in practical terms"
+            "PALMISTRY" -> "a palmist continuing a one-to-one consultation in a direct, practical way"
             "KUNDLI" -> "a Vedic astrologer continuing a Kundli consultation"
             "NUMEROLOGY" -> "a numerology expert continuing a reading session"
             else -> "a knowledgeable astrologer answering a follow-up question about a ${featureType.lowercase()} reading"
@@ -348,7 +348,7 @@ INSTRUCTION: specific retake instruction with angle/portion guidance
 
     /**
      * Tier 2 (higher quality): Full AI palm line analysis.
-     * Model: gpt-5. Returns either reupload request or 7 strict reading lines.
+     * Model: gpt-4o. Returns either reupload request or 7 strict reading lines.
      */
     fun palmistryVisionAnalysis(locale: String = "en", persona: PersonaEntity? = null): Pair<String, String> {
         val system = """

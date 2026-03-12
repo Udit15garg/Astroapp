@@ -23,14 +23,14 @@
             android:layout_height="44dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_app_logo"
-            android:tint="@color/brand_gold"
+            app:tint="@color/brand_gold"
             android:contentDescription="@string/cd_app_logo" />
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Astra"
+        android:text="@string/app_title"
         android:textSize="32sp"
         android:textStyle="bold"
         android:letterSpacing="0.03"
@@ -40,7 +40,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Discover your cosmic destiny"
+        android:text="@string/auth_brand_tagline"
         android:textSize="14sp"
         android:textColor="@color/text_medium"
         android:layout_marginBottom="28dp" />

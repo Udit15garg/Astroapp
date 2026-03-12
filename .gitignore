@@ -18,3 +18,5 @@ out/
 .navigation/
 *.log
 .claude/
+**/node_modules/
+**/.expo/

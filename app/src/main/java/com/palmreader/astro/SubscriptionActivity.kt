@@ -54,7 +54,9 @@ class SubscriptionActivity : BaseFeatureActivity() {
             simulatePurchase("₹99/month — 10 Credits") {
                 lifecycleScope.launch {
                     try {
-                        val expiry = System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000
+                        val user = db.userDao().findById(session.userId)
+                            ?: throw IllegalStateException("User not found")
+                        val expiry = computeRenewalExpiry(user.planType, user.planExpiry, "BASIC")
                         db.userDao().addCredits(session.userId, 10)
                         db.userDao().updatePlanMeta(session.userId, "BASIC", expiry)
                         db.creditTransactionDao().insert(CreditTransactionEntity(
@@ -73,12 +75,13 @@ class SubscriptionActivity : BaseFeatureActivity() {
             simulatePurchase("₹199/month — Unlimited") {
                 lifecycleScope.launch {
                     try {
-                        val expiry = System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000
-                        db.userDao().addCredits(session.userId, 999)
+                        val user = db.userDao().findById(session.userId)
+                            ?: throw IllegalStateException("User not found")
+                        val expiry = computeRenewalExpiry(user.planType, user.planExpiry, "UNLIMITED")
                         db.userDao().updatePlanMeta(session.userId, "UNLIMITED", expiry)
                         db.creditTransactionDao().insert(CreditTransactionEntity(
-                            userId = session.userId, type = "PLAN_ACTIVATED", amount = 999,
-                            description = "₹199 Unlimited Monthly — unlimited questions"
+                            userId = session.userId, type = "PLAN_ACTIVATED", amount = 0,
+                            description = "₹199 Unlimited Monthly — unlimited access activated"
                         ))
                         runOnUiThread { refreshCredits(binding.tvCurrentCredits) }
                     } catch (e: Exception) {
@@ -92,6 +95,12 @@ class SubscriptionActivity : BaseFeatureActivity() {
             Toast.makeText(this, getString(R.string.sub_free_trial_note), Toast.LENGTH_LONG).show()
             finish()
         }
+    }
+
+    private fun computeRenewalExpiry(currentPlanType: String, currentExpiry: Long, targetPlanType: String): Long {
+        val now = System.currentTimeMillis()
+        val renewalStart = if (currentPlanType == targetPlanType && currentExpiry > now) currentExpiry else now
+        return renewalStart + 30L * 24 * 60 * 60 * 1000
     }
 
     private fun simulatePurchase(planName: String, onSuccess: () -> Unit) {

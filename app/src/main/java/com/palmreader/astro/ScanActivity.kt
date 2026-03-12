@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -106,7 +105,6 @@ class ScanActivity : AppCompatActivity() {
     // ── Camera ────────────────────────────────────────────────────────────
 
     private fun ensureCameraPermissionAndLaunch() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { launchCameraInternal(); return }
         val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
                 PackageManager.PERMISSION_GRANTED
         if (granted) launchCameraInternal() else cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
@@ -132,8 +130,7 @@ class ScanActivity : AppCompatActivity() {
     private fun launchLegacyCamera() {
         try {
             val intent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) legacyCameraLauncher.launch(intent)
-            else Toast.makeText(this, getString(R.string.scan_camera_unavailable), Toast.LENGTH_SHORT).show()
+            legacyCameraLauncher.launch(intent)
         } catch (_: Exception) {
             Toast.makeText(this, getString(R.string.scan_camera_unavailable), Toast.LENGTH_SHORT).show()
         }
@@ -238,11 +235,11 @@ class ScanActivity : AppCompatActivity() {
 
     private fun checkImageQuality(bmp: Bitmap) {
         val flashState = lastFlashFired
-        if (flashState != true) {
+        if (flashState == false) {
             PalmistryEventLogger.log(
                 this,
                 "flash_requirement_failed",
-                mapOf("flash_fired" to (flashState?.toString() ?: "unknown"))
+                mapOf("flash_fired" to flashState.toString())
             )
             setStatus(getString(R.string.scan_flash_required), isError = true)
             binding.btnAnalyze.isEnabled = false
@@ -254,8 +251,12 @@ class ScanActivity : AppCompatActivity() {
         val isGood = quality == ImageQualityChecker.Quality.GOOD
         PalmistryEventLogger.log(
             this,
-            "quality_check",
-            mapOf("quality" to quality.name, "analyze_enabled" to isGood)
+            if (flashState == null) "quality_check_flash_unknown" else "quality_check",
+            mapOf(
+                "quality" to quality.name,
+                "analyze_enabled" to isGood,
+                "flash_fired" to (flashState?.toString() ?: "unknown")
+            )
         )
         setStatus(ImageQualityChecker.feedback(quality), isError = !isGood)
         binding.btnAnalyze.isEnabled = isGood

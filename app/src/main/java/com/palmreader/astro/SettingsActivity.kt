@@ -122,8 +122,7 @@ class SettingsActivity : AppCompatActivity() {
         val url = externalUrl.trim()
         if (url.startsWith("https://", ignoreCase = true)) {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            if (browserIntent.resolveActivity(packageManager) != null) {
-                startActivity(browserIntent)
+            if (runCatching { startActivity(browserIntent) }.isSuccess) {
                 return
             }
         }
@@ -142,6 +141,7 @@ class SettingsActivity : AppCompatActivity() {
                         try {
                             db.historyDao().deleteByUser(session.userId)
                             db.creditTransactionDao().deleteByUser(session.userId)
+                            db.personaDao().deleteByUser(session.userId)
                             db.userDao().deleteById(session.userId)
                             session.logout()
                             runOnUiThread {

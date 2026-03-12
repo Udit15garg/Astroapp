@@ -23,8 +23,8 @@ object OpenAIService {
     private const val OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions"
     private const val MODEL = "gpt-4o-mini"
     const val MODEL_VISION_FAST = "gpt-4o-mini"  // fast strict hand validation
-    const val MODEL_VISION_FULL = "gpt-5"        // full palm analysis
-    const val MODEL_PALM_QA = "gpt-5"            // palm follow-up answers
+    const val MODEL_VISION_FULL = "gpt-4o"       // stable full palm analysis
+    const val MODEL_PALM_QA = "gpt-4o-mini"      // stable palm follow-up answers
     private const val TIMEOUT_MS = 90_000L
 
     private data class RequestTransport(
@@ -408,11 +408,11 @@ object OpenAIService {
     }
 
     private fun fallbackModelForEmpty(primaryModel: String): String? {
-        return when (primaryModel) {
-            MODEL_VISION_FAST -> "gpt-4o"
-            MODEL_VISION_FULL -> "gpt-4o"
-            MODEL_PALM_QA -> "gpt-4o-mini"
-            else -> if (primaryModel.startsWith("gpt-5")) "gpt-4o-mini" else null
+        return when {
+            primaryModel == "gpt-4o-mini" -> "gpt-4o"
+            primaryModel == "gpt-4o" -> "gpt-4o-mini"
+            primaryModel.startsWith("gpt-5") -> "gpt-4o-mini"
+            else -> null
         }
     }
 }

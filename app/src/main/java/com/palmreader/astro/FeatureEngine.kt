@@ -36,7 +36,7 @@ object TarotEngine {
         TarotCard("The High Priestess", "II",   "Listen to your inner voice",                           "Your intuition knows a great deal.",                                  R.drawable.the_high_priestess),
         TarotCard("The Empress",        "III",  "Fertility and abundance",                              "Connect with nature — abundance is coming.",                          R.drawable.the_empress),
         TarotCard("The Emperor",        "IV",   "Authority and structure",                              "Establish your reign through discipline.",                            R.drawable.the_emprorer),
-        TarotCard("The Hierophant",     "V",    "Tradition and spiritual guidance",                     "Seek advice from a mentor or elder.",                                 R.drawable.the_hierophant),
+        TarotCard("The Hierophant",     "V",    "Structure, tradition, and proven methods",            "Stick to a proven process before making a big decision.",             R.drawable.the_hierophant),
         TarotCard("The Lovers",         "VI",   "Love and meaningful choices",                          "Choose with your heart — you will not regret it.",                    R.drawable.the_lovers),
         TarotCard("The Chariot",        "VII",  "Victory through controlled willpower",                 "Stay determined — the goal is within reach.",                         R.drawable.the_chariot),
         TarotCard("Strength",           "VIII", "Inner strength and patience",                          "Even gentle hands can tame a lion.",                                  R.drawable.strength),
@@ -118,6 +118,8 @@ object TarotEngine {
     fun draw(count: Int = 3): List<DrawnCard> =
         deck.shuffled().take(count).map { DrawnCard(it, kotlin.random.Random.nextBoolean()) }
 
+    fun findCardByName(name: String): TarotCard? = deck.firstOrNull { it.name == name }
+
     fun toFeatureResult(
         cards: List<DrawnCard>,
         positions: List<String> = listOf("Past", "Present", "Future"),
@@ -141,12 +143,16 @@ object TarotEngine {
 
     fun answer(question: String, cards: List<DrawnCard>): String {
         val c = cards.random()
+        val promptLead = question.trim()
+            .takeIf { it.isNotBlank() }
+            ?.let { "About \"$it\": " }
+            .orEmpty()
         val pool = listOf(
-            "The ${c.displayName} whispers: '${c.card.advice}'",
-            "${c.card.name} carries a message for you: ${c.card.meaning}.",
-            "Through the veil of ${c.card.name} — ${c.card.advice}",
-            "The cards speak with patience: ${c.card.meaning}.",
-            "Your ${c.displayName} reveals: ${c.card.advice}"
+            "${promptLead}${c.card.name}: ${c.card.advice}",
+            "${promptLead}${c.card.name} points to ${c.card.meaning.lowercase()}.",
+            "${promptLead}Current theme from ${c.card.name}: ${c.card.meaning}. Next step: ${c.card.advice}",
+            "${promptLead}${c.displayName} suggests keeping it simple: ${c.card.advice}",
+            "${promptLead}${c.card.name} suggests ${c.card.meaning.lowercase()}. ${c.card.advice}"
         )
         return pool.random()
     }
@@ -474,8 +480,17 @@ object SignEngine {
         "Water" to listOf("Listen to your heart today. Your intuition is very strong.", "Help someone in need today. Blessings will follow.")
     )
 
+    fun dailyGuidance(sign: ZodiacSign, now: Long = System.currentTimeMillis()): String {
+        val options = dailyHoroscopes[sign.element].orEmpty()
+        if (options.isEmpty()) return "Today is a good day."
+        val calendar = Calendar.getInstance().apply { timeInMillis = now }
+        val signOffset = signs.indexOfFirst { it.name == sign.name }.coerceAtLeast(0)
+        val index = (calendar.get(Calendar.DAY_OF_YEAR) + signOffset) % options.size
+        return options[index]
+    }
+
     fun getResult(sign: ZodiacSign): FeatureResult {
-        val horoscope = dailyHoroscopes[sign.element]?.random() ?: "Today is a good day."
+        val horoscope = dailyGuidance(sign)
         val items = listOf(
             ReadingItem("Horoscope", sign.name, "${sign.emoji} ${sign.traits}"),
             ReadingItem("Element", sign.element, "Your element defines your temperament."),

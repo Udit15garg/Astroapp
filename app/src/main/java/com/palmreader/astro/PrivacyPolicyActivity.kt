@@ -26,7 +26,7 @@ class PrivacyPolicyActivity : AppCompatActivity() {
         // Toolbar
         val toolbar = MaterialToolbar(this@PrivacyPolicyActivity).apply {
             setTitle(title)
-            setNavigationIcon(com.google.android.material.R.drawable.ic_arrow_back_black_24)
+            setNavigationIcon(R.drawable.ic_back_arrow)
             setNavigationOnClickListener { finish() }
             setBackgroundColor(getColor(R.color.primary))
             setTitleTextColor(getColor(R.color.on_primary))

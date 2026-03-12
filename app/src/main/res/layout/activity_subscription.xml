@@ -25,7 +25,7 @@
             android:padding="10dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_back_arrow"
-            android:tint="@color/brand_gold"
+            app:tint="@color/brand_gold"
             android:contentDescription="@string/cd_back_button" />
 
         <LinearLayout
@@ -73,7 +73,7 @@
                     android:layout_marginEnd="5dp"
                     android:contentDescription="@null"
                     android:src="@drawable/ic_coin"
-                    android:tint="@color/brand_gold" />
+                    app:tint="@color/brand_gold" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Unlock deeper cosmic insights"
+                android:text="@string/sub_page_subtitle"
                 android:textSize="13sp"
                 android:textColor="@color/text_medium"
                 android:layout_marginBottom="16dp" />

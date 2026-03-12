@@ -120,7 +120,7 @@ class ResultActivity : BaseFeatureActivity() {
                 return
             }
             is GibberishTracker.Result.CreditDeducted -> {
-                useCredit("Gibberish") {
+                useCredit("Gibberish") { _ ->
                     Snackbar.make(
                         binding.root,
                         getString(R.string.qa_gibberish_credit_used),
@@ -137,7 +137,7 @@ class ResultActivity : BaseFeatureActivity() {
 
         binding.etQuestion.setText("")
 
-        useCredit("Palmistry Q&A") {
+        useCredit("Palmistry Q&A") { charged ->
             appendChat(getString(R.string.qa_user_prefix, q), isUser = true)
 
             lifecycleScope.launch {
@@ -164,7 +164,8 @@ class ResultActivity : BaseFeatureActivity() {
                         is OpenAIService.ApiResult.Success -> {
                             val answer = result.data.trim()
                             if (answer.isBlank()) {
-                                val msg = getString(R.string.qa_palm_empty_answer)
+                                restorePalmQuestionCreditIfNeeded(charged)
+                                val msg = buildPalmQaUnavailableMessage(getString(R.string.qa_palm_empty_answer))
                                 appendChat(msg, isUser = false)
                                 saveToHistory(getString(R.string.feature_palmistry), q, msg)
                             } else {
@@ -176,24 +177,28 @@ class ResultActivity : BaseFeatureActivity() {
                         }
                         is OpenAIService.ApiResult.Error -> {
                             Log.e("AstroAI", "AI palm error: ${result.message}")
-                            val msg = getString(R.string.qa_palm_ai_unavailable)
+                            restorePalmQuestionCreditIfNeeded(charged)
+                            val msg = buildPalmQaUnavailableMessage(getString(R.string.qa_palm_ai_unavailable))
                             appendChat(msg, isUser = false)
                             saveToHistory(getString(R.string.feature_palmistry), q, msg)
                         }
                         is OpenAIService.ApiResult.RateLimited -> {
-                            val msg = getString(R.string.ai_rate_limited)
+                            restorePalmQuestionCreditIfNeeded(charged)
+                            val msg = buildPalmQaUnavailableMessage(getString(R.string.ai_rate_limited))
                             appendChat(msg, isUser = false)
                             saveToHistory(getString(R.string.feature_palmistry), q, msg)
                         }
                         else -> {
-                            val msg = getString(R.string.qa_palm_ai_unavailable)
+                            restorePalmQuestionCreditIfNeeded(charged)
+                            val msg = buildPalmQaUnavailableMessage(getString(R.string.qa_palm_ai_unavailable))
                             appendChat(msg, isUser = false)
                             saveToHistory(getString(R.string.feature_palmistry), q, msg)
                         }
                     }
                 } catch (e: Exception) {
                     Log.e("AstroAI", "Palm Q&A request failed", e)
-                    val msg = getString(R.string.qa_palm_ai_unavailable)
+                    restorePalmQuestionCreditIfNeeded(charged)
+                    val msg = buildPalmQaUnavailableMessage(getString(R.string.qa_palm_ai_unavailable))
                     appendChat(msg, isUser = false)
                     saveToHistory(getString(R.string.feature_palmistry), q, msg)
                 } finally {
@@ -329,6 +334,23 @@ class ResultActivity : BaseFeatureActivity() {
             }
         }
         binding.llChat.addView(image)
+    }
+
+    private suspend fun restorePalmQuestionCreditIfNeeded(charged: Boolean) {
+        if (!charged) return
+        db.userDao().addCredits(session.userId, 1)
+        db.creditTransactionDao().insert(
+            CreditTransactionEntity(
+                userId = session.userId,
+                type = "BONUS",
+                amount = 1,
+                description = "Palmistry Q&A unavailable — 1 credit restored"
+            )
+        )
+    }
+
+    private fun buildPalmQaUnavailableMessage(primaryMessage: String): String {
+        return listOf(primaryMessage, getString(R.string.qa_credit_restored_note)).joinToString("\n")
     }
 
     private fun normalizePalmQaAnswer(raw: String): String {

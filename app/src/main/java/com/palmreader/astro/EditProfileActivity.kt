@@ -79,6 +79,11 @@ class EditProfileActivity : BaseFeatureActivity() {
 
         lifecycleScope.launch {
             try {
+                val existing = db.userDao().findByEmail(email)
+                if (existing != null && existing.id != session.userId) {
+                    runOnUiThread { showError(getString(R.string.profile_email_in_use)) }
+                    return@launch
+                }
                 db.userDao().updateProfile(
                     userId = session.userId,
                     name = name,

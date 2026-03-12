@@ -40,7 +40,7 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
      * Check credits, deduct one if available, then call onAllowed.
      * [featureLabel] used in transaction description (e.g. "Tarot", "Kundli").
      */
-    protected fun useCredit(featureLabel: String = "Question", onAllowed: () -> Unit) {
+    protected fun useCredit(featureLabel: String = "Question", onAllowed: (charged: Boolean) -> Unit) {
         lifecycleScope.launch {
             try {
                 val user = db.userDao().findById(session.userId)
@@ -57,7 +57,7 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
                                 description = "$featureLabel — unlimited usage"
                             )
                         )
-                        withContext(Dispatchers.Main) { onAllowed() }
+                        withContext(Dispatchers.Main) { onAllowed(false) }
                     }
                     user.credits > 0 -> {
                         db.userDao().deductCredit(session.userId)
@@ -67,7 +67,7 @@ abstract class BaseFeatureActivity : AppCompatActivity() {
                                 description = "$featureLabel — 1 credit used"
                             )
                         )
-                        withContext(Dispatchers.Main) { onAllowed() }
+                        withContext(Dispatchers.Main) { onAllowed(true) }
                     }
                     else -> withContext(Dispatchers.Main) { showPaywall() }
                 }

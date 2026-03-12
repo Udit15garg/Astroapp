@@ -25,7 +25,7 @@
             android:padding="10dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_back_arrow"
-            android:tint="@color/brand_gold"
+            app:tint="@color/brand_gold"
             android:contentDescription="@string/cd_back_button" />
 
         <LinearLayout

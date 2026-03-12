@@ -45,6 +45,7 @@
     <string name="auth_google_generic_error">Google साइन-इन विफल: %s</string>
     <string name="auth_google_cancelled">Google साइन-इन रद्द किया गया</string>
     <string name="auth_account_error">खाता बनाने में समस्या: %s</string>
+    <string name="auth_brand_tagline">अपनी ब्रह्मांडीय दिशा जानें</string>
     <string name="error_dialog_title">कुछ गड़बड़ हुई</string>
 
     <!-- ── होम ── -->
@@ -54,7 +55,12 @@
     <string name="home_credits_remaining">%d क्रेडिट शेष</string>
     <string name="home_no_credits">क्रेडिट समाप्त \u2014 रिचार्ज करें</string>
     <string name="home_section_title">आप क्या जानना चाहेंगे?</string>
+    <string name="home_section_subtitle">एक रीडिंग चुनें और सब कुछ एक ही जगह पर रखें</string>
     <string name="home_subscription_banner">प्लान देखें \u2014 \u20B949 | \u20B999 | \u20B9199</string>
+    <string name="home_banner_upgrade">और रीडिंग, फॉलो-अप और सेव्ड गाइडेंस के लिए प्लान चुनें</string>
+    <string name="home_banner_basic_active">बेसिक प्लान %s तक सक्रिय है</string>
+    <string name="home_banner_unlimited_active">अनलिमिटेड एक्सेस %s तक सक्रिय है</string>
+    <string name="home_start_cta">शुरू करें</string>
     <string name="home_btn_profile">प्रोफ़ाइल</string>
     <string name="home_btn_history">इतिहास</string>
     <string name="home_btn_logout">लॉग आउट</string>
@@ -62,15 +68,68 @@
     <string name="profile_setup_message">कृपया एक बार प्रोफ़ाइल पूरी करें। इसके बाद DOB जैसी जानकारी सभी रीडिंग में अपने-आप भर जाएगी।</string>
     <string name="profile_setup_cta">प्रोफ़ाइल भरें</string>
     <string name="profile_setup_later">बाद में</string>
+    <string name="home_today_label">आज की गाइडेंस</string>
+    <string name="home_today_profile_title">पहले प्रोफ़ाइल सेट करें</string>
+    <string name="home_today_profile_body">जन्मतिथि जोड़ें ताकि राशिफल, अंक ज्योतिष और कुंडली के नतीजे अधिक सही लगें।</string>
+    <string name="home_today_profile_meta">प्रोफ़ाइल विवरण जोड़ने तक पर्सनलाइज़ेशन बंद है।</string>
+    <string name="home_today_default_body">आज थोड़ा शांत रहकर निर्णय लेना बेहतर रहेगा।</string>
+    <string name="home_today_sign_title">%s के लिए आज का फोकस</string>
+    <string name="home_today_sign_meta">यह आपकी जन्मतिथि पर आधारित है।</string>
+    <string name="home_today_concern_meta">आपकी मौजूदा चिंता के आधार पर: %s.</string>
+    <string name="home_continue_label_active">जर्नी जारी रखें</string>
+    <string name="home_continue_label_recent">हाल की रीडिंग</string>
+    <string name="home_continue_label_new">शुरू करें</string>
+    <string name="home_continue_tarot_title_drawn">आपकी टैरो स्प्रेड तैयार है</string>
+    <string name="home_continue_tarot_body_drawn">आपने तीन कार्ड पहले ही खींच लिए हैं। अब उन्हें खोलकर पढ़ना शुरू करें।</string>
+    <string name="home_continue_tarot_title_revealed">%1$d में से %2$d टैरो कार्ड खुले</string>
+    <string name="home_continue_tarot_body_revealed">नई स्प्रेड शुरू करने के बजाय इसी रीडिंग को आगे बढ़ाएं।</string>
+    <string name="home_continue_tarot_title_ready">अपनी टैरो रीडिंग पूरी करें</string>
+    <string name="home_continue_tarot_body_ready">सभी कार्ड खुल चुके हैं। अब पूरी रीडिंग बनाएं और आगे सवाल पूछें।</string>
+    <string name="home_continue_tarot_title_chat">टैरो Q&amp;A फिर से शुरू करें (%d सवाल)</string>
+    <string name="home_continue_tarot_body_chat">आपकी रीडिंग और सवाल-जवाब इसी डिवाइस पर सेव हैं।</string>
+    <string name="home_continue_recent_title">अपनी %s रीडिंग फिर देखें</string>
+    <string name="home_continue_recent_body">%1$s को सेव किया गया। पिछला मुख्य बिंदु: %2$s</string>
+    <string name="home_continue_empty_title">एक साफ रीडिंग से शुरू करें</string>
+    <string name="home_continue_empty_body">डिटेल्ड रिपोर्ट और फॉलो-अप सवालों के लिए पाम स्कैन सबसे तेज़ रास्ता है।</string>
+    <string name="home_quick_actions_title">रीडिंग्स एक्सप्लोर करें</string>
+    <string name="home_quick_actions_subtitle">जिस फीचर की ज़रूरत है, वहीं से शुरू करें।</string>
+    <string name="home_recommendation_label">अगला बेहतर कदम</string>
+    <string name="home_recommendation_low_credits_title">आपके क्रेडिट लगभग खत्म हैं</string>
+    <string name="home_recommendation_low_credits_body">यदि आप बिना रुकावट फॉलो-अप सवाल पूछना चाहते हैं, तो अभी टॉप-अप करें।</string>
+    <string name="home_recommendation_low_credits_meta">पेड ऐक्शन चलने से पहले चार्ज दिखाया जाता है।</string>
+    <string name="home_recommendation_profile_title">अपनी जन्म जानकारी पूरी करें</string>
+    <string name="home_recommendation_profile_body">जन्मतिथि जोड़ने से पूरे ऐप में राशिफल, अंक ज्योतिष और कुंडली बेहतर होती है।</string>
+    <string name="home_recommendation_profile_meta">सेव करने के बाद यही प्रोफ़ाइल सभी रीडिंग्स में इस्तेमाल होगी।</string>
+    <string name="home_recommendation_finish_tarot_title">चल रही टैरो रीडिंग पहले पूरी करें</string>
+    <string name="home_recommendation_finish_tarot_body">आपकी एक टैरो स्प्रेड पहले से चल रही है। सबसे सही अगला कदम वही पूरा करना है।</string>
+    <string name="home_recommendation_finish_tarot_meta">मौजूदा टैरो सेशन लोकल तौर पर सेव है और फिर से खोला जा सकता है।</string>
+    <string name="home_recommendation_palm_title">अगला फुल पाम रीडिंग ट्राय करें</string>
+    <string name="home_recommendation_palm_body">पामिस्ट्री ऐप की सबसे डिटेल्ड रीडिंग है और स्कैन के बाद फॉलो-अप सवाल भी देती है।</string>
+    <string name="home_recommendation_palm_meta">क्रेडिट तभी कटता है जब पाम एनालिसिस शुरू होता है।</string>
+    <string name="home_recommendation_rashifal_title">आज का राशिफल देखें</string>
+    <string name="home_recommendation_rashifal_body">आपकी प्रोफ़ाइल में इतनी जानकारी है कि तेज़ डेली रीडिंग मिल सके।</string>
+    <string name="home_recommendation_personalized_meta_unlimited">आपके मौजूदा अनलिमिटेड प्लान में पर्सनलाइज़्ड गाइडेंस उपलब्ध है।</string>
+    <string name="home_recommendation_personalized_meta_credits">अगली रीडिंग के लिए %s उपलब्ध है।</string>
+    <string name="home_cta_add_details">जानकारी जोड़ें</string>
+    <string name="home_cta_open_rashifal">राशिफल खोलें</string>
+    <string name="home_cta_resume_tarot">टैरो जारी रखें</string>
+    <string name="home_cta_open_history">हिस्ट्री खोलें</string>
+    <string name="home_cta_scan_palm">हाथ स्कैन करें</string>
+    <string name="home_cta_view_plans">प्लान देखें</string>
 
     <!-- ── फ़ीचर्स ── -->
     <string name="feature_palmistry">हस्त रेखा</string>
     <string name="feature_palmistry_subtitle">पामिस्ट्री</string>
     <string name="feature_tarot">टैरो रीडिंग</string>
+    <string name="feature_tarot_subtitle">अतीत • वर्तमान • भविष्य</string>
     <string name="feature_numerology">अंक ज्योतिष</string>
+    <string name="feature_numerology_subtitle">जीवन संख्या • शुभ तिथियां • नाम ऊर्जा</string>
     <string name="feature_kundli">कुंडली</string>
+    <string name="feature_kundli_subtitle">विवाह समय • ग्रह दोष</string>
     <string name="feature_rashifal">राशिफल</string>
+    <string name="feature_rashifal_subtitle">आज का मार्गदर्शन • साप्ताहिक दृष्टि</string>
     <string name="feature_sunsign">सूर्य राशि</string>
+    <string name="feature_sunsign_subtitle">व्यक्तित्व • ताकत • अनुकूलता</string>
     <string name="feature_reading">रीडिंग</string>
 
     <!-- ── स्कैन ── -->
@@ -84,6 +143,10 @@
     <string name="scan_checking_hand">फोटो जांची जा रही है\u2026</string>
     <string name="scan_reading_palm">हाथ की रेखाएं पढ़ी जा रही हैं\u2026</string>
     <string name="scan_not_a_palm">कृपया अपने खुले हाथ की स्पष्ट फोटो लें।</string>
+    <string name="scan_ai_unavailable">अभी रीडिंग सेवा उपलब्ध नहीं है। कृपया थोड़ी देर बाद फिर प्रयास करें।</string>
+    <string name="scan_invalid_response">इस फोटो को पढ़ा नहीं जा सका। कृपया साफ़ और स्पष्ट हथेली की फोटो दोबारा लें।</string>
+    <string name="scan_flash_required">पर्याप्त रोशनी नहीं मिली। कृपया फ्लैश ऑन करके फोटो दोबारा लें।</string>
+    <string name="scan_default_retake_instruction">एक खुली हथेली की सामने वाली सतह दिखाएं, उंगलियां सीधी रखें, कलाई भी दिखे, कैमरा हथेली के समानांतर रखें और अच्छी रोशनी में फोटो लें।</string>
     <string name="scan_no_photo">फोटो कैप्चर नहीं हुई। दोबारा प्रयास करें।</string>
     <string name="scan_palm_not_visible">हाथ स्पष्ट नहीं दिखा। सीधा हाथ रखें।</string>
     <string name="scan_quality_bad">फोटो की गुणवत्ता सुधारें और दोबारा लें।</string>
@@ -116,6 +179,11 @@
     <string name="qa_gibberish_credit_used">3 अस्पष्ट सवालों पर 1 क्रेडिट उपयोग हुआ। कृपया अर्थपूर्ण सवाल पूछें।</string>
     <string name="qa_non_question_hint">कोई क्रेडिट नहीं कटा। भविष्यवाणी के लिए स्पष्ट सवाल पूछें।</string>
     <string name="qa_typing_indicator">…</string>
+    <string name="qa_palm_ai_unavailable">अभी हथेली प्रश्न सेवा उपलब्ध नहीं है। कृपया थोड़ी देर बाद फिर प्रयास करें।</string>
+    <string name="qa_palm_empty_answer">कृपया अपना सवाल थोड़ा और स्पष्ट लिखें।</string>
+    <string name="qa_credit_restored_note">सेवा जवाब नहीं दे सकी, इसलिए आपका क्रेडिट वापस कर दिया गया है।</string>
+    <string name="qa_palm_marked_image_caption">आपकी हथेली की फोटो:</string>
+    <string name="cd_palm_marked_image">हथेली की फोटो</string>
     <string name="qa_read_more">और पढ़ें ▼</string>
     <string name="qa_show_less">कम करें ▲</string>
 
@@ -167,6 +235,7 @@
     <!-- ── सदस्यता ── -->
     <string name="sub_title">प्लान और क्रेडिट</string>
     <string name="sub_choose_plan">अपना प्लान चुनें</string>
+    <string name="sub_page_subtitle">हर रीडिंग फ्लो में गहरी गाइडेंस अनलॉक करें</string>
     <string name="sub_starter_title">स्टार्टर पैक</string>
     <string name="sub_starter_desc">3 सवालों के क्रेडिट</string>
     <string name="sub_starter_buy">3 क्रेडिट खरीदें \u2014 \u20B949</string>
@@ -183,7 +252,7 @@
     <string name="sub_payment_title">भुगतान पुष्टि करें</string>
     <string name="sub_payment_demo_note">यह डेमो मोड है। प्रोडक्शन में Razorpay से भुगतान होगा।</string>
     <string name="sub_payment_confirm">पुष्टि करें (मॉक)</string>
-    <string name="sub_plan_activated">प्लान सक्रिय हो गया!</string>
+    <string name="sub_plan_activated">आपका प्लान सक्रिय हो गया है।</string>
     <string name="sub_purchase_error">खरीद विफल: %s</string>
     <string name="sub_plan_error">प्लान सक्रिय नहीं हुआ: %s</string>
 
@@ -224,6 +293,7 @@
     <string name="profile_pick_photo">प्रोफ़ाइल फोटो जोड़ें/बदलें</string>
     <string name="profile_save_changes">बदलाव सहेजें</string>
     <string name="profile_saved">प्रोफ़ाइल सफलतापूर्वक अपडेट हुई</string>
+    <string name="profile_email_in_use">यह ईमेल पहले से किसी दूसरे खाते से जुड़ी है।</string>
     <string name="profile_photo">प्रोफ़ाइल फोटो</string>
 
     <!-- ── क्रेडिट ── -->
@@ -345,6 +415,8 @@
     <string name="cd_back_button">वापस जाएं</string>
     <string name="cd_logout_button">लॉग आउट करें</string>
     <string name="cd_score_bar">स्कोर सूचक</string>
+    <string name="tarot_card_back">उल्टा रखा टैरो कार्ड</string>
+    <string name="tarot_card_face">खुला हुआ टैरो कार्ड</string>
 
     <!-- ── गिबरिश ट्रैकर ── -->
     <string name="gibberish_warning">आपका सवाल स्पष्ट नहीं लग रहा। कृपया सही सवाल टाइप करें। (चेतावनी %d/3)</string>
