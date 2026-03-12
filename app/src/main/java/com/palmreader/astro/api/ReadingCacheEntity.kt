@@ -10,8 +10,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "reading_cache")
 data class ReadingCacheEntity(
     @PrimaryKey val requestHash: String,
+    val userId: Long,
     val featureType: String,
     val response: String,
+    val sourceType: String,
     val timestamp: Long = System.currentTimeMillis()
 ) {
     companion object {

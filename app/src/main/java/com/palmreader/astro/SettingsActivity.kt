@@ -68,6 +68,7 @@ class SettingsActivity : AppCompatActivity() {
                 .setPositiveButton(getString(R.string.settings_clear_history_title)) { _, _ ->
                     lifecycleScope.launch {
                         db.historyDao().deleteByUser(session.userId)
+                        db.readingCacheDao().deleteByUser(session.userId)
                         runOnUiThread {
                             Toast.makeText(this@SettingsActivity,
                                 getString(R.string.settings_clear_history_done),
@@ -84,11 +85,16 @@ class SettingsActivity : AppCompatActivity() {
                 .setTitle(getString(R.string.settings_logout_title))
                 .setMessage(getString(R.string.settings_logout_msg))
                 .setPositiveButton(getString(R.string.settings_logout_title)) { _, _ ->
-                    session.logout()
-                    startActivity(Intent(this, AuthActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    })
-                    finish()
+                    lifecycleScope.launch {
+                        db.readingCacheDao().deleteByUser(session.userId)
+                        session.logout()
+                        runOnUiThread {
+                            startActivity(Intent(this@SettingsActivity, AuthActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            })
+                            finish()
+                        }
+                    }
                 }
                 .setNegativeButton(getString(R.string.cancel), null)
                 .show()
@@ -142,6 +148,7 @@ class SettingsActivity : AppCompatActivity() {
                             db.historyDao().deleteByUser(session.userId)
                             db.creditTransactionDao().deleteByUser(session.userId)
                             db.personaDao().deleteByUser(session.userId)
+                            db.readingCacheDao().deleteByUser(session.userId)
                             db.userDao().deleteById(session.userId)
                             session.logout()
                             runOnUiThread {

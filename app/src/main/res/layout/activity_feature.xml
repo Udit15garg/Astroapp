@@ -437,6 +437,80 @@
                 android:visibility="gone"
                 android:layout_marginTop="8dp" />
 
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardDeepReading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/surface_container_high"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/outline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/tvDeepReadingLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/deep_reading_label"
+                        android:textColor="@color/brand_gold"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDeepReadingTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/deep_reading_title_ready"
+                        android:textColor="@color/text_dark"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDeepReadingMeta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/deep_reading_meta_credit"
+                        android:textColor="@color/text_medium"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvDeepReadingBody"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:lineSpacingExtra="3dp"
+                        android:text="@string/deep_reading_body_ready"
+                        android:textColor="@color/text_dark"
+                        android:textSize="13sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDeepReadingAction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="14dp"
+                        android:backgroundTint="@color/banner_gold_bg"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="@string/deep_reading_action_credit"
+                        android:textAllCaps="false"
+                        android:textColor="@color/brand_gold"
+                        android:textStyle="bold"
+                        app:cornerRadius="14dp"
+                        app:strokeColor="@color/banner_gold_border"
+                        app:strokeWidth="1dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- ══ Q&A SECTION ══ -->
             <LinearLayout
                 android:id="@+id/llQaSection"

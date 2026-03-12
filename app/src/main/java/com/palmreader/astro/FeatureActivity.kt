@@ -21,14 +21,22 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import com.palmreader.astro.api.OpenAIService
 import com.palmreader.astro.api.PromptTemplates
+import com.palmreader.astro.api.ReadingCacheEntity
 import com.palmreader.astro.databinding.ActivityFeatureBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
+import java.security.MessageDigest
 
 class FeatureActivity : BaseFeatureActivity() {
+
+    private enum class DeepReadingSource {
+        AI,
+        FALLBACK,
+        CACHED
+    }
 
     private lateinit var binding: ActivityFeatureBinding
     private var featureType = "TAROT"
@@ -50,6 +58,7 @@ class FeatureActivity : BaseFeatureActivity() {
     private var aiReadingContext = ""
     private var typingIndicatorView: TextView? = null
     private var isFormattingBirthTime = false
+    private var preparedDeepReadingCache: ReadingCacheEntity? = null
 
     // Gibberish tracker per session
     private val gibberishTracker = GibberishTracker()
@@ -200,6 +209,10 @@ class FeatureActivity : BaseFeatureActivity() {
             revealedCount = 0
 
             TarotSessionStore.startNewSession(this, drawnCards)
+            conversationHistory.clear()
+            aiReadingContext = ""
+            binding.cardDeepReading.visibility = View.GONE
+            binding.llChat.removeAllViews()
 
             binding.llCardLabels.visibility = View.VISIBLE
             binding.llCards.visibility = View.VISIBLE
@@ -262,7 +275,7 @@ class FeatureActivity : BaseFeatureActivity() {
                             getString(R.string.tarot_result_title),
                             getString(R.string.tarot_summary)
                         )
-                        callOpenAIForReading()
+                        prepareDeepReadingCard()
                     }
                 }
             }
@@ -311,7 +324,17 @@ class FeatureActivity : BaseFeatureActivity() {
         rebuildChatFromStore()
 
         if (TarotSessionStore.chatMessages.isNotEmpty()) binding.llQaSection.visibility = View.VISIBLE
-        if (revealedCount == 3 && aiReadingContext.isNotEmpty()) binding.llInputBar.visibility = View.VISIBLE
+        if (revealedCount == 3) {
+            if (aiReadingContext.isNotEmpty()) {
+                val source = runCatching {
+                    DeepReadingSource.valueOf(TarotSessionStore.deepReadingSourceType)
+                }.getOrDefault(DeepReadingSource.AI)
+                renderDeepReadingContent(aiReadingContext, source)
+                binding.llInputBar.visibility = View.VISIBLE
+            } else {
+                prepareDeepReadingCard()
+            }
+        }
     }
 
     private fun addTarotEventBubble(text: String) {
@@ -334,9 +357,16 @@ class FeatureActivity : BaseFeatureActivity() {
 
     private fun rebuildChatFromStore() {
         binding.llChat.removeAllViews()
+        var skippedInitialReading = false
         TarotSessionStore.chatMessages.forEach { msg ->
             when {
                 msg.isEvent -> addTarotEventBubble(msg.text)
+                !msg.isUser && !msg.isEvent &&
+                    !skippedInitialReading &&
+                    aiReadingContext.isNotBlank() &&
+                    normalizeDisplayText(msg.text) == normalizeDisplayText(aiReadingContext) -> {
+                    skippedInitialReading = true
+                }
                 msg.isUser  -> addUserBubble(binding.llChat, msg.text)
                 else        -> addAIReadingBubble(msg.text)
             }
@@ -402,7 +432,7 @@ class FeatureActivity : BaseFeatureActivity() {
             lifePathNum = NumerologyEngine.lifePathNumber(dob)
             currentResult = NumerologyEngine.calculate(name, dob)
             showResults(currentResult!!)
-            callOpenAIForReading()
+            prepareDeepReadingCard()
         }
     }
 
@@ -433,7 +463,7 @@ class FeatureActivity : BaseFeatureActivity() {
             currentResult = KundliEngine.calculate(name, dob, time, place)
             kundliRashi = currentResult!!.items.firstOrNull()?.value ?: ""
             showResults(currentResult!!)
-            callOpenAIForReading()
+            prepareDeepReadingCard()
         }
     }
 
@@ -454,27 +484,101 @@ class FeatureActivity : BaseFeatureActivity() {
             currentSign = SignEngine.fromDob(dob)
             currentResult = SignEngine.getResult(currentSign!!)
             showResults(currentResult!!)
-            callOpenAIForReading()
+            prepareDeepReadingCard()
+        }
+    }
+
+    private fun prepareDeepReadingCard() {
+        preparedDeepReadingCache = null
+        aiReadingContext = ""
+        binding.cardDeepReading.visibility = View.GONE
+        binding.btnDeepReadingAction.visibility = View.VISIBLE
+        if (featureType != "TAROT") {
+            binding.llQaSection.visibility = View.GONE
+            binding.llInputBar.visibility = View.GONE
+            binding.llChat.removeAllViews()
+            conversationHistory.clear()
+        }
+
+        lifecycleScope.launch {
+            preparedDeepReadingCache = withContext(Dispatchers.IO) { findValidCachedReading() }
+            val user = withContext(Dispatchers.IO) { db.userDao().findById(session.userId) }
+            renderDeepReadingPrompt(user, preparedDeepReadingCache)
+        }
+    }
+
+    private fun renderDeepReadingPrompt(user: UserEntity?, cached: ReadingCacheEntity?) {
+        if (currentResult == null && featureType != "TAROT") return
+        binding.cardDeepReading.visibility = View.VISIBLE
+        binding.tvDeepReadingLabel.text = getString(R.string.deep_reading_label)
+        if (cached != null) {
+            binding.tvDeepReadingTitle.text = getString(R.string.deep_reading_title_cached)
+            binding.tvDeepReadingMeta.text = getString(R.string.deep_reading_meta_cached)
+            binding.tvDeepReadingBody.text = getString(R.string.deep_reading_body_cached)
+            binding.btnDeepReadingAction.text = getString(R.string.deep_reading_action_cached)
+        } else {
+            val now = System.currentTimeMillis()
+            val isUnlimited = user?.planType == "UNLIMITED" && (user.planExpiry > now)
+            binding.tvDeepReadingTitle.text = getString(R.string.deep_reading_title_ready)
+            binding.tvDeepReadingMeta.text = if (isUnlimited) {
+                getString(R.string.deep_reading_meta_unlimited)
+            } else {
+                getString(R.string.deep_reading_meta_credit)
+            }
+            binding.tvDeepReadingBody.text = getString(R.string.deep_reading_body_ready)
+            binding.btnDeepReadingAction.text = if (isUnlimited) {
+                getString(R.string.deep_reading_action_unlimited)
+            } else {
+                getString(R.string.deep_reading_action_credit)
+            }
+        }
+        binding.btnDeepReadingAction.setOnClickListener { maybeStartDeepReading() }
+        scrollToBottom()
+    }
+
+    private fun maybeStartDeepReading() {
+        lifecycleScope.launch {
+            preparedDeepReadingCache = withContext(Dispatchers.IO) { findValidCachedReading() }
+            preparedDeepReadingCache?.let { cached ->
+                renderDeepReadingContent(cached.response, DeepReadingSource.CACHED)
+                showQASection()
+                return@launch
+            }
+
+            val user = withContext(Dispatchers.IO) { db.userDao().findById(session.userId) } ?: return@launch
+            val now = System.currentTimeMillis()
+            val isUnlimited = user.planType == "UNLIMITED" && user.planExpiry > now
+            if (isUnlimited) {
+                startDeepReadingRequest()
+                return@launch
+            }
+
+            androidx.appcompat.app.AlertDialog.Builder(this@FeatureActivity)
+                .setTitle(getString(R.string.deep_reading_charge_title))
+                .setMessage(getString(R.string.deep_reading_charge_message))
+                .setPositiveButton(getString(R.string.deep_reading_charge_confirm)) { _, _ ->
+                    startDeepReadingRequest()
+                }
+                .setNegativeButton(getString(R.string.deep_reading_charge_cancel), null)
+                .show()
         }
     }
 
     /**
-     * Calls OpenAI API for an AI-enhanced reading based on the feature type.
-     * Uses 1 credit and shows the AI response below the local results.
+     * Calls OpenAI API for a deeper guided reading after the user explicitly opts in.
      */
-    private fun callOpenAIForReading() {
+    private fun startDeepReadingRequest() {
         useCredit(featureType) { _ ->
             lifecycleScope.launch {
                 setRequestInFlight(true)
                 val startedAt = System.currentTimeMillis()
-                showTypingIndicator()
+                renderDeepReadingLoadingState()
                 try {
                     ensurePersonaLoaded()
                     val prompts = buildPromptForFeature()
                     if (prompts == null) {
                         val fallback = buildLocalReadingFallback()
-                        addReadingToChat(fallback)
-                        saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                        handleDeepReadingResult(fallback, DeepReadingSource.FALLBACK, saveHistory = true)
                         return@launch
                     }
 
@@ -491,59 +595,160 @@ class FeatureActivity : BaseFeatureActivity() {
                                 result.data.trim()
                             }
                             if (finalReading.isBlank()) {
-                                val fallback = buildLocalReadingFallback()
-                                addReadingToChat(fallback)
-                                saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                                handleDeepReadingResult(buildLocalReadingFallback(), DeepReadingSource.FALLBACK, saveHistory = true)
                             } else {
                                 Log.d("AstroAI", "AI reading received: ${finalReading.take(100)}...")
-                                addReadingToChat(finalReading)
-                                saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), finalReading)
+                                handleDeepReadingResult(finalReading, DeepReadingSource.AI, saveHistory = true)
                             }
                         }
                         is OpenAIService.ApiResult.RateLimited -> {
-                            val fallback = buildLocalReadingFallback()
-                            addReadingToChat("${getString(R.string.ai_rate_limited)}\n\n$fallback")
-                            saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                            handleDeepReadingResult(buildLocalReadingFallback(), DeepReadingSource.FALLBACK, saveHistory = true)
                         }
                         is OpenAIService.ApiResult.Error -> {
                             Log.e("AstroAI", "AI error: ${result.message}")
-                            val fallback = buildLocalReadingFallback()
-                            addReadingToChat(fallback)
-                            saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                            handleDeepReadingResult(buildLocalReadingFallback(), DeepReadingSource.FALLBACK, saveHistory = true)
                         }
                         else -> {
-                            val fallback = buildLocalReadingFallback()
-                            addReadingToChat(fallback)
-                            saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                            handleDeepReadingResult(buildLocalReadingFallback(), DeepReadingSource.FALLBACK, saveHistory = true)
                         }
                     }
                 } catch (e: Exception) {
                     Log.e("AstroAI", "Failed to fetch AI reading", e)
-                    val fallback = buildLocalReadingFallback()
-                    addReadingToChat(fallback)
-                    saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), fallback)
+                    handleDeepReadingResult(buildLocalReadingFallback(), DeepReadingSource.FALLBACK, saveHistory = true)
                 } finally {
                     val elapsed = System.currentTimeMillis() - startedAt
                     if (elapsed < AppConfig.Chat.MIN_TYPING_LOADER_MS) {
                         delay(AppConfig.Chat.MIN_TYPING_LOADER_MS - elapsed)
                     }
-                    hideTypingIndicator()
                     setRequestInFlight(false)
-                    showQASection()
                     refreshCredits(binding.tvCredits)
                 }
             }
         }
     }
 
-    private fun addReadingToChat(reading: String) {
+    private suspend fun handleDeepReadingResult(
+        reading: String,
+        source: DeepReadingSource,
+        saveHistory: Boolean
+    ) {
         val cleaned = normalizeDisplayText(reading)
         aiReadingContext = cleaned
         if (featureType == "TAROT") {
-            TarotSessionStore.setReadingContext(this, cleaned)
-            TarotSessionStore.addChatMessage(this, TarotChatMessage(isUser = false, text = cleaned))
+            TarotSessionStore.setReadingContext(this@FeatureActivity, cleaned, source.name)
         }
-        addAIReadingBubble(cleaned)
+        if (saveHistory) {
+            saveToHistory(historyCategoryLabel(), getString(R.string.ai_reading_label), cleaned)
+        }
+        withContext(Dispatchers.IO) {
+            persistDeepReadingCache(cleaned, source)
+        }
+        withContext(Dispatchers.Main) {
+            renderDeepReadingContent(cleaned, source)
+            showQASection()
+        }
+    }
+
+    private fun renderDeepReadingLoadingState() {
+        binding.cardDeepReading.visibility = View.VISIBLE
+        binding.tvDeepReadingLabel.text = getString(R.string.deep_reading_label)
+        binding.tvDeepReadingTitle.text = getString(R.string.deep_reading_loading_title)
+        binding.tvDeepReadingMeta.text = ""
+        binding.tvDeepReadingBody.text = getString(R.string.deep_reading_loading_body)
+        binding.btnDeepReadingAction.visibility = View.GONE
+        scrollToBottom()
+    }
+
+    private fun renderDeepReadingContent(reading: String, source: DeepReadingSource) {
+        val cleaned = normalizeDisplayText(reading)
+        binding.cardDeepReading.visibility = View.VISIBLE
+        binding.tvDeepReadingLabel.text = getString(R.string.deep_reading_label)
+        binding.tvDeepReadingTitle.text = when (source) {
+            DeepReadingSource.AI -> getString(R.string.deep_reading_ai_title)
+            DeepReadingSource.FALLBACK -> getString(R.string.deep_reading_fallback_title)
+            DeepReadingSource.CACHED -> getString(R.string.deep_reading_cached_title)
+        }
+        binding.tvDeepReadingMeta.text = when (source) {
+            DeepReadingSource.AI -> getString(R.string.deep_reading_ai_meta)
+            DeepReadingSource.FALLBACK -> getString(R.string.deep_reading_fallback_meta)
+            DeepReadingSource.CACHED -> getString(R.string.deep_reading_cached_meta)
+        }
+        binding.tvDeepReadingBody.text = toStyledHeadings(cleaned)
+        binding.btnDeepReadingAction.visibility = View.GONE
+        scrollToBottom()
+    }
+
+    private suspend fun findValidCachedReading(): ReadingCacheEntity? {
+        val requestHash = buildReadingCacheKey() ?: return null
+        db.readingCacheDao().deleteOlderThan(System.currentTimeMillis() - 24 * 60 * 60 * 1000L)
+        val cached = db.readingCacheDao().findByHash(requestHash) ?: return null
+        return if (ReadingCacheEntity.isExpired(cached.timestamp)) {
+            db.readingCacheDao().deleteByHash(requestHash)
+            null
+        } else {
+            cached
+        }
+    }
+
+    private suspend fun persistDeepReadingCache(reading: String, source: DeepReadingSource) {
+        val requestHash = buildReadingCacheKey() ?: return
+        db.readingCacheDao().upsert(
+            ReadingCacheEntity(
+                requestHash = requestHash,
+                userId = session.userId,
+                featureType = featureType,
+                response = reading,
+                sourceType = source.name
+            )
+        )
+    }
+
+    private fun buildReadingCacheKey(): String? {
+        val personaVersion = persona?.updatedAt ?: 0L
+        val rawKey = when (featureType) {
+            "NUMEROLOGY" -> {
+                val name = binding.etName.text.toString().trim()
+                val dob = binding.etDob.text.toString().trim()
+                if (name.isBlank() || dob.isBlank()) return null
+                "NUMEROLOGY|$name|$dob|$locale|$personaVersion"
+            }
+            "KUNDLI" -> {
+                val name = binding.etName.text.toString().trim()
+                val dob = binding.etDob.text.toString().trim()
+                if (name.isBlank() || dob.isBlank()) return null
+                val time = binding.etTime.text.toString().trim()
+                val place = binding.etPlace.text.toString().trim()
+                "KUNDLI|$name|$dob|$time|$place|$locale|$personaVersion"
+            }
+            "SIGN" -> {
+                val signName = currentSign?.name ?: binding.etDob.text.toString().trim().takeIf { it.isNotBlank() }?.let {
+                    SignEngine.fromDob(it).name
+                } ?: return null
+                "SIGN|$signName|${localDayKey()}|$locale|$personaVersion"
+            }
+            "SUN_SIGN" -> {
+                val dob = binding.etDob.text.toString().trim()
+                if (dob.isBlank()) return null
+                "SUN_SIGN|$dob|$locale|$personaVersion"
+            }
+            else -> return null
+        }
+        return hashKey("${session.userId}|$rawKey")
+    }
+
+    private fun localDayKey(): String {
+        val calendar = Calendar.getInstance()
+        return "%04d-%02d-%02d".format(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1,
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    private fun hashKey(raw: String): String {
+        return MessageDigest.getInstance("SHA-256")
+            .digest(raw.toByteArray())
+            .joinToString("") { byte -> "%02x".format(byte) }
     }
 
     private fun buildLocalReadingFallback(): String {
@@ -780,11 +985,28 @@ class FeatureActivity : BaseFeatureActivity() {
         binding.llResults.removeAllViews()
         binding.llResults.visibility = View.VISIBLE
 
+        val introView = TextView(this).apply {
+            text = getString(R.string.quick_insight_label)
+            textSize = 12f
+            setTypeface(typeface, Typeface.BOLD)
+            setTextColor(resources.getColor(R.color.brand_gold, null))
+            setPadding(0, 8, 0, 4)
+        }
+        binding.llResults.addView(introView)
+
+        val noteView = TextView(this).apply {
+            text = getString(R.string.quick_insight_note)
+            textSize = 12.5f
+            setTextColor(resources.getColor(R.color.text_medium, null))
+            setPadding(0, 0, 0, 12)
+        }
+        binding.llResults.addView(noteView)
+
         val titleView = TextView(this).apply {
             text = result.title
             textSize = 18f
             setTextColor(resources.getColor(R.color.primary, null))
-            setPadding(0, 16, 0, 8)
+            setPadding(0, 4, 0, 8)
         }
         binding.llResults.addView(titleView)
 
@@ -801,9 +1023,19 @@ class FeatureActivity : BaseFeatureActivity() {
             text = result.summary
             setTextColor(resources.getColor(R.color.text_medium, null))
             textSize = 13f
-            setPadding(0, 8, 0, 16)
+            setPadding(0, 8, 0, 12)
         }
         binding.llResults.addView(summaryView)
+
+        if (featureType == "KUNDLI") {
+            val modeView = TextView(this).apply {
+                text = getString(R.string.kundli_mode_notice)
+                setTextColor(resources.getColor(R.color.warning, null))
+                textSize = 12f
+                setPadding(0, 0, 0, 8)
+            }
+            binding.llResults.addView(modeView)
+        }
     }
 
     // -- Q&A -------------------------------------------------------------------

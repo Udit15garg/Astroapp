@@ -8,6 +8,7 @@ data class TarotSessionSnapshot(
     val drawnCards: List<DrawnCard>,
     val revealedCount: Int,
     val aiReadingContext: String,
+    val deepReadingSourceType: String,
     val chatMessages: List<TarotChatMessage>,
     val savedCardResults: List<Pair<String, DrawnCard>>,
     val updatedAt: Long
@@ -28,6 +29,8 @@ object TarotSessionStore {
     var revealedCount: Int = 0
         private set
     var aiReadingContext: String = ""
+        private set
+    var deepReadingSourceType: String = "AI"
         private set
     val chatMessages: MutableList<TarotChatMessage> = mutableListOf()
     val savedCardResults: MutableList<Pair<String, DrawnCard>> = mutableListOf()
@@ -63,6 +66,7 @@ object TarotSessionStore {
             drawnCards = drawnCards.toList(),
             revealedCount = revealedCount,
             aiReadingContext = aiReadingContext,
+            deepReadingSourceType = deepReadingSourceType,
             chatMessages = chatMessages.toList(),
             savedCardResults = savedCardResults.toList(),
             updatedAt = updatedAt
@@ -75,6 +79,7 @@ object TarotSessionStore {
         drawnCards = cards
         revealedCount = 0
         aiReadingContext = ""
+        deepReadingSourceType = "AI"
         chatMessages.clear()
         savedCardResults.clear()
         persist(context)
@@ -85,8 +90,9 @@ object TarotSessionStore {
         persist(context)
     }
 
-    fun setReadingContext(context: Context, contextText: String) {
+    fun setReadingContext(context: Context, contextText: String, sourceType: String = deepReadingSourceType) {
         aiReadingContext = contextText
+        deepReadingSourceType = sourceType
         persist(context)
     }
 
@@ -121,6 +127,7 @@ object TarotSessionStore {
         drawnCards = emptyList()
         revealedCount = 0
         aiReadingContext = ""
+        deepReadingSourceType = "AI"
         chatMessages.clear()
         savedCardResults.clear()
         updatedAt = 0L
@@ -134,6 +141,7 @@ object TarotSessionStore {
             drawnCards = cards,
             revealedCount = json.optInt("revealedCount", 0).coerceIn(0, cards.size),
             aiReadingContext = json.optString("aiReadingContext"),
+            deepReadingSourceType = json.optString("deepReadingSourceType", "AI"),
             chatMessages = messages,
             savedCardResults = results,
             updatedAt = json.optLong("updatedAt", 0L)
@@ -144,6 +152,7 @@ object TarotSessionStore {
         drawnCards = snapshot.drawnCards
         revealedCount = snapshot.revealedCount.coerceIn(0, snapshot.drawnCards.size)
         aiReadingContext = snapshot.aiReadingContext
+        deepReadingSourceType = snapshot.deepReadingSourceType
         chatMessages.clear()
         chatMessages.addAll(snapshot.chatMessages)
         savedCardResults.clear()
@@ -155,6 +164,7 @@ object TarotSessionStore {
         return JSONObject().apply {
             put("revealedCount", revealedCount)
             put("aiReadingContext", aiReadingContext)
+            put("deepReadingSourceType", deepReadingSourceType)
             put("updatedAt", updatedAt)
             put("drawnCards", JSONArray().apply {
                 drawnCards.forEach { put(it.toJson()) }

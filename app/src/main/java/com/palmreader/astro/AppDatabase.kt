@@ -6,10 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.palmreader.astro.api.ReadingCacheDao
+import com.palmreader.astro.api.ReadingCacheEntity
 
 @Database(
-    entities = [UserEntity::class, HistoryEntity::class, CreditTransactionEntity::class, PersonaEntity::class],
-    version = 5,
+    entities = [UserEntity::class, HistoryEntity::class, CreditTransactionEntity::class, PersonaEntity::class, ReadingCacheEntity::class],
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -17,6 +19,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao
     abstract fun creditTransactionDao(): CreditTransactionDao
     abstract fun personaDao(): PersonaDao
+    abstract fun readingCacheDao(): ReadingCacheDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
@@ -127,10 +130,35 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                if (!tableExists(db, "reading_cache")) {
+                    db.execSQL(
+                        """CREATE TABLE IF NOT EXISTS `reading_cache` (
+                            `requestHash` TEXT NOT NULL,
+                            `userId` INTEGER NOT NULL,
+                            `featureType` TEXT NOT NULL,
+                            `response` TEXT NOT NULL,
+                            `sourceType` TEXT NOT NULL DEFAULT 'AI',
+                            `timestamp` INTEGER NOT NULL,
+                            PRIMARY KEY(`requestHash`)
+                        )"""
+                    )
+                } else {
+                    if (!columnExists(db, "reading_cache", "userId")) {
+                        db.execSQL("ALTER TABLE reading_cache ADD COLUMN userId INTEGER NOT NULL DEFAULT -1")
+                    }
+                    if (!columnExists(db, "reading_cache", "sourceType")) {
+                        db.execSQL("ALTER TABLE reading_cache ADD COLUMN sourceType TEXT NOT NULL DEFAULT 'AI'")
+                    }
+                }
+            }
+        }
+
         fun get(context: Context): AppDatabase =
             INSTANCE ?: synchronized(this) {
                 Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "astro_db")
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                     .build()
                     .also { INSTANCE = it }
             }
