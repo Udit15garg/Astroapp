@@ -50,17 +50,17 @@ object PalmProgressMapper {
         AnalysisStep.EXTRACT_EVIDENCE -> "Reading major lines"
         AnalysisStep.SYNTHESIZE_HANDS -> "Comparing both hands"
         AnalysisStep.GENERATE_TEASER,
-        AnalysisStep.GENERATE_FULL_READING -> "Preparing your reading"
+        AnalysisStep.GENERATE_FULL_READING -> "Writing your reading"
         AnalysisStep.GENERATE_QA -> "Reading your question"
     }
 
     fun percentFor(step: AnalysisStep): Int = when (step) {
         AnalysisStep.PREPARE_IMAGES -> 10
         AnalysisStep.REMOVE_BACKGROUND -> 25
-        AnalysisStep.VALIDATE_IMAGES -> 40
-        AnalysisStep.EXTRACT_EVIDENCE -> 60
-        AnalysisStep.SYNTHESIZE_HANDS -> 78
-        AnalysisStep.GENERATE_TEASER -> 90
+        AnalysisStep.VALIDATE_IMAGES -> 45
+        AnalysisStep.EXTRACT_EVIDENCE -> 65
+        AnalysisStep.SYNTHESIZE_HANDS -> 85
+        AnalysisStep.GENERATE_TEASER -> 100
         AnalysisStep.GENERATE_FULL_READING -> 100
         AnalysisStep.GENERATE_QA -> 100
     }

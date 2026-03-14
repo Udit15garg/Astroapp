@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/bg_warm">
 
-    <!-- Header -->
     <LinearLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/surface"
@@ -63,7 +62,6 @@
             android:paddingBottom="4dp" />
     </LinearLayout>
 
-    <!-- Scrollable content -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -77,25 +75,32 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Readings injected here -->
             <LinearLayout
                 android:id="@+id/llReadings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
-            <!-- Q&A section -->
             <TextView
+                android:id="@+id/tvPromptLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/qa_title"
-                android:textSize="18sp"
+                android:text="@string/result_followup_label"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp" />
+                android:textColor="@color/text_dark"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp" />
 
-            <!-- Chat messages injected here -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupPrompts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp"
+                app:singleLine="false" />
+
             <LinearLayout
                 android:id="@+id/llChat"
                 android:layout_width="match_parent"
@@ -106,7 +111,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Input bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

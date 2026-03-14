@@ -53,69 +53,29 @@ object PalmistryJsonParser {
         )
     }
 
-    fun parseSynthesis(raw: String): PalmSynthesisResult? {
+    fun parseResultSummary(raw: String): PalmResultSummary? {
         val obj = parseObject(raw) ?: return null
-        return PalmSynthesisResult(
-            overallStory = obj.optString("overall_story"),
-            strongTopics = parseStringArray(obj.optJSONArray("strong_topics")),
-            weakTopics = parseStringArray(obj.optJSONArray("weak_topics")),
-            curiosityHooks = parseStringArray(obj.optJSONArray("curiosity_hooks")),
-            overallConfidence = obj.optDouble("overall_confidence", 0.0),
-            rawJson = normalizeJson(raw)
-        )
-    }
-
-    fun parseTeaser(raw: String): PalmTeaser? {
-        val obj = parseObject(raw) ?: return null
-        val observedSigns = buildList {
-            val arr = obj.optJSONArray("observed_signs") ?: JSONArray()
+        val opening = obj.optJSONObject("opening_read") ?: return null
+        val modules = buildList {
+            val arr = obj.optJSONArray("modules") ?: JSONArray()
             for (i in 0 until arr.length()) {
                 val item = arr.optJSONObject(i) ?: continue
                 add(
-                    PalmObservation(
+                    PalmResultModule(
+                        key = item.optString("key"),
                         title = item.optString("title"),
-                        body = item.optString("body"),
-                        confidence = item.optString("confidence"),
-                        refs = parseStringArray(item.optJSONArray("refs"))
+                        summary = item.optString("summary")
                     )
                 )
             }
         }
-        return PalmTeaser(
-            openingVerdict = obj.optString("opening_verdict"),
-            whatLifeGaveYou = obj.optString("what_life_gave_you"),
-            whatYouAreBecoming = obj.optString("what_you_are_becoming"),
-            observedSigns = observedSigns,
-            contrastInsight = obj.optString("contrast_insight"),
-            curiosityHooks = parseStringArray(obj.optJSONArray("curiosity_hooks")),
-            lockedInsights = parseStringArray(obj.optJSONArray("locked_insights")),
-            overallConfidence = obj.optString("overall_confidence"),
-            rawJson = normalizeJson(raw)
-        )
-    }
-
-    fun parseFullReading(raw: String): PalmFullReading? {
-        val obj = parseObject(raw) ?: return null
-        val sections = buildList {
-            val arr = obj.optJSONArray("sections") ?: JSONArray()
-            for (i in 0 until arr.length()) {
-                val item = arr.optJSONObject(i) ?: continue
-                add(
-                    PalmReadingSection(
-                        id = item.optString("id"),
-                        title = item.optString("title"),
-                        body = item.optString("body"),
-                        confidence = item.optString("confidence"),
-                        refs = parseStringArray(item.optJSONArray("refs"))
-                    )
-                )
-            }
-        }
-        return PalmFullReading(
-            openingSentence = obj.optString("opening_sentence"),
-            sections = sections,
-            finalGuidance = obj.optString("final_guidance"),
-            overallConfidence = obj.optString("overall_confidence"),
+        return PalmResultSummary(
+            openingRead = PalmOpeningRead(
+                title = opening.optString("title"),
+                body = opening.optString("body")
+            ),
+            modules = modules,
+            followupPrompts = parseStringArray(obj.optJSONArray("followup_prompts")),
             rawJson = normalizeJson(raw)
         )
     }

@@ -54,51 +54,23 @@ data class PalmEvidenceResult(
 ) : Parcelable
 
 @Parcelize
-data class PalmSynthesisResult(
-    val overallStory: String,
-    val strongTopics: List<String>,
-    val weakTopics: List<String>,
-    val curiosityHooks: List<String>,
-    val overallConfidence: Double,
-    val rawJson: String
-) : Parcelable
-
-@Parcelize
-data class PalmObservation(
+data class PalmOpeningRead(
     val title: String,
-    val body: String,
-    val confidence: String = "",
-    val refs: List<String> = emptyList()
+    val body: String
 ) : Parcelable
 
 @Parcelize
-data class PalmTeaser(
-    val openingVerdict: String,
-    val whatLifeGaveYou: String,
-    val whatYouAreBecoming: String,
-    val observedSigns: List<PalmObservation>,
-    val contrastInsight: String,
-    val curiosityHooks: List<String>,
-    val lockedInsights: List<String>,
-    val overallConfidence: String,
-    val rawJson: String
-) : Parcelable
-
-@Parcelize
-data class PalmReadingSection(
-    val id: String,
+data class PalmResultModule(
+    val key: String,
     val title: String,
-    val body: String,
-    val confidence: String,
-    val refs: List<String> = emptyList()
+    val summary: String
 ) : Parcelable
 
 @Parcelize
-data class PalmFullReading(
-    val openingSentence: String,
-    val sections: List<PalmReadingSection>,
-    val finalGuidance: String,
-    val overallConfidence: String,
+data class PalmResultSummary(
+    val openingRead: PalmOpeningRead,
+    val modules: List<PalmResultModule>,
+    val followupPrompts: List<String>,
     val rawJson: String
 ) : Parcelable
 
@@ -126,8 +98,6 @@ data class PalmSessionPayload(
     val activeValidationJson: String,
     val passiveEvidenceJson: String,
     val activeEvidenceJson: String,
-    val synthesisJson: String,
-    val teaser: PalmTeaser,
-    val fullReading: PalmFullReading,
+    val resultSummary: PalmResultSummary,
     val recoverableMessages: List<String> = emptyList()
 ) : Parcelable

@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -25,18 +26,16 @@ import com.palmreader.astro.databinding.ActivityScanBinding
 import com.palmreader.astro.palmistry.AnalysisStep
 import com.palmreader.astro.palmistry.HeuristicPalmImagePreprocessor
 import com.palmreader.astro.palmistry.PalmEvidenceResult
-import com.palmreader.astro.palmistry.PalmFullReading
 import com.palmreader.astro.palmistry.PalmImagePreprocessor
 import com.palmreader.astro.palmistry.PalmImageSlot
-import com.palmreader.astro.palmistry.PalmObservation
+import com.palmreader.astro.palmistry.PalmOpeningRead
 import com.palmreader.astro.palmistry.PalmPreprocessResult
 import com.palmreader.astro.palmistry.PalmProgressMapper
-import com.palmreader.astro.palmistry.PalmReadingSection
 import com.palmreader.astro.palmistry.PalmRecoverableError
+import com.palmreader.astro.palmistry.PalmResultModule
+import com.palmreader.astro.palmistry.PalmResultSummary
 import com.palmreader.astro.palmistry.PalmSessionPayload
 import com.palmreader.astro.palmistry.PalmSessionState
-import com.palmreader.astro.palmistry.PalmSynthesisResult
-import com.palmreader.astro.palmistry.PalmTeaser
 import com.palmreader.astro.palmistry.PalmValidationResult
 import com.palmreader.astro.palmistry.PalmValidationState
 import com.palmreader.astro.palmistry.PalmistryJsonParser
@@ -244,15 +243,11 @@ class ScanActivity : AppCompatActivity() {
     }
 
     private fun syncAnalyzeButton() {
-        val acceptedCount = PalmImageSlot.values().count { isAcceptedForContinue(it) }
         val canContinue = captureButtonsEnabled && requiredSlotsAccepted()
         binding.btnAnalyze.isEnabled = canContinue
-        binding.btnAnalyze.text = if (acceptedCount >= 3) {
-            getString(R.string.scan_continue_full)
-        } else {
-            getString(R.string.scan_continue_two)
-        }
-        binding.tvAnalyzeHint.visibility = if (acceptedCount >= 3) View.GONE else View.VISIBLE
+        binding.btnAnalyze.text = getString(R.string.scan_continue_full)
+        val acceptedCount = PalmImageSlot.values().count { isAcceptedForContinue(it) }
+        binding.tvAnalyzeHint.visibility = if (acceptedCount >= 3 || !canContinue) View.GONE else View.VISIBLE
     }
 
     private fun requiredSlotsAccepted(): Boolean {
@@ -298,24 +293,13 @@ class ScanActivity : AppCompatActivity() {
             View.GONE
         }
         iconView.visibility = if (progressView.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
-        iconView.text = when (state) {
-            UploadSlotState.EMPTY -> "o"
-            UploadSlotState.ACCEPTED -> "v"
-            UploadSlotState.ACCEPTED_WITH_GUIDANCE -> "!"
-            UploadSlotState.RETAKE_REQUIRED -> "x"
-            UploadSlotState.UPLOADING,
-            UploadSlotState.VALIDATING -> ""
-        }
-        iconView.setTextColor(
-            ContextCompat.getColor(
-                this,
-                when (state) {
-                    UploadSlotState.ACCEPTED -> R.color.success
-                    UploadSlotState.ACCEPTED_WITH_GUIDANCE -> R.color.warning
-                    UploadSlotState.RETAKE_REQUIRED -> R.color.error
-                    else -> R.color.text_medium
-                }
-            )
+        iconView.setImageResource(
+            when (state) {
+                UploadSlotState.ACCEPTED -> R.drawable.ic_status_check
+                UploadSlotState.ACCEPTED_WITH_GUIDANCE -> R.drawable.ic_status_warning
+                UploadSlotState.RETAKE_REQUIRED -> R.drawable.ic_status_retry
+                else -> R.drawable.ic_status_empty
+            }
         )
 
         button.text = when (state) {
@@ -338,11 +322,11 @@ class ScanActivity : AppCompatActivity() {
         PalmImageSlot.DETAIL_B -> binding.tvDetailBGuidance
     }
 
-    private fun stateIconViewFor(slot: PalmImageSlot): TextView = when (slot) {
-        PalmImageSlot.PASSIVE_FULL -> binding.tvPassiveStateIcon
-        PalmImageSlot.ACTIVE_FULL -> binding.tvActiveStateIcon
-        PalmImageSlot.DETAIL_A -> binding.tvDetailAStateIcon
-        PalmImageSlot.DETAIL_B -> binding.tvDetailBStateIcon
+    private fun stateIconViewFor(slot: PalmImageSlot): ImageView = when (slot) {
+        PalmImageSlot.PASSIVE_FULL -> binding.ivPassiveStateIcon
+        PalmImageSlot.ACTIVE_FULL -> binding.ivActiveStateIcon
+        PalmImageSlot.DETAIL_A -> binding.ivDetailAStateIcon
+        PalmImageSlot.DETAIL_B -> binding.ivDetailBStateIcon
     }
 
     private fun stateProgressViewFor(slot: PalmImageSlot): ProgressBar = when (slot) {
@@ -432,29 +416,13 @@ class ScanActivity : AppCompatActivity() {
                     ?: fallbackEvidence("right", PalmImageSlot.ACTIVE_FULL)
                 maybeApplyDetailRequests(leftEvidence, rightEvidence)
 
-                sessionState = PalmSessionState.Synthesizing
-                updateProgress(AnalysisStep.SYNTHESIZE_HANDS)
-                val synthesis = synthesize(locale, leftEvidence, rightEvidence)
-                    ?: fallbackSynthesis(leftEvidence, rightEvidence)
-
                 sessionState = PalmSessionState.GeneratingTeaser
-                updateProgress(AnalysisStep.GENERATE_TEASER)
-                val teaser = generateTeaser(locale, synthesis, leftEvidence, rightEvidence)
-                if (teaser.rawJson.contains("fallback")) {
+                updateProgress(AnalysisStep.SYNTHESIZE_HANDS)
+                val resultSummary = generateResultSummary(locale, leftEvidence, rightEvidence)
+                if (resultSummary.rawJson.contains("fallback")) {
                     markRecoverableError(
                         step = AnalysisStep.GENERATE_TEASER,
-                        code = "teaser_fallback",
-                        userMessage = getString(R.string.scan_retry_interpretation)
-                    )
-                }
-
-                sessionState = PalmSessionState.GeneratingFullReading
-                updateProgress(AnalysisStep.GENERATE_FULL_READING)
-                val fullReading = generateFullReading(locale, synthesis, leftEvidence, rightEvidence)
-                if (fullReading.rawJson.contains("fallback")) {
-                    markRecoverableError(
-                        step = AnalysisStep.GENERATE_FULL_READING,
-                        code = "full_reading_fallback",
+                        code = "result_summary_fallback",
                         userMessage = getString(R.string.scan_retry_interpretation)
                     )
                 }
@@ -471,9 +439,7 @@ class ScanActivity : AppCompatActivity() {
                     activeValidationJson = rightValidation.rawJson,
                     passiveEvidenceJson = leftEvidence.rawJson,
                     activeEvidenceJson = rightEvidence.rawJson,
-                    synthesisJson = synthesis.rawJson,
-                    teaser = teaser,
-                    fullReading = fullReading,
+                    resultSummary = resultSummary,
                     recoverableMessages = recoverableErrors.map { it.userMessage }.distinct()
                 )
                 startActivity(Intent(this@ScanActivity, ResultActivity::class.java).apply {
@@ -615,21 +581,20 @@ class ScanActivity : AppCompatActivity() {
             handLabel = handLabel,
             isSufficientForPremium = false,
             coreObservationCount = 1,
-            visibleEvidence = listOf("$label image was scanned, but the detailed evidence pass was limited."),
+            visibleEvidence = listOf("Your $label is visible, but some finer details are still soft, so this part of the reading is more general."),
             recommendedDetailRequests = emptyList(),
             rawJson = """{"fallback":"evidence","hand_label":"$handLabel"}"""
         )
     }
 
-    private suspend fun synthesize(
+    private suspend fun generateResultSummary(
         locale: String,
         leftEvidence: PalmEvidenceResult,
         rightEvidence: PalmEvidenceResult
-    ): PalmSynthesisResult? {
-        val (systemPrompt, _) = PalmistryPrompts.synthesis()
+    ): PalmResultSummary {
+        updateProgress(AnalysisStep.GENERATE_TEASER)
+        val (systemPrompt, _) = PalmistryPrompts.resultSummary(locale)
         val userPrompt = """
-Locale: $locale
-
 Left evidence JSON:
 ${leftEvidence.rawJson}
 
@@ -646,202 +611,66 @@ ${rightEvidence.rawJson}
                 maxRetries = 0
             )) {
                 is OpenAIService.ApiResult.Success -> {
-                    PalmistryJsonParser.parseSynthesis(result.data)?.let { return it }
+                    PalmistryJsonParser.parseResultSummary(result.data)?.let { return it }
                     PalmistryEventLogger.log(
                         this,
-                        "synthesis_parse_retry",
+                        "result_summary_parse_retry",
                         mapOf("run_id" to analysisRunId, "attempt" to attempt)
                     )
                 }
-                else -> return null
+                else -> return fallbackResultSummary(leftEvidence, rightEvidence)
             }
         }
-        return null
+        return fallbackResultSummary(leftEvidence, rightEvidence)
     }
 
-    private fun fallbackSynthesis(
+    private fun fallbackResultSummary(
         leftEvidence: PalmEvidenceResult,
         rightEvidence: PalmEvidenceResult
-    ): PalmSynthesisResult {
-        markRecoverableError(
-            step = AnalysisStep.SYNTHESIZE_HANDS,
-            code = "synthesis_fallback",
-            userMessage = getString(R.string.scan_retry_interpretation),
-            technicalMessage = "Synthesis unavailable"
-        )
-        val story = if (leftEvidence.visibleEvidence.isNotEmpty() && rightEvidence.visibleEvidence.isNotEmpty()) {
-            "Your left and right hands suggest a contrast between inherited tendencies and the way your path has developed."
-        } else {
-            "Your palms were scanned, but some of the finer comparative details stayed unclear."
-        }
-        return PalmSynthesisResult(
-            overallStory = story,
-            strongTopics = listOf("left_right_contrast"),
-            weakTopics = listOf("timing", "rare_signs"),
-            curiosityHooks = listOf("There is a visible difference between what your left and right hands emphasize."),
-            overallConfidence = 0.44,
-            rawJson = """{"fallback":"synthesis"}"""
-        )
-    }
-
-    private suspend fun generateTeaser(
-        locale: String,
-        synthesis: PalmSynthesisResult,
-        leftEvidence: PalmEvidenceResult,
-        rightEvidence: PalmEvidenceResult
-    ): PalmTeaser {
-        val (systemPrompt, _) = PalmistryPrompts.teaser(locale)
-        val userPrompt = """
-Synthesis JSON:
-${synthesis.rawJson}
-
-Left evidence JSON:
-${leftEvidence.rawJson}
-
-Right evidence JSON:
-${rightEvidence.rawJson}
-        """.trimIndent()
-        for (attempt in 0..1) {
-            when (val result = OpenAIService.chatCompletion(
-                systemPrompt = systemPrompt,
-                userMessage = userPrompt,
-                model = OpenAIService.MODEL_PALM_PREMIUM,
-                maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
-                timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
-                maxRetries = 0
-            )) {
-                is OpenAIService.ApiResult.Success -> {
-                    PalmistryJsonParser.parseTeaser(result.data)?.let { return it }
-                    PalmistryEventLogger.log(
-                        this,
-                        "teaser_parse_retry",
-                        mapOf("run_id" to analysisRunId, "attempt" to attempt)
-                    )
-                }
-                else -> return fallbackTeaser(synthesis, leftEvidence, rightEvidence)
-            }
-        }
-        return fallbackTeaser(synthesis, leftEvidence, rightEvidence)
-    }
-
-    private suspend fun generateFullReading(
-        locale: String,
-        synthesis: PalmSynthesisResult,
-        leftEvidence: PalmEvidenceResult,
-        rightEvidence: PalmEvidenceResult
-    ): PalmFullReading {
-        val (systemPrompt, userPromptTemplate) = PalmistryPrompts.fullReading(locale)
-        val userPrompt = """
-${userPromptTemplate}
-
-Synthesis JSON:
-${synthesis.rawJson}
-
-Left evidence JSON:
-${leftEvidence.rawJson}
-
-Right evidence JSON:
-${rightEvidence.rawJson}
-        """.trimIndent()
-        for (attempt in 0..1) {
-            when (val result = OpenAIService.chatCompletion(
-                systemPrompt = systemPrompt,
-                userMessage = userPrompt,
-                model = OpenAIService.MODEL_PALM_PREMIUM,
-                maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
-                timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
-                maxRetries = 0
-            )) {
-                is OpenAIService.ApiResult.Success -> {
-                    PalmistryJsonParser.parseFullReading(result.data)?.let { return it }
-                    PalmistryEventLogger.log(
-                        this,
-                        "full_reading_parse_retry",
-                        mapOf("run_id" to analysisRunId, "attempt" to attempt)
-                    )
-                }
-                else -> return fallbackFullReading(synthesis, leftEvidence, rightEvidence)
-            }
-        }
-        return fallbackFullReading(synthesis, leftEvidence, rightEvidence)
-    }
-
-    private fun fallbackTeaser(
-        synthesis: PalmSynthesisResult,
-        leftEvidence: PalmEvidenceResult,
-        rightEvidence: PalmEvidenceResult
-    ): PalmTeaser {
-        val observations = (leftEvidence.visibleEvidence + rightEvidence.visibleEvidence)
-            .take(4)
-            .mapIndexed { index, text ->
-                PalmObservation(
-                    title = "Visible sign ${index + 1}",
-                    body = text,
-                    confidence = "medium"
+    ): PalmResultSummary {
+        val leftText = leftEvidence.visibleEvidence.firstOrNull()
+            ?: "Your left hand shows the base pattern more than the finer details."
+        val rightText = rightEvidence.visibleEvidence.firstOrNull()
+            ?: "Your right hand is visible, but some finer details are still soft, so this part of the reading is more general."
+        return PalmResultSummary(
+            openingRead = PalmOpeningRead(
+                title = "Your overall reading",
+                body = "Your hands suggest a practical path with room for change. One hand looks more like a steady base, while the other suggests growth through experience and choice."
+            ),
+            modules = listOf(
+                PalmResultModule(
+                    key = "palm_shape",
+                    title = "Palm Shape",
+                    summary = leftText.toConsumerLine("Your palm shape suggests a steady, grounded style.")
+                ),
+                PalmResultModule(
+                    key = "finger_balance",
+                    title = "Finger Balance",
+                    summary = rightText.toConsumerLine("Your finger balance looks fairly even, which usually points to measured decisions and practical thinking.")
+                ),
+                PalmResultModule(
+                    key = "key_formations",
+                    title = "Key Formations on Your Hand",
+                    summary = "No strong special mark stands out clearly in this scan. The main story here comes more from the major lines and overall hand balance."
+                ),
+                PalmResultModule(
+                    key = "left_vs_right",
+                    title = "Right vs Left Hand",
+                    summary = "Your left hand looks more like a base pattern, while the right hand suggests how that pattern is being shaped by present effort."
+                ),
+                PalmResultModule(
+                    key = "future",
+                    title = "What Your Future Holds",
+                    summary = "Your palm suggests gradual progress rather than sudden luck, with better results when you stay consistent and let direction build over time."
                 )
-            }
-        return PalmTeaser(
-            openingVerdict = synthesis.overallStory.ifBlank {
-                "Your two hands do not suggest the exact same pattern."
-            },
-            whatLifeGaveYou = leftEvidence.visibleEvidence.firstOrNull()
-                ?: "The left hand suggests the baseline tendency you started with.",
-            whatYouAreBecoming = rightEvidence.visibleEvidence.firstOrNull()
-                ?: "The right hand suggests the direction that is strengthening through lived choices.",
-            observedSigns = observations,
-            contrastInsight = synthesis.curiosityHooks.firstOrNull()
-                ?: "The contrast between the left and right hand suggests change rather than a fixed script.",
-            curiosityHooks = synthesis.curiosityHooks.take(2),
-            lockedInsights = listOf("Love and marriage", "Career and money", "Timing and turning points"),
-            overallConfidence = if (synthesis.overallConfidence >= 0.75) "high" else "medium",
-            rawJson = """{"fallback":"teaser"}"""
-        )
-    }
-
-    private fun fallbackFullReading(
-        synthesis: PalmSynthesisResult,
-        leftEvidence: PalmEvidenceResult,
-        rightEvidence: PalmEvidenceResult
-    ): PalmFullReading {
-        val sections = buildList {
-            add(
-                PalmReadingSection(
-                    id = "nature",
-                    title = "Nature",
-                    body = leftEvidence.visibleEvidence.joinToString("\n") { "- $it" }
-                        .ifBlank { "The left hand stayed readable, but the evidence was lighter than ideal." },
-                    confidence = "medium"
-                )
-            )
-            add(
-                PalmReadingSection(
-                    id = "destiny_vs_effort",
-                    title = "Destiny vs self-made path",
-                    body = rightEvidence.visibleEvidence.joinToString("\n") { "- $it" }
-                        .ifBlank { "The right hand suggests a developed path, but some finer details remained uncertain." },
-                    confidence = "medium"
-                )
-            )
-            add(
-                PalmReadingSection(
-                    id = "contrast",
-                    title = "Left vs right contrast",
-                    body = synthesis.overallStory.ifBlank {
-                        "The two hands suggest a contrast between inherited disposition and current direction."
-                    },
-                    confidence = "medium"
-                )
-            )
-        }
-        return PalmFullReading(
-            openingSentence = synthesis.overallStory.ifBlank {
-                "Your hands suggest a path that becomes more shaped by choice than by inheritance."
-            },
-            sections = sections,
-            finalGuidance = synthesis.curiosityHooks.firstOrNull()
-                ?: "The larger message here is development through change, not a flat or fixed life pattern.",
-            overallConfidence = if (synthesis.overallConfidence >= 0.75) "high" else "medium",
-            rawJson = """{"fallback":"full_reading"}"""
+            ),
+            followupPrompts = listOf(
+                "Love and marriage",
+                "Career and money",
+                "Timing and turning points",
+                "Special signs on my palm"
+            ),
+            rawJson = """{"fallback":"result_summary"}"""
         )
     }
 
@@ -1018,5 +847,25 @@ ${rightEvidence.rawJson}
 
     private fun PalmImageSlot.isDetail(): Boolean {
         return this == PalmImageSlot.DETAIL_A || this == PalmImageSlot.DETAIL_B
+    }
+
+    private fun String.toConsumerLine(fallback: String): String {
+        val clean = trim()
+        if (clean.isBlank()) return fallback
+        return when {
+            clean.contains("life line", ignoreCase = true) ->
+                "Your life line appears steady and reasonably clear, which usually points to resilience and a stable way of dealing with life."
+            clean.contains("head line", ignoreCase = true) ->
+                "The mind line looks readable enough to suggest a thoughtful style, with more reflection than impulsiveness."
+            clean.contains("heart line", ignoreCase = true) ->
+                "The emotional pattern looks present but controlled, which usually suggests feeling deeply without showing everything at once."
+            clean.contains("thumb", ignoreCase = true) ->
+                "The thumb openness looks moderate, which often points to balanced generosity and measured decisions."
+            clean.contains("finger", ignoreCase = true) ->
+                "Your finger balance looks fairly even, which suggests a mix of practicality and thoughtfulness."
+            clean.contains("mount", ignoreCase = true) ->
+                "The hand balance suggests warmth and practicality more than dramatic swings."
+            else -> fallback
+        }
     }
 }
