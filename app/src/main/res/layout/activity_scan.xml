@@ -75,77 +75,80 @@
                 android:lineSpacingExtra="3dp"
                 android:background="@drawable/bg_score_track"
                 android:padding="14dp"
-                android:layout_marginBottom="14dp" />
+                android:layout_marginBottom="12dp" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/scan_handedness_title"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_dark"
-                android:layout_marginBottom="8dp" />
-
-            <RadioGroup
-                android:id="@+id/rgHandedness"
+                android:id="@+id/tvStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="14dp">
-
-                <RadioButton
-                    android:id="@+id/rbRightHanded"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:checked="true"
-                    android:text="@string/scan_handedness_right" />
-
-                <RadioButton
-                    android:id="@+id/rbLeftHanded"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/scan_handedness_left" />
-
-                <RadioButton
-                    android:id="@+id/rbNotSure"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/scan_handedness_not_sure" />
-            </RadioGroup>
+                android:text="@string/scan_instruction_v2"
+                android:textSize="13sp"
+                android:textColor="@color/text_medium"
+                android:layout_marginBottom="12dp" />
 
             <LinearLayout
+                android:id="@+id/layoutProgress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:orientation="vertical"
+                android:background="@drawable/bg_score_track"
+                android:padding="14dp"
+                android:layout_marginBottom="14dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scan_loader_title"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_dark" />
+
+                <TextView
+                    android:id="@+id/tvProgressPercent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginTop="4dp" />
 
                 <ProgressBar
                     android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginEnd="8dp"
-                    android:visibility="gone"
-                    android:indeterminateTint="@color/primary" />
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_marginTop="8dp"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressTint="@color/primary"
+                    android:progressBackgroundTint="@color/glass_card_border" />
 
                 <TextView
-                    android:id="@+id/tvStatus"
-                    android:layout_width="0dp"
+                    android:id="@+id/tvProgressLabel"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/scan_instruction_v2"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_medium" />
+                    android:text="@string/scan_loading_lines"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_dark"
+                    android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:id="@+id/tvProgressSubtext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scan_progress_subtext"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_medium"
+                    android:layout_marginTop="4dp" />
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="10dp"
                 app:cardBackgroundColor="@color/glass_card"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
@@ -158,30 +161,67 @@
                     android:orientation="vertical"
                     android:padding="14dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/scan_slot_passive_title"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_dark" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/scan_slot_passive_subtitle"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_medium"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginBottom="10dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
-                    <ImageView
-                        android:id="@+id/ivPassivePreview"
-                        android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/bg_preview"
-                        android:contentDescription="@string/scan_slot_passive_title" />
+                        <ImageView
+                            android:id="@+id/ivPassivePreview"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_palmistry"
+                            android:tint="@color/brand_gold"
+                            android:contentDescription="@string/scan_slot_passive_title" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_slot_passive_title"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_slot_passive_subtitle"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_medium" />
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp">
+
+                            <ProgressBar
+                                android:id="@+id/progressPassiveState"
+                                style="?android:attr/progressBarStyleSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone"
+                                android:indeterminateTint="@color/primary" />
+
+                            <TextView
+                                android:id="@+id/tvPassiveStateIcon"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="o"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_medium" />
+                        </FrameLayout>
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvPassiveGuidance"
@@ -190,14 +230,15 @@
                         android:text="@string/scan_slot_pending"
                         android:textSize="12sp"
                         android:textColor="@color/text_medium"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginTop="10dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnPassiveCapture"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/scan_capture_passive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="end"
+                        android:text="@string/scan_button_upload"
                         android:backgroundTint="@color/primary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -205,7 +246,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="10dp"
                 app:cardBackgroundColor="@color/glass_card"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
@@ -218,30 +259,67 @@
                     android:orientation="vertical"
                     android:padding="14dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/scan_slot_active_title"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_dark" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/scan_slot_active_subtitle"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_medium"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginBottom="10dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
-                    <ImageView
-                        android:id="@+id/ivActivePreview"
-                        android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/bg_preview"
-                        android:contentDescription="@string/scan_slot_active_title" />
+                        <ImageView
+                            android:id="@+id/ivActivePreview"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_palmistry"
+                            android:tint="@color/brand_gold"
+                            android:contentDescription="@string/scan_slot_active_title" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_slot_active_title"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_slot_active_subtitle"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_medium" />
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp">
+
+                            <ProgressBar
+                                android:id="@+id/progressActiveState"
+                                style="?android:attr/progressBarStyleSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone"
+                                android:indeterminateTint="@color/primary" />
+
+                            <TextView
+                                android:id="@+id/tvActiveStateIcon"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="o"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_medium" />
+                        </FrameLayout>
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvActiveGuidance"
@@ -250,15 +328,114 @@
                         android:text="@string/scan_slot_pending"
                         android:textSize="12sp"
                         android:textColor="@color/text_medium"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginTop="10dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnActiveCapture"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/scan_capture_active"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="end"
+                        android:text="@string/scan_button_upload"
                         android:backgroundTint="@color/primary" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:cardBackgroundColor="@color/glass_card"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/glass_card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:id="@+id/ivDetailAPreview"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_palmistry"
+                            android:tint="@color/brand_gold"
+                            android:contentDescription="@string/scan_slot_detail_a_title" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_slot_detail_a_title"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_slot_detail_a_subtitle"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_medium" />
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp">
+
+                            <ProgressBar
+                                android:id="@+id/progressDetailAState"
+                                style="?android:attr/progressBarStyleSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone"
+                                android:indeterminateTint="@color/primary" />
+
+                            <TextView
+                                android:id="@+id/tvDetailAStateIcon"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="o"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_medium" />
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvDetailAGuidance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/scan_slot_optional"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_medium"
+                        android:layout_marginTop="10dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDetailACapture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="end"
+                        android:text="@string/scan_button_upload"
+                        android:backgroundTint="@color/secondary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -278,90 +455,67 @@
                     android:orientation="vertical"
                     android:padding="14dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/scan_slot_detail_a_title"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_dark" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/scan_slot_detail_a_subtitle"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_medium"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginBottom="10dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
-                    <ImageView
-                        android:id="@+id/ivDetailAPreview"
-                        android:layout_width="match_parent"
-                        android:layout_height="140dp"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/bg_preview"
-                        android:contentDescription="@string/scan_slot_detail_a_title" />
+                        <ImageView
+                            android:id="@+id/ivDetailBPreview"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_feature_palmistry"
+                            android:tint="@color/brand_gold"
+                            android:contentDescription="@string/scan_slot_detail_b_title" />
 
-                    <TextView
-                        android:id="@+id/tvDetailAGuidance"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/scan_slot_optional"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_medium"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginEnd="12dp">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnDetailACapture"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/scan_capture_detail_a"
-                        android:backgroundTint="@color/secondary" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_slot_detail_b_title"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_dark" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/glass_card"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/glass_card_border"
-                app:strokeWidth="1dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_slot_detail_b_subtitle"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_medium" />
+                        </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="14dp">
+                        <FrameLayout
+                            android:layout_width="28dp"
+                            android:layout_height="28dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/scan_slot_detail_b_title"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_dark" />
+                            <ProgressBar
+                                android:id="@+id/progressDetailBState"
+                                style="?android:attr/progressBarStyleSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone"
+                                android:indeterminateTint="@color/primary" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/scan_slot_detail_b_subtitle"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_medium"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginBottom="10dp" />
-
-                    <ImageView
-                        android:id="@+id/ivDetailBPreview"
-                        android:layout_width="match_parent"
-                        android:layout_height="140dp"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/bg_preview"
-                        android:contentDescription="@string/scan_slot_detail_b_title" />
+                            <TextView
+                                android:id="@+id/tvDetailBStateIcon"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:text="o"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_medium" />
+                        </FrameLayout>
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tvDetailBGuidance"
@@ -370,17 +524,27 @@
                         android:text="@string/scan_slot_optional"
                         android:textSize="12sp"
                         android:textColor="@color/text_medium"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginTop="10dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnDetailBCapture"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/scan_capture_detail_b"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="end"
+                        android:text="@string/scan_button_upload"
                         android:backgroundTint="@color/secondary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/tvAnalyzeHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/scan_continue_hint"
+                android:textSize="12sp"
+                android:textColor="@color/text_medium"
+                android:layout_marginBottom="8dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAnalyze"

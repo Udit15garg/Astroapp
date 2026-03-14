@@ -101,10 +101,10 @@ Return palm_evidence_v1 JSON only.
         return system to user
     }
 
-    fun synthesis(handedness: PalmHandedness): Pair<String, String> {
+    fun synthesis(): Pair<String, String> {
         val system = """
 You are a dual-hand palm synthesis engine.
-Interpret the passive hand as inherited baseline and the active hand as developed path.
+Interpret the left hand as inherited baseline and the right hand as developed path.
 Do not overclaim topics with weak evidence.
 Output JSON only.
 - No markdown.
@@ -112,9 +112,8 @@ Output JSON only.
 Return exactly this JSON shape:
 {
   "schema_version": "palm_synthesis_v1",
-  "handedness": "${handedness.name.lowercase()}",
-  "passive_hand_role": "inherited",
-  "active_hand_role": "developed",
+  "left_hand_role": "inherited",
+  "right_hand_role": "developed",
   "overall_story": "",
   "contrast_summary": {},
   "strong_topics": [],
@@ -124,7 +123,7 @@ Return exactly this JSON shape:
   "overall_confidence": 0.0
 }
         """.trimIndent()
-        return system to "Compare the passive and active hand evidence and return palm_synthesis_v1 JSON only."
+        return system to "Compare the left and right hand evidence and return palm_synthesis_v1 JSON only."
     }
 
     fun teaser(locale: String): Pair<String, String> {
@@ -163,7 +162,7 @@ Return exactly this JSON shape:
         return system to "Write a quick reveal teaser from the evidence and synthesis JSON. Return palm_teaser_v1 JSON only."
     }
 
-    fun fullReading(locale: String, handedness: PalmHandedness): Pair<String, String> {
+    fun fullReading(locale: String): Pair<String, String> {
         val system = """
 You are writing a full Indian palmistry reading.
 ${languageInstruction(locale)}
@@ -195,7 +194,9 @@ Return exactly this JSON shape:
         """.trimIndent()
         val user = """
 Generate a full dual-hand palmistry reading.
-Handedness: ${handedness.name}
+Use a Cheiro-style comparison:
+- left hand = inherited tendencies / natural disposition
+- right hand = developed qualities / present direction
 Required sections where evidence allows:
 - nature
 - destiny_vs_effort
@@ -216,7 +217,7 @@ Return palm_full_reading_v1 JSON only.
 You are answering a user's question about their palm reading.
 ${languageInstruction(locale)}
 
-You will receive both full-hand images, optional detail images, evidence JSON, synthesis JSON, and the user's prior reading summary.
+You will receive the left full-hand image, the right full-hand image, optional right-side and right-center detail images, evidence JSON, synthesis JSON, and the user's prior reading summary.
 
 Rules:
 - Answer only from visible evidence and grounded interpretation.

@@ -128,5 +128,6 @@ data class PalmSessionPayload(
     val activeEvidenceJson: String,
     val synthesisJson: String,
     val teaser: PalmTeaser,
-    val fullReading: PalmFullReading
+    val fullReading: PalmFullReading,
+    val recoverableMessages: List<String> = emptyList()
 ) : Parcelable

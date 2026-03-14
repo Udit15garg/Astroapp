@@ -54,8 +54,8 @@ class ResultActivity : BaseFeatureActivity() {
             return
         }
 
-        passiveEvidence = PalmistryJsonParser.parseEvidence(session.passiveEvidenceJson, "passive")
-        activeEvidence = PalmistryJsonParser.parseEvidence(session.activeEvidenceJson, "active")
+        passiveEvidence = PalmistryJsonParser.parseEvidence(session.passiveEvidenceJson, "left")
+        activeEvidence = PalmistryJsonParser.parseEvidence(session.activeEvidenceJson, "right")
         synthesis = PalmistryJsonParser.parseSynthesis(session.synthesisJson)
         teaser = session.teaser
 
@@ -85,6 +85,13 @@ class ResultActivity : BaseFeatureActivity() {
         binding.llReadings.removeAllViews()
 
         val teaser = session.teaser
+        if (session.recoverableMessages.isNotEmpty()) {
+            addNarrativeCard(
+                label = "Scan note",
+                title = "Some deeper steps were recovered automatically",
+                body = session.recoverableMessages.distinct().joinToString("\n") { "- $it" }
+            )
+        }
         val openingHooks = teaser.curiosityHooks.joinToString("\n") { "- $it" }
             .takeIf { it.isNotBlank() }
         addNarrativeCard(
