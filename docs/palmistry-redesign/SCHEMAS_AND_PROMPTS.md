@@ -13,11 +13,27 @@ This document defines the strict machine-facing contracts for the redesigned pal
 
 All schema keys stay in English. Only user-facing prose is localized.
 
+## Image Inputs
+
+Each session can use up to 4 image slots:
+
+- `passive_full`: required
+- `active_full`: required
+- `detail_a`: optional
+- `detail_b`: optional
+
+Default UI intent for optional slots:
+
+- `detail_a`: side detail
+- `detail_b`: center detail
+
 ## Global Rules
 
 - Return JSON only for validation, extraction, synthesis, teaser, full reading, and Q&A.
 - Never invent missing observations.
 - Never default missing values to averages.
+- Never reject because flash was off, flash is unavailable, or battery is low.
+- `passive_full` and `active_full` are mandatory. `detail_a` and `detail_b` are optional.
 - Confidence is a float from `0.0` to `1.0`.
 - Confidence bands:
   - `high`: `>= 0.75`
@@ -25,6 +41,7 @@ All schema keys stay in English. Only user-facing prose is localized.
   - `low`: `< 0.50`
 - If a feature is not visible, mark it `unclear` or `not_visible`.
 - If fewer than the minimum required core observations are extracted, set `is_sufficient_for_premium` to `false`.
+- Validation guidance must be targeted. Never return generic phrases like `invalid image`.
 
 ## Stage A: Hand Validation Schema
 
@@ -35,22 +52,23 @@ All schema keys stay in English. Only user-facing prose is localized.
   "hand_detected": true,
   "is_inner_palm": true,
   "full_palm_visible": true,
-  "wrist_visibility": "full",
-  "fingers_visible_count": 5,
+  "central_palm_visible": true,
   "major_lines_visibility": "good",
+  "thumb_side_visibility": "medium",
+  "outer_edge_visibility": "medium",
   "blur_level": "low",
   "glare_level": "none",
   "shadow_level": "mild",
-  "pose_quality": "acceptable",
-  "palm_centered": true,
-  "crop_severity": "none",
-  "likely_hand_side": "left",
-  "quality_state": "ACCEPT_WITH_WARNING",
-  "warnings": [
-    "mild_shadow_lower_palm"
-  ],
-  "retake_reasons": [],
   "can_proceed": true,
+  "state": "ACCEPT_WITH_GUIDANCE",
+  "guidance_message": "The palm is usable, but a closer center-palm image will improve line accuracy.",
+  "recommended_detail_requests": [
+    {
+      "slot": "detail_b",
+      "target": "center_palm_closeup",
+      "reason": "major_intersections_need_more_detail"
+    }
+  ],
   "confidence": 0.91
 }
 ```
@@ -58,21 +76,25 @@ All schema keys stay in English. Only user-facing prose is localized.
 ### Validation Enums
 
 - `hand_label`: `passive | active`
-- `wrist_visibility`: `full | partial | not_visible`
 - `major_lines_visibility`: `good | moderate | poor`
+- `thumb_side_visibility`: `good | medium | poor | not_visible`
+- `outer_edge_visibility`: `good | medium | poor | not_visible`
 - `blur_level`: `none | low | medium | high`
 - `glare_level`: `none | low | medium | high`
 - `shadow_level`: `none | mild | medium | heavy`
-- `pose_quality`: `good | acceptable | bad`
-- `crop_severity`: `none | mild | major`
-- `likely_hand_side`: `left | right | unclear`
-- `quality_state`: `ACCEPT | ACCEPT_WITH_WARNING | RETAKE_REQUIRED`
+- `state`: `ACCEPT | ACCEPT_WITH_GUIDANCE | RETAKE_REQUIRED`
 
 ### Validation Acceptance Rules
 
 - `ACCEPT`: usable without important caveats.
-- `ACCEPT_WITH_WARNING`: proceed, but lower confidence where visibility is affected.
+- `ACCEPT_WITH_GUIDANCE`: proceed, but lower confidence where visibility is affected and optionally request a detail photo.
 - `RETAKE_REQUIRED`: only when line visibility or framing is too poor for core extraction.
+
+### Retake Guidance Rules
+
+- Always explain what region is weak.
+- Prefer `The middle of the palm is too dark to read clearly.` over `Invalid image.`
+- If only one slot is weak, ask for a targeted replacement of that slot instead of failing the session.
 
 ## Stage B: Evidence Extraction Schema
 
@@ -80,14 +102,24 @@ All schema keys stay in English. Only user-facing prose is localized.
 {
   "schema_version": "palm_evidence_v1",
   "hand_label": "passive",
+  "source_images": [
+    "passive_full",
+    "detail_b"
+  ],
   "image_quality_summary": {
     "overall_quality": "good",
     "issues": [
       "mild_shadow_lower_palm"
     ]
   },
+  "coverage_summary": {
+    "center_palm": "good",
+    "thumb_side": "medium",
+    "outer_edge": "medium"
+  },
   "core_observation_count": 13,
   "is_sufficient_for_premium": true,
+  "recommended_detail_requests": [],
   "line_summary": {
     "life_line": {
       "presence": "clear",
@@ -225,6 +257,9 @@ All schema keys stay in English. Only user-facing prose is localized.
       "attribute": "presence",
       "value": "clear",
       "evidence_text": "Life line appears clearly traced around the Venus area.",
+      "source_images": [
+        "passive_full"
+      ],
       "confidence": 0.84
     },
     {
@@ -233,6 +268,10 @@ All schema keys stay in English. Only user-facing prose is localized.
       "attribute": "slope",
       "value": "downward",
       "evidence_text": "Head line slopes downward toward the Moon area.",
+      "source_images": [
+        "passive_full",
+        "detail_b"
+      ],
       "confidence": 0.79
     }
   ]
@@ -253,6 +292,7 @@ Otherwise:
 
 - allow teaser only if evidence is still partially useful
 - ask for retake before premium unlock
+- prefer targeted detail requests before rejecting the full session
 
 ## Stage C: Dual-Hand Synthesis Schema
 
@@ -405,6 +445,11 @@ Otherwise:
   "detailed_answer": "On the passive hand the fate line appears faint, while on the active hand it strengthens higher up the palm. That usually supports a reading of career clarity developing through personal choices rather than a fixed early track.",
   "visibility_status": "clear_enough",
   "confidence": "medium",
+  "images_used": [
+    "passive_full",
+    "active_full",
+    "detail_b"
+  ],
   "evidence_used": [
     "passive.obs_fate_depth",
     "active.obs_fate_depth"
@@ -446,7 +491,11 @@ Rules:
 - Judge image usability, not mystical meaning.
 - The app flow already knows whether the image is passive or active; do not override it.
 - Do not reject only because the likely side looks mirrored or opposite.
+- Never require flash.
+- Never reject because flash was not used.
+- Never reject because battery is low.
 - Be forgiving when the image is slightly dim or mildly blurred if the main lines are still visible.
+- Use targeted guidance only. Never say "invalid image" or "failed validation".
 - Output JSON only.
 - No markdown.
 - No prose outside JSON.
@@ -458,20 +507,17 @@ Return exactly this schema:
   "hand_detected": true,
   "is_inner_palm": true,
   "full_palm_visible": true,
-  "wrist_visibility": "full|partial|not_visible",
-  "fingers_visible_count": 0,
+  "central_palm_visible": true,
   "major_lines_visibility": "good|moderate|poor",
+  "thumb_side_visibility": "good|medium|poor|not_visible",
+  "outer_edge_visibility": "good|medium|poor|not_visible",
   "blur_level": "none|low|medium|high",
   "glare_level": "none|low|medium|high",
   "shadow_level": "none|mild|medium|heavy",
-  "pose_quality": "good|acceptable|bad",
-  "palm_centered": true,
-  "crop_severity": "none|mild|major",
-  "likely_hand_side": "left|right|unclear",
-  "quality_state": "ACCEPT|ACCEPT_WITH_WARNING|RETAKE_REQUIRED",
-  "warnings": [],
-  "retake_reasons": [],
   "can_proceed": true,
+  "state": "ACCEPT|ACCEPT_WITH_GUIDANCE|RETAKE_REQUIRED",
+  "guidance_message": "",
+  "recommended_detail_requests": [],
   "confidence": 0.0
 }
 ```
@@ -489,7 +535,9 @@ Return JSON only.
 
 ```text
 You are an evidence extraction engine for palmistry.
-Analyze one labeled palm image: {{hand_label}}.
+Analyze one labeled hand using the provided images for that hand.
+Required image: the full-hand slot for {{hand_label}}.
+Optional images: detail images if provided for center-palm, thumb-side, or outer-edge clarity.
 Extract only visible palm features.
 Do not interpret personality, destiny, marriage, money, spirituality, or timing.
 Do not invent any feature that is unclear.
@@ -506,7 +554,9 @@ Requirements:
 - Include hand shape, finger length pattern, and thumb angle when visible.
 - Include special signs only when there is at least some visible basis.
 - Include observation_refs with short evidence_text strings.
+- Include source_images for each observation when helpful.
 - Each observation ref id must be unique and reusable by later stages.
+- Add recommended_detail_requests when one more close-up would significantly improve confidence.
 - Set is_sufficient_for_premium to false if the evidence is too weak for a full reading.
 ```
 
@@ -514,6 +564,11 @@ Requirements:
 
 ```text
 Extract observable palm evidence for the {{hand_label}} hand.
+Available images:
+- required full-hand image for {{hand_label}}
+- optional detail_a image if attached
+- optional detail_b image if attached
+
 Return palm_evidence_v1 JSON only.
 ```
 
@@ -656,6 +711,7 @@ Return palm_full_reading_v1 JSON only.
 You are answering a user's question about their palm reading.
 You will receive:
 - both hand images
+- optional detail images when available
 - passive evidence JSON
 - active evidence JSON
 - synthesis JSON
@@ -684,6 +740,12 @@ Question: {{user_question}}
 
 Prior reading summary:
 {{prior_summary}}
+
+Available images:
+- passive_full
+- active_full
+- detail_a if attached
+- detail_b if attached
 
 Passive evidence JSON:
 {{passive_evidence_json}}

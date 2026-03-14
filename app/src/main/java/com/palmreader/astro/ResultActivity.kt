@@ -1,6 +1,9 @@
 package com.palmreader.astro
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,26 +12,35 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.graphics.BitmapFactory
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.palmreader.astro.api.OpenAIService
-import com.palmreader.astro.api.PromptTemplates
 import com.palmreader.astro.databinding.ActivityResultBinding
+import com.palmreader.astro.palmistry.PalmEvidenceResult
+import com.palmreader.astro.palmistry.PalmQaAnswer
+import com.palmreader.astro.palmistry.PalmSessionPayload
+import com.palmreader.astro.palmistry.PalmSynthesisResult
+import com.palmreader.astro.palmistry.PalmTeaser
+import com.palmreader.astro.palmistry.PalmistryJsonParser
+import com.palmreader.astro.palmistry.PalmistryPrompts
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 class ResultActivity : BaseFeatureActivity() {
 
     private lateinit var binding: ActivityResultBinding
-    private lateinit var readings: List<PalmReading>
     private val gibberishTracker = GibberishTracker()
     private var persona: PersonaEntity? = null
     private var typingIndicatorView: TextView? = null
-    private var capturedPalmPath: String? = null
+    private var palmSession: PalmSessionPayload? = null
+    private var passiveEvidence: PalmEvidenceResult? = null
+    private var activeEvidence: PalmEvidenceResult? = null
+    private var synthesis: PalmSynthesisResult? = null
+    private var teaser: PalmTeaser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,15 +48,23 @@ class ResultActivity : BaseFeatureActivity() {
         setContentView(binding.root)
 
         @Suppress("DEPRECATION")
-        readings = intent.getParcelableArrayListExtra<PalmReading>("readings") ?: emptyList()
-        capturedPalmPath = intent.getStringExtra("capturedPalmPath")
-            ?: intent.getStringExtra("markedPalmPath")
+        palmSession = intent.getParcelableExtra("palmSession")
+        val session = palmSession ?: run {
+            finish()
+            return
+        }
+
+        passiveEvidence = PalmistryJsonParser.parseEvidence(session.passiveEvidenceJson, "passive")
+        activeEvidence = PalmistryJsonParser.parseEvidence(session.activeEvidenceJson, "active")
+        synthesis = PalmistryJsonParser.parseSynthesis(session.synthesisJson)
+        teaser = session.teaser
 
         binding.btnBack.setOnClickListener { finish() }
+        binding.etQuestion.hint = getString(R.string.qa_hint_v2)
         refreshCredits(binding.tvCredits)
         loadPersona()
-        buildResultCards()
-        appendCapturedPalmToChat()
+        renderPalmSession(session)
+        appendPalmImagesToChat(session)
         setupQA()
     }
 
@@ -61,31 +81,123 @@ class ResultActivity : BaseFeatureActivity() {
         }
     }
 
-    private fun buildResultCards() {
-        readings.forEach { reading ->
-            val card = LayoutInflater.from(this)
-                .inflate(R.layout.item_reading, binding.llReadings, false)
+    private fun renderPalmSession(session: PalmSessionPayload) {
+        binding.llReadings.removeAllViews()
 
-            card.findViewById<TextView>(R.id.tvCategory).text = reading.category
-            card.findViewById<TextView>(R.id.tvScore).text =
-                "${reading.score}/${AppConfig.ResultCards.SCORE_MAX}"
+        val teaser = session.teaser
+        val openingHooks = teaser.curiosityHooks.joinToString("\n") { "- $it" }
+            .takeIf { it.isNotBlank() }
+        addNarrativeCard(
+            label = getString(R.string.result_opening_label),
+            title = teaser.openingVerdict,
+            body = openingHooks
+        )
+        addNarrativeCard(
+            label = getString(R.string.result_inherited_label),
+            title = getString(R.string.scan_passive_label),
+            body = teaser.whatLifeGaveYou
+        )
+        addNarrativeCard(
+            label = getString(R.string.result_active_label),
+            title = getString(R.string.scan_active_label),
+            body = teaser.whatYouAreBecoming
+        )
 
-            val bar = card.findViewById<LinearLayout>(R.id.scoreBar)
-            val filled = card.findViewById<android.view.View>(R.id.scoreFill)
-            filled.layoutParams = filled.layoutParams.also { it.width = 0 }
-            filled.post {
-                filled.layoutParams = filled.layoutParams.also {
-                    it.width = (bar.width * reading.score / AppConfig.ResultCards.SCORE_MAX.toFloat()).toInt()
-                }
+        if (teaser.observedSigns.isNotEmpty()) {
+            val signsBody = teaser.observedSigns.joinToString("\n") { sign ->
+                "- ${sign.title}: ${sign.body}"
             }
-
-            binding.llReadings.addView(card)
+            addNarrativeCard(
+                label = getString(R.string.result_signs_label),
+                title = "Visible signs",
+                body = signsBody
+            )
         }
+
+        addNarrativeCard(
+            label = getString(R.string.result_contrast_label),
+            title = synthesis?.overallStory ?: teaser.contrastInsight,
+            body = teaser.contrastInsight
+        )
+
+        val hookLines = (teaser.curiosityHooks + teaser.lockedInsights)
+            .distinct()
+            .joinToString("\n") { "- $it" }
+        if (hookLines.isNotBlank()) {
+            addNarrativeCard(
+                label = getString(R.string.result_hooks_label),
+                title = "Deeper threads",
+                body = hookLines
+            )
+        }
+
+        val evidenceLines = ((passiveEvidence?.visibleEvidence ?: emptyList()) +
+            (activeEvidence?.visibleEvidence ?: emptyList()))
+            .distinct()
+            .take(6)
+            .joinToString("\n") { "- $it" }
+        if (evidenceLines.isNotBlank()) {
+            addNarrativeCard(
+                label = getString(R.string.result_evidence_label),
+                title = "What the scan actually noticed",
+                body = evidenceLines
+            )
+        }
+
+        val fullReading = session.fullReading
+        addNarrativeCard(
+            label = getString(R.string.result_full_label),
+            title = fullReading.openingSentence,
+            body = null
+        )
+        if (fullReading.sections.isEmpty()) {
+            addNarrativeCard(
+                label = getString(R.string.result_full_label),
+                title = "Reading in progress",
+                body = getString(R.string.result_no_full_reading)
+            )
+        } else {
+            fullReading.sections.forEach { section ->
+                addNarrativeCard(
+                    label = getString(R.string.result_full_label),
+                    title = section.title,
+                    body = section.body,
+                    meta = section.confidence
+                )
+            }
+        }
+        if (fullReading.finalGuidance.isNotBlank()) {
+            addNarrativeCard(
+                label = getString(R.string.result_full_label),
+                title = "Final guidance",
+                body = fullReading.finalGuidance,
+                meta = fullReading.overallConfidence
+            )
+        }
+    }
+
+    private fun addNarrativeCard(label: String, title: String, body: String?, meta: String? = null) {
+        val card = LayoutInflater.from(this)
+            .inflate(R.layout.item_result_card, binding.llReadings, false)
+        card.findViewById<TextView>(R.id.tvLabel).text = label
+        card.findViewById<TextView>(R.id.tvValue).text = title
+        card.findViewById<TextView>(R.id.tvDesc).text = body ?: ""
+        val readMore = card.findViewById<TextView>(R.id.tvReadMore)
+        readMore.visibility = View.GONE
+        meta?.takeIf { it.isNotBlank() }?.let {
+            card.findViewById<TextView>(R.id.tvLabel).text = "$label • $it"
+        }
+        binding.llReadings.addView(card)
     }
 
     private fun setupQA() {
         binding.etQuestion.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEND) { sendQuestion(); true } else false
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                sendQuestion()
+                true
+            } else {
+                false
+            }
         }
         binding.btnSend.setOnClickListener { sendQuestion() }
     }
@@ -107,7 +219,6 @@ class ResultActivity : BaseFeatureActivity() {
             return
         }
 
-        // Check for gibberish BEFORE spending a credit
         when (val gibResult = gibberishTracker.check(q)) {
             is GibberishTracker.Result.Warning -> {
                 Snackbar.make(
@@ -132,71 +243,31 @@ class ResultActivity : BaseFeatureActivity() {
                 }
                 return
             }
-            is GibberishTracker.Result.Valid -> { /* proceed */ }
+            is GibberishTracker.Result.Valid -> Unit
         }
 
         binding.etQuestion.setText("")
-
         useCredit("Palmistry Q&A") { charged ->
             appendChat(getString(R.string.qa_user_prefix, q), isUser = true)
-
             lifecycleScope.launch {
                 val startedAt = System.currentTimeMillis()
                 showTypingIndicator()
                 try {
                     ensurePersonaLoaded()
-                    val context = readings.joinToString("\n") {
-                        "${it.category}: ${it.score}/10 - ${it.interpretation}"
-                    }
-
-                    val locale = LanguageManager.getCurrentLocale(this@ResultActivity)
-                    val prompts = PromptTemplates.followUpQuestion(
-                        "Palmistry", context, q, locale, persona
-                    )
-
-                    Log.d("AstroAI", "Calling OpenAI for palm Q&A: $q")
-                    when (val result = OpenAIService.chatCompletion(
-                        systemPrompt = prompts.first,
-                        userMessage = prompts.second,
-                        model = OpenAIService.MODEL_PALM_QA,
-                        temperature = 0.7f
-                    )) {
-                        is OpenAIService.ApiResult.Success -> {
-                            val answer = result.data.trim()
-                            if (answer.isBlank()) {
-                                restorePalmQuestionCreditIfNeeded(charged)
-                                val msg = buildPalmQaUnavailableMessage(getString(R.string.qa_palm_empty_answer))
-                                appendChat(msg, isUser = false)
-                                saveToHistory(getString(R.string.feature_palmistry), q, msg)
-                            } else {
-                                Log.d("AstroAI", "AI palm answer received")
-                                val formatted = normalizePalmQaAnswer(answer)
-                                appendChat(formatted, isUser = false)
-                                saveToHistory(getString(R.string.feature_palmistry), q, formatted)
-                            }
-                        }
-                        is OpenAIService.ApiResult.Error -> {
-                            Log.e("AstroAI", "AI palm error: ${result.message}")
-                            restorePalmQuestionCreditIfNeeded(charged)
-                            val msg = buildPalmQaUnavailableMessage(getString(R.string.qa_palm_ai_unavailable))
-                            appendChat(msg, isUser = false)
-                            saveToHistory(getString(R.string.feature_palmistry), q, msg)
-                        }
-                        is OpenAIService.ApiResult.RateLimited -> {
-                            restorePalmQuestionCreditIfNeeded(charged)
-                            val msg = buildPalmQaUnavailableMessage(getString(R.string.ai_rate_limited))
-                            appendChat(msg, isUser = false)
-                            saveToHistory(getString(R.string.feature_palmistry), q, msg)
-                        }
-                        else -> {
-                            restorePalmQuestionCreditIfNeeded(charged)
-                            val msg = buildPalmQaUnavailableMessage(getString(R.string.qa_palm_ai_unavailable))
-                            appendChat(msg, isUser = false)
-                            saveToHistory(getString(R.string.feature_palmistry), q, msg)
-                        }
+                    val session = palmSession ?: return@launch
+                    val answer = askPalmQuestion(session, q)
+                    if (answer == null) {
+                        restorePalmQuestionCreditIfNeeded(charged)
+                        val msg = buildPalmQaUnavailableMessage(getString(R.string.qa_palm_ai_unavailable))
+                        appendChat(msg, isUser = false)
+                        saveToHistory(getString(R.string.feature_palmistry), q, msg)
+                    } else {
+                        val formatted = formatPalmQaAnswer(answer)
+                        appendChat(formatted, isUser = false)
+                        saveToHistory(getString(R.string.feature_palmistry), q, formatted)
                     }
                 } catch (e: Exception) {
-                    Log.e("AstroAI", "Palm Q&A request failed", e)
+                    Log.e("AstroAI", "Palmistry v2 Q&A failed", e)
                     restorePalmQuestionCreditIfNeeded(charged)
                     val msg = buildPalmQaUnavailableMessage(getString(R.string.qa_palm_ai_unavailable))
                     appendChat(msg, isUser = false)
@@ -214,6 +285,82 @@ class ResultActivity : BaseFeatureActivity() {
                 }
             }
         }
+    }
+
+    private suspend fun askPalmQuestion(session: PalmSessionPayload, question: String): PalmQaAnswer? {
+        val (systemPrompt, userQuestionPrompt) = PalmistryPrompts.qa(session.locale, question)
+        val priorSummary = buildString {
+            teaser?.let {
+                appendLine("Opening verdict: ${it.openingVerdict}")
+                appendLine("What life gave you: ${it.whatLifeGaveYou}")
+                appendLine("What you are becoming: ${it.whatYouAreBecoming}")
+            }
+            appendLine("Synthesis: ${synthesis?.overallStory.orEmpty()}")
+            appendLine("Full reading opening: ${session.fullReading.openingSentence}")
+        }.trim()
+
+        val userPrompt = """
+${userQuestionPrompt}
+
+Prior reading summary:
+$priorSummary
+
+Passive evidence JSON:
+${session.passiveEvidenceJson}
+
+Active evidence JSON:
+${session.activeEvidenceJson}
+
+Synthesis JSON:
+${session.synthesisJson}
+        """.trimIndent()
+
+        val imageBase64List = mutableListOf<String>()
+        imagePathToBase64(session.passiveImagePath).takeIf { it.isNotBlank() }?.let(imageBase64List::add)
+        imagePathToBase64(session.activeImagePath).takeIf { it.isNotBlank() }?.let(imageBase64List::add)
+        session.detailImageAPath?.let { path ->
+            imagePathToBase64(path).takeIf { it.isNotBlank() }?.let(imageBase64List::add)
+        }
+        session.detailImageBPath?.let { path ->
+            imagePathToBase64(path).takeIf { it.isNotBlank() }?.let(imageBase64List::add)
+        }
+
+        for (attempt in 0..1) {
+            when (val result = OpenAIService.multiImageVisionChatCompletion(
+                systemPrompt = systemPrompt,
+                userMessage = userPrompt,
+                imageBase64List = imageBase64List,
+                model = OpenAIService.MODEL_PALM_PREMIUM,
+                imageDetail = AppConfig.Palmistry.ANALYSIS_IMAGE_DETAIL,
+                maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
+                timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
+                maxRetries = 0
+            )) {
+                is OpenAIService.ApiResult.Success -> {
+                    PalmistryJsonParser.parseQaAnswer(result.data)?.let { return it }
+                    Log.w("ResultActivity", "Palm QA parse retry attempt=$attempt")
+                }
+                else -> return null
+            }
+        }
+        return null
+    }
+
+    private suspend fun imagePathToBase64(path: String): String = withContext(Dispatchers.IO) {
+        val bitmap = decodeScaledBitmap(path, AppConfig.Palmistry.SCAN_MAX_EDGE_PX) ?: return@withContext ""
+        val out = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, AppConfig.Palmistry.SCAN_UPLOAD_JPEG_QUALITY, out)
+        Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
+    }
+
+    private fun decodeScaledBitmap(path: String, maxEdge: Int): Bitmap? {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(path, bounds)
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+        val rawMax = maxOf(bounds.outWidth, bounds.outHeight)
+        val sampleSize = if (rawMax > maxEdge) Integer.highestOneBit(rawMax / maxEdge) else 1
+        val decode = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+        return BitmapFactory.decodeFile(path, decode)
     }
 
     private fun isChargeableQuestion(text: String): Boolean {
@@ -250,7 +397,7 @@ class ResultActivity : BaseFeatureActivity() {
             setPadding(24, 12, 24, 12)
             setBackgroundResource(R.drawable.bg_chat_bot)
             setTextColor(ContextCompat.getColor(context, R.color.text_medium))
-            val lp = LinearLayout.LayoutParams(
+            layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).also {
@@ -258,11 +405,9 @@ class ResultActivity : BaseFeatureActivity() {
                 it.marginEnd = 80
                 it.gravity = android.view.Gravity.START
             }
-            layoutParams = lp
         }
         typingIndicatorView = tv
         binding.llChat.addView(tv)
-        binding.scrollView.post { binding.scrollView.fullScroll(View.FOCUS_DOWN) }
     }
 
     private fun hideTypingIndicator() {
@@ -276,32 +421,40 @@ class ResultActivity : BaseFeatureActivity() {
             this.text = text
             textSize = 14f
             setPadding(24, 16, 24, 16)
-            val lp = LinearLayout.LayoutParams(
+            layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).also { it.topMargin = 8 }
             if (isUser) {
-                lp.gravity = android.view.Gravity.END
-                lp.marginStart = 80
+                (layoutParams as LinearLayout.LayoutParams).apply {
+                    gravity = android.view.Gravity.END
+                    marginStart = 80
+                }
                 setBackgroundResource(R.drawable.bg_chat_user)
                 setTextColor(ContextCompat.getColor(context, android.R.color.white))
             } else {
-                lp.gravity = android.view.Gravity.START
-                lp.marginEnd = 80
+                (layoutParams as LinearLayout.LayoutParams).apply {
+                    gravity = android.view.Gravity.START
+                    marginEnd = 80
+                }
                 setBackgroundResource(R.drawable.bg_chat_bot)
                 setTextColor(ContextCompat.getColor(context, R.color.text_dark))
             }
-            layoutParams = lp
         }
         binding.llChat.addView(tv)
     }
 
-    private fun appendCapturedPalmToChat() {
-        val path = capturedPalmPath ?: return
-        val bitmap = BitmapFactory.decodeFile(path) ?: return
+    private fun appendPalmImagesToChat(session: PalmSessionPayload) {
+        addChatImage(getString(R.string.scan_slot_passive_title), session.passiveImagePath)
+        addChatImage(getString(R.string.scan_slot_active_title), session.activeImagePath)
+        session.detailImageAPath?.let { addChatImage(getString(R.string.scan_slot_detail_a_title), it) }
+        session.detailImageBPath?.let { addChatImage(getString(R.string.scan_slot_detail_b_title), it) }
+    }
 
+    private fun addChatImage(label: String, path: String) {
+        val bitmap = decodeScaledBitmap(path, AppConfig.Palmistry.CHAT_IMAGE_MAX_EDGE_PX) ?: return
         val caption = TextView(this).apply {
-            text = getString(R.string.qa_palm_marked_image_caption)
+            text = "$label:"
             textSize = 14f
             setPadding(24, 16, 24, 10)
             setBackgroundResource(R.drawable.bg_chat_bot)
@@ -321,7 +474,7 @@ class ResultActivity : BaseFeatureActivity() {
             setImageBitmap(bitmap)
             adjustViewBounds = true
             scaleType = ImageView.ScaleType.FIT_CENTER
-            contentDescription = getString(R.string.cd_palm_marked_image)
+            contentDescription = label
             setBackgroundResource(R.drawable.bg_chat_bot)
             setPadding(10, 10, 10, 10)
             layoutParams = LinearLayout.LayoutParams(
@@ -353,54 +506,28 @@ class ResultActivity : BaseFeatureActivity() {
         return listOf(primaryMessage, getString(R.string.qa_credit_restored_note)).joinToString("\n")
     }
 
-    private fun normalizePalmQaAnswer(raw: String): String {
-        val text = raw.replace("\r\n", "\n").trim()
-        if (text.isBlank()) return text
-
-        val hasTemplate = text.contains("Short Answer -", ignoreCase = true) &&
-            text.contains("Detailed Answer -", ignoreCase = true) &&
-            text.contains("The Good", ignoreCase = true) &&
-            text.contains("The Bad", ignoreCase = true) &&
-            text.contains("What to do", ignoreCase = true) &&
-            text.contains("Conclusion", ignoreCase = true)
-        if (hasTemplate) return withGoodBadSpacing(text)
-
-        val shortLine = Regex("(?im)^\\s*SHORT\\s*[:\\-]\\s*(.+)$")
-            .find(text)?.groupValues?.getOrNull(1)?.trim()
-            ?: text.lines().firstOrNull { it.isNotBlank() }?.trim().orEmpty()
-        val details = Regex("(?is)DETAILS\\s*[:\\-]\\s*(.+)$")
-            .find(text)?.groupValues?.getOrNull(1)?.trim()
-            ?: text
-
+    private fun formatPalmQaAnswer(answer: PalmQaAnswer): String {
         return buildString {
             append("Short Answer - ")
-            append(
-                shortLine.ifBlank {
-                    "You have positive momentum, with a few areas needing care."
-                }
-            )
+            append(answer.shortAnswer.ifBlank { "The visible signs are not strong enough for a confident answer." })
             append('\n')
-            append("Detailed Answer -\n")
-            append("The Good ✅ - ")
-            append(details.take(220).ifBlank {
-                "Your signs show strong potential for progress and stability."
-            })
-            append(AppConfig.Chat.GOOD_BAD_SECTION_GAP)
-            append("The Bad ❌ - ")
-            append("Watch for overthinking, delays, or mixed signals before decisions.")
-            append('\n')
-            append("What to do - ")
-            append("Take small consistent steps, communicate clearly, and review progress weekly.")
-            append('\n')
-            append("Conclusion - ")
-            append("You are on a good path; stay patient, practical, and confident.")
-        }.let(::withGoodBadSpacing)
-    }
-
-    private fun withGoodBadSpacing(text: String): String {
-        return text.replace(
-            Regex("(?im)\\n+\\s*(The Bad\\s*❌?\\s*-)"),
-            "${AppConfig.Chat.GOOD_BAD_SECTION_GAP}\$1"
-        )
+            append("Detailed Answer - ")
+            append(answer.detailedAnswer.ifBlank { "The palm evidence here is limited, so the answer should be treated cautiously." })
+            if (answer.evidenceUsed.isNotEmpty()) {
+                append('\n')
+                append("Evidence - ")
+                append(answer.evidenceUsed.joinToString("; "))
+            }
+            if (answer.limitsOrUncertainty.isNotEmpty()) {
+                append('\n')
+                append("Limits - ")
+                append(answer.limitsOrUncertainty.joinToString("; "))
+            }
+            if (answer.suggestedFollowUps.isNotEmpty()) {
+                append('\n')
+                append("Next - ")
+                append(answer.suggestedFollowUps.joinToString(" | "))
+            }
+        }
     }
 }

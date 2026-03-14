@@ -4,9 +4,11 @@
 
 Replace the current single-image, seven-score palmistry flow with a dual-hand, evidence-first pipeline that:
 
+- drastically reduces unnecessary rejection
 - feels visually grounded
 - explains what was actually seen
 - uses passive vs active hand contrast
+- supports 2 required full-hand images plus up to 2 optional detail photos
 - supports teaser, full reading, and image-grounded Q&A
 - avoids repetitive scorecard output
 
@@ -14,8 +16,9 @@ Replace the current single-image, seven-score palmistry flow with a dual-hand, e
 
 | Current | Replace With |
 |---|---|
-| `ScanActivity` single-hand flow | dual-hand capture flow with handedness selection |
-| strict pass/fail validation | `ACCEPT / ACCEPT_WITH_WARNING / RETAKE_REQUIRED` |
+| `ScanActivity` single-hand flow | 4-slot palm capture flow with handedness selection |
+| strict pass/fail validation | `ACCEPT / ACCEPT_WITH_GUIDANCE / RETAKE_REQUIRED` |
+| flash-sensitive rejection | no-flash-required validation with targeted guidance |
 | one prompt for final reading | separate validation, extraction, synthesis, teaser, reading, Q&A prompts |
 | `PalmReading(category, score, interpretation)` | evidence JSON + synthesis JSON + teaser/full reading JSON |
 | score bars UI | narrative cards + evidence snippets + contrast panel |
@@ -35,21 +38,29 @@ Create dedicated models under a new package such as `com.palmreader.astro.palmis
   - `RIGHT_HANDED`
   - `LEFT_HANDED`
   - `NOT_SURE`
+- `PalmImageSlot`
+  - `PASSIVE_FULL`
+  - `ACTIVE_FULL`
+  - `DETAIL_A`
+  - `DETAIL_B`
 - `PalmValidationResult`
 - `PalmEvidence`
 - `PalmSynthesis`
 - `PalmTeaser`
 - `PalmFullReading`
 - `PalmQaAnswer`
+- `PalmDetailRequest`
+- `PalmConfidenceSummary`
 - `PalmSession`
 
 ### New Service Layer
 
 - `PalmistryCaptureRepository`
-  - stores original and resized image URIs for both hands
+  - stores original and resized image URIs for both full-hand images and optional detail images
 - `PalmistryQualityGate`
   - local CV heuristics
   - returns structured local warnings instead of a single pass/fail
+  - never requires flash
 - `PalmistryVisionRepository`
   - calls validation, extraction, synthesis, teaser, full read, and Q&A stages
 - `PalmistryJsonParser`
@@ -90,14 +101,26 @@ Create dedicated models under a new package such as `com.palmreader.astro.palmis
 - help text:
   - `This helps us map your passive and active hand correctly.`
 
-### 3. Dual-Hand Capture Screen
+### 3. Four-Slot Capture Screen
 
-Two sequential steps:
+Show 4 upload boxes:
 
-1. capture passive hand
-2. capture active hand
+1. `Passive hand`
+2. `Active hand`
+3. `Side detail`
+4. `Center detail`
 
-Each step includes:
+Required:
+
+- passive full inner palm
+- active full inner palm
+
+Optional:
+
+- detail A
+- detail B
+
+Each box includes:
 
 - hand outline guide
 - small sample image
@@ -105,7 +128,27 @@ Each step includes:
 - `Retake`
 - `Use photo`
 
-### 4. Analysis Loading Screen
+Suggested subtitles:
+
+- `Passive hand`: `Full inner palm. Shows inherited tendencies.`
+- `Active hand`: `Full inner palm. Shows present direction and self-made changes.`
+- `Side detail`: `Capture the thumb-side or outer edge clearly for mount and side-line detail.`
+- `Center detail`: `Capture the middle of the palm clearly for major line intersections.`
+
+### 4. Targeted Detail Request Step
+
+If first-pass validation or extraction needs more clarity:
+
+- keep the current session alive
+- ask only for the weak region
+- target one slot at a time
+
+Examples:
+
+- `Add a clearer center-palm photo for the active hand.`
+- `Add a thumb-side close-up for the passive hand.`
+
+### 5. Analysis Loading Screen
 
 Use staged loader copy:
 
@@ -115,7 +158,7 @@ Use staged loader copy:
 4. `Looking for special signs and timing shifts...`
 5. `Preparing your first insight...`
 
-### 5. Teaser Result Screen
+### 6. Teaser Result Screen
 
 No score bars.
 
@@ -136,7 +179,7 @@ CTA row:
 - `Ask about career`
 - `Ask my own question`
 
-### 6. Full Reading Screen
+### 7. Full Reading Screen
 
 Use accordions or tabs:
 
@@ -149,7 +192,7 @@ Use accordions or tabs:
 - Rare Signs
 - Final Guidance
 
-### 7. Q&A Screen
+### 8. Q&A Screen
 
 - persistent chips for common topics
 - free-text question input
@@ -196,6 +239,15 @@ Use accordions or tabs:
 - retry once on malformed model output
 - persist raw model response for debug logs
 
+## Validation And Rejection Rules
+
+- never reject because flash was unavailable or unused
+- never reject because the battery was low
+- do not fail the whole flow because one optional detail slot is weak
+- if one required slot is weak, ask for targeted replacement of that slot
+- if full-hand images are sufficient, allow reading to proceed even when detail slots are missing
+- use detail requests before whole-session rejection whenever possible
+
 ### Parse Failure Handling
 
 - validation invalid JSON:
@@ -215,21 +267,30 @@ Use accordions or tabs:
 
 ```text
 select_handedness()
-capture(passive_hand)
-capture(active_hand)
+capture(passive_full)
+capture(active_full)
+capture_optional(detail_a)
+capture_optional(detail_b)
 
-passive_validation = validate(passive_image)
-active_validation = validate(active_image)
+passive_validation = validate(passive_full)
+active_validation = validate(active_full)
 
-if either quality_state == RETAKE_REQUIRED:
-  request_retake()
+if passive_validation.state == RETAKE_REQUIRED:
+  request_targeted_retake(passive_full)
 
-passive_evidence = extract(passive_image)
-active_evidence = extract(active_image)
+if active_validation.state == RETAKE_REQUIRED:
+  request_targeted_retake(active_full)
+
+detail_requests = derive_detail_requests(passive_validation, active_validation)
+collect_targeted_detail_images_if_needed(detail_requests)
+
+passive_evidence = extract(passive_full, detail_a, detail_b)
+active_evidence = extract(active_full, detail_a, detail_b)
 
 if extraction weak:
+  request_targeted_detail_or_retake()
   allow teaser if enough evidence
-  block premium and suggest retake
+  block premium if evidence remains insufficient
 
 synthesis = compare(passive_evidence, active_evidence, handedness)
 teaser = generate_teaser(passive_evidence, active_evidence, synthesis)
@@ -240,8 +301,32 @@ if user_unlocks_full:
   full_reading = generate_full_reading(passive_evidence, active_evidence, synthesis)
 
 if user_asks_question:
-  answer = answer_with_images(passive_image, active_image, passive_evidence, active_evidence, synthesis, prior_summary, question)
+  answer = answer_with_images(passive_full, active_full, detail_a, detail_b, passive_evidence, active_evidence, synthesis, prior_summary, question)
 ```
+
+## Session Model
+
+`PalmSession` should include:
+
+- `session_id`
+- `user_id`
+- `created_at`
+- `handedness`
+- `locale`
+- `passive_full_image_uri`
+- `active_full_image_uri`
+- `detail_image_a_uri`
+- `detail_image_b_uri`
+- `passive_validation_json`
+- `active_validation_json`
+- `detail_validations_json`
+- `passive_evidence_json`
+- `active_evidence_json`
+- `synthesis_json`
+- `teaser_text`
+- `full_reading_text`
+- `followup_history`
+- `confidence_summary`
 
 ## Suggested File-Level Changes
 
@@ -249,15 +334,16 @@ if user_asks_question:
 
 - add `palmistry/` package for new models and repositories
 - add strict JSON schema-aware parser utilities
-- add dual-hand session model
+- add dual-hand plus detail-slot session model
 - add handedness selection state
-- update image storage to keep both original and inference-sized copies
+- update image storage to keep both original and inference-sized copies for all 4 slots
 
 ### Phase 2: Orchestration
 
 - replace current single-photo `ScanActivity` path
-- add dual capture state machine
+- add 4-slot capture state machine
 - integrate per-hand validation and evidence extraction
+- add targeted detail request loop
 - store raw JSON in session for debugging
 
 ### Phase 3: UI
@@ -351,8 +437,12 @@ CTA:
 ## Telemetry To Add
 
 - handedness selected
+- scan completion started
+- scan completion finished
 - passive scan accepted / warning / retake
 - active scan accepted / warning / retake
+- detail slot requested
+- detail slot submitted
 - extraction sufficient / insufficient
 - synthesis success / failure
 - teaser shown
@@ -400,7 +490,7 @@ Compare first-screen formats:
 
 ### Milestone 1
 
-- dual-hand capture
+- 4-slot capture UI
 - handedness
 - validation JSON
 - evidence extraction JSON
@@ -429,7 +519,7 @@ Compare first-screen formats:
 
 Ship the first usable redesign with:
 
-1. dual-hand flow
+1. 4-slot upload UI with 2 required full-hand slots and 2 optional detail slots
 2. handedness selection
 3. strict JSON validation and extraction
 4. synthesis object

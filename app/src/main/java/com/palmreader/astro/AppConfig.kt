@@ -33,7 +33,7 @@ object AppConfig {
 
     object Palmistry {
         /** Max long edge while loading captured palm for analysis (higher keeps line detail). */
-        const val SCAN_MAX_EDGE_PX: Int = 1536
+        const val SCAN_MAX_EDGE_PX: Int = 2048
 
         /** JPEG quality for analysis upload image. Higher = better detail + larger payload. */
         const val SCAN_UPLOAD_JPEG_QUALITY: Int = 90
@@ -57,10 +57,10 @@ object AppConfig {
         const val ANALYSIS_IMAGE_DETAIL: String = "high"
 
         /** Output token budget for full palm analysis pass. */
-        const val ANALYSIS_MAX_OUTPUT_TOKENS: Int = 1400
+        const val ANALYSIS_MAX_OUTPUT_TOKENS: Int = 2200
 
         /** Timeout for full palm analysis pass. */
-        const val ANALYSIS_TIMEOUT_MS: Long = 40_000L
+        const val ANALYSIS_TIMEOUT_MS: Long = 60_000L
     }
 
     object ResultCards {

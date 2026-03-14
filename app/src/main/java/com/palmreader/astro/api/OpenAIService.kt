@@ -25,6 +25,7 @@ object OpenAIService {
     const val MODEL_VISION_FAST = "gpt-4o-mini"  // fast strict hand validation
     const val MODEL_VISION_FULL = "gpt-4o"       // stable full palm analysis
     const val MODEL_PALM_QA = "gpt-4o-mini"      // stable palm follow-up answers
+    const val MODEL_PALM_PREMIUM = "gpt-5"       // richer extraction / synthesis / q&a
     private const val TIMEOUT_MS = 90_000L
 
     private data class RequestTransport(
@@ -50,7 +51,10 @@ object OpenAIService {
         systemPrompt: String,
         userMessage: String,
         model: String = MODEL,
-        temperature: Float = 0.7f
+        temperature: Float = 0.7f,
+        maxOutputTokens: Int = 1500,
+        timeoutMs: Long = TIMEOUT_MS,
+        maxRetries: Int = 2
     ): ApiResult<String> = withContext(Dispatchers.IO) {
         try {
             val transport = resolveTransport() ?: return@withContext ApiResult.Error(
@@ -59,17 +63,25 @@ object OpenAIService {
 
             var lastResult: ApiResult<String> = ApiResult.Error("Unknown error", -1)
             var backoffMs = 2_000L
+            val retries = maxRetries.coerceIn(0, 2)
 
-            for (attempt in 0..2) {
+            for (attempt in 0..retries) {
                 if (attempt > 0) {
                     Log.w("OpenAIService", "Retrying after ${backoffMs}ms (attempt $attempt)")
                     delay(backoffMs)
                     backoffMs *= 2
                 }
 
-                val result = withTimeoutOrNull(TIMEOUT_MS) {
+                val result = withTimeoutOrNull(timeoutMs) {
                     try {
-                            makeRequest(transport, systemPrompt, userMessage, model, temperature)
+                        makeRequest(
+                            transport = transport,
+                            systemPrompt = systemPrompt,
+                            userMessage = userMessage,
+                            model = model,
+                            temperature = temperature,
+                            maxOutputTokens = maxOutputTokens
+                        )
                     } catch (e: IOException) {
                         Log.w("OpenAIService", "Network IO error on attempt $attempt: ${e.message}")
                         ApiResult.Error("Network error: ${e.message}", -1)
@@ -89,9 +101,16 @@ object OpenAIService {
             val fallbackModel = fallbackModelForEmpty(model)
             if (fallbackModel != null && isEmptyResponseError(lastResult)) {
                 Log.w("OpenAIService", "Primary model '$model' returned empty output. Retrying with '$fallbackModel'.")
-                return@withContext withTimeoutOrNull(TIMEOUT_MS) {
+                return@withContext withTimeoutOrNull(timeoutMs) {
                     try {
-                        makeRequest(transport, systemPrompt, userMessage, fallbackModel, temperature)
+                        makeRequest(
+                            transport = transport,
+                            systemPrompt = systemPrompt,
+                            userMessage = userMessage,
+                            model = fallbackModel,
+                            temperature = temperature,
+                            maxOutputTokens = maxOutputTokens
+                        )
                     } catch (e: IOException) {
                         ApiResult.Error("Network error: ${e.message}", -1)
                     }
@@ -189,6 +208,85 @@ object OpenAIService {
         }
     }
 
+    suspend fun multiImageVisionChatCompletion(
+        systemPrompt: String,
+        userMessage: String,
+        imageBase64List: List<String>,
+        model: String = MODEL_VISION_FULL,
+        temperature: Float = 0.3f,
+        imageDetail: String = "high",
+        maxOutputTokens: Int = 1400,
+        timeoutMs: Long = TIMEOUT_MS,
+        maxRetries: Int = 1
+    ): ApiResult<String> = withContext(Dispatchers.IO) {
+        try {
+            val transport = resolveTransport() ?: return@withContext ApiResult.Error(
+                "AI backend not configured. Set OPENAI_PROXY_URL (preferred) or OPENAI_API_KEY for local testing."
+            )
+            if (imageBase64List.isEmpty()) {
+                return@withContext ApiResult.Error("No images were supplied for vision analysis.")
+            }
+            var lastResult: ApiResult<String> = ApiResult.Error("Unknown multi-image vision error", -1)
+            var backoffMs = 1_500L
+            val retries = maxRetries.coerceIn(0, 2)
+            for (attempt in 0..retries) {
+                if (attempt > 0) {
+                    Log.w("OpenAIService", "Retrying multi-image vision after ${backoffMs}ms (attempt $attempt)")
+                    delay(backoffMs)
+                    backoffMs *= 2
+                }
+                val result = withTimeoutOrNull(timeoutMs) {
+                    try {
+                        makeVisionRequest(
+                            transport = transport,
+                            systemPrompt = systemPrompt,
+                            userMessage = userMessage,
+                            imageBase64List = imageBase64List,
+                            model = model,
+                            temperature = temperature,
+                            imageDetail = imageDetail,
+                            maxOutputTokens = maxOutputTokens
+                        )
+                    } catch (e: IOException) {
+                        ApiResult.Error("Network error: ${e.message}", -1)
+                    }
+                } ?: ApiResult.Error("Vision request timed out.", 408)
+
+                lastResult = result
+                when {
+                    result is ApiResult.Success -> return@withContext result
+                    result is ApiResult.RateLimited -> return@withContext result
+                    result is ApiResult.Error && result.code in 400..499 -> return@withContext result
+                }
+            }
+
+            val fallbackModel = fallbackModelForEmpty(model)
+            if (fallbackModel != null && isEmptyResponseError(lastResult)) {
+                return@withContext withTimeoutOrNull(timeoutMs) {
+                    try {
+                        makeVisionRequest(
+                            transport = transport,
+                            systemPrompt = systemPrompt,
+                            userMessage = userMessage,
+                            imageBase64List = imageBase64List,
+                            model = fallbackModel,
+                            temperature = temperature,
+                            imageDetail = imageDetail,
+                            maxOutputTokens = maxOutputTokens
+                        )
+                    } catch (e: IOException) {
+                        ApiResult.Error("Network error: ${e.message}", -1)
+                    }
+                } ?: ApiResult.Error("Vision request timed out.", 408)
+            }
+
+            lastResult
+        } catch (e: Exception) {
+            Log.e("OpenAIService", "Multi-image vision API call failed", e)
+            ApiResult.Error("Vision error: ${e.message}", -1)
+        }
+    }
+
     private fun resolveTransport(): RequestTransport? {
         val proxyUrl = BuildConfig.OPENAI_PROXY_URL.trim()
         if (proxyUrl.isNotBlank()) {
@@ -249,17 +347,62 @@ object OpenAIService {
         return executeHttpRequest(transport, requestBody)
     }
 
+    private fun makeVisionRequest(
+        transport: RequestTransport,
+        systemPrompt: String,
+        userMessage: String,
+        imageBase64List: List<String>,
+        model: String,
+        temperature: Float,
+        imageDetail: String,
+        maxOutputTokens: Int
+    ): ApiResult<String> {
+        val userContent = JSONArray().apply {
+            put(JSONObject().apply {
+                put("type", "text")
+                put("text", userMessage)
+            })
+            imageBase64List.forEach { imageBase64 ->
+                put(JSONObject().apply {
+                    put("type", "image_url")
+                    put("image_url", JSONObject().apply {
+                        put("url", "data:image/jpeg;base64,$imageBase64")
+                        put("detail", imageDetail)
+                    })
+                })
+            }
+        }
+        val requestBody = JSONObject().apply {
+            put("model", model)
+            putTemperatureIfSupported(this, model, temperature)
+            putTokenLimit(this, model, maxOutputTokens.coerceIn(64, 4000))
+            putReasoningEffortIfSupported(this, model)
+            put("messages", JSONArray().apply {
+                put(JSONObject().apply {
+                    put("role", "system")
+                    put("content", systemPrompt)
+                })
+                put(JSONObject().apply {
+                    put("role", "user")
+                    put("content", userContent)
+                })
+            })
+        }
+        return executeHttpRequest(transport, requestBody)
+    }
+
     private fun makeRequest(
         transport: RequestTransport,
         systemPrompt: String,
         userMessage: String,
         model: String,
-        temperature: Float
+        temperature: Float,
+        maxOutputTokens: Int
     ): ApiResult<String> {
         val requestBody = JSONObject().apply {
             put("model", model)
             putTemperatureIfSupported(this, model, temperature)
-            putTokenLimit(this, model, 1500)
+            putTokenLimit(this, model, maxOutputTokens.coerceIn(64, 4000))
             putReasoningEffortIfSupported(this, model)
             put("messages", JSONArray().apply {
                 put(JSONObject().apply {

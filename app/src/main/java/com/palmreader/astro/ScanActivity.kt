@@ -10,7 +10,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
-import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -18,9 +19,22 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.button.MaterialButton
 import com.palmreader.astro.api.OpenAIService
-import com.palmreader.astro.api.PromptTemplates
 import com.palmreader.astro.databinding.ActivityScanBinding
+import com.palmreader.astro.palmistry.PalmEvidenceResult
+import com.palmreader.astro.palmistry.PalmFullReading
+import com.palmreader.astro.palmistry.PalmHandedness
+import com.palmreader.astro.palmistry.PalmImageSlot
+import com.palmreader.astro.palmistry.PalmObservation
+import com.palmreader.astro.palmistry.PalmReadingSection
+import com.palmreader.astro.palmistry.PalmSessionPayload
+import com.palmreader.astro.palmistry.PalmSynthesisResult
+import com.palmreader.astro.palmistry.PalmTeaser
+import com.palmreader.astro.palmistry.PalmValidationResult
+import com.palmreader.astro.palmistry.PalmValidationState
+import com.palmreader.astro.palmistry.PalmistryJsonParser
+import com.palmreader.astro.palmistry.PalmistryPrompts
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,39 +45,30 @@ import java.io.FileOutputStream
 class ScanActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityScanBinding
-    private var capturedBitmap: Bitmap? = null
+    private val capturedBitmaps = mutableMapOf<PalmImageSlot, Bitmap>()
+    private val capturedPaths = mutableMapOf<PalmImageSlot, String>()
+    private val localQualityRanks = mutableMapOf<PalmImageSlot, Int>()
+    private var currentCaptureSlot: PalmImageSlot? = null
     private var photoUri: Uri? = null
-    private var lastFlashFired: Boolean? = null
+    private var pendingPhotoFile: File? = null
     private var analysisRunId: String = ""
 
-    private data class ValidationGate(
-        val decision: String,
-        val reason: String,
-        val instruction: String
-    )
-
-    private data class VisionParseResult(
-        val status: String,
-        val reason: String?,
-        val instruction: String?,
-        val readings: List<PalmReading>
-    )
-
-    // Full-resolution camera via FileProvider URI
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { success ->
-        if (success && photoUri != null) {
-            lifecycleScope.launch {
-                val bmp = loadScaledBitmap(photoUri!!)
-                if (bmp != null) {
-                    lastFlashFired = readExifFlashFired(photoUri!!)
-                    onPhotoCaptured(bmp)
-                }
-                else setStatus(getString(R.string.scan_no_photo), isError = true)
-            }
-        } else {
+        val slot = currentCaptureSlot
+        val uri = photoUri
+        if (!success || slot == null || uri == null) {
             launchLegacyCamera()
+            return@registerForActivityResult
+        }
+        lifecycleScope.launch {
+            val bmp = loadScaledBitmap(uri)
+            if (bmp != null) {
+                storeCapture(slot, bmp, pendingPhotoFile?.absolutePath)
+            } else {
+                setStatus(getString(R.string.scan_no_photo), isError = true)
+            }
         }
     }
 
@@ -77,13 +82,16 @@ class ScanActivity : AppCompatActivity() {
     private val legacyCameraLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
+        val slot = currentCaptureSlot ?: return@registerForActivityResult
         @Suppress("DEPRECATION")
         val photo = result.data?.extras?.get("data") as? Bitmap
         if (photo != null) {
-            lastFlashFired = null
-            onPhotoCaptured(normalizeLegacyBitmap(photo))
+            val normalized = normalizeLegacyBitmap(photo)
+            val path = persistBitmap(slot, normalized)
+            storeCapture(slot, normalized, path)
+        } else {
+            setStatus(getString(R.string.scan_no_photo), isError = true)
         }
-        else setStatus(getString(R.string.scan_no_photo), isError = true)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,27 +100,31 @@ class ScanActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnBack.setOnClickListener { finish() }
-        binding.btnCamera.setOnClickListener { ensureCameraPermissionAndLaunch() }
-        binding.btnAnalyze.setOnClickListener {
-            val bmp = capturedBitmap ?: run {
-                Toast.makeText(this, getString(R.string.scan_take_photo_first), Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            startAIAnalysis(bmp)
-        }
+        binding.btnPassiveCapture.setOnClickListener { beginCapture(PalmImageSlot.PASSIVE_FULL) }
+        binding.btnActiveCapture.setOnClickListener { beginCapture(PalmImageSlot.ACTIVE_FULL) }
+        binding.btnDetailACapture.setOnClickListener { beginCapture(PalmImageSlot.DETAIL_A) }
+        binding.btnDetailBCapture.setOnClickListener { beginCapture(PalmImageSlot.DETAIL_B) }
+        binding.btnAnalyze.setOnClickListener { startPalmistryV2Analysis() }
+
+        setStatus(getString(R.string.scan_instruction_v2), isError = false)
+        syncAnalyzeButton()
     }
 
-    // ── Camera ────────────────────────────────────────────────────────────
+    private fun beginCapture(slot: PalmImageSlot) {
+        currentCaptureSlot = slot
+        ensureCameraPermissionAndLaunch()
+    }
 
     private fun ensureCameraPermissionAndLaunch() {
         val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
-                PackageManager.PERMISSION_GRANTED
+            PackageManager.PERMISSION_GRANTED
         if (granted) launchCameraInternal() else cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
     private fun launchCameraInternal() {
+        val slot = currentCaptureSlot ?: return
         try {
-            val uri = createPhotoUri()
+            val uri = createPhotoUri(slot)
             photoUri = uri
             cameraLauncher.launch(uri)
         } catch (e: Exception) {
@@ -121,9 +133,10 @@ class ScanActivity : AppCompatActivity() {
         }
     }
 
-    private fun createPhotoUri(): Uri {
+    private fun createPhotoUri(slot: PalmImageSlot): Uri {
         val dir = File(cacheDir, "palm_images").also { it.mkdirs() }
-        val file = File(dir, "palm_${System.currentTimeMillis()}.jpg")
+        val file = File(dir, "${slot.name.lowercase()}_${System.currentTimeMillis()}.jpg")
+        pendingPhotoFile = file
         return FileProvider.getUriForFile(this, "${packageName}.fileprovider", file)
     }
 
@@ -136,9 +149,6 @@ class ScanActivity : AppCompatActivity() {
         }
     }
 
-    // ── Photo handling ────────────────────────────────────────────────────
-
-    /** Loads image from URI, downscaled to configured max edge for palm-line clarity. */
     private suspend fun loadScaledBitmap(uri: Uri): Bitmap? = withContext(Dispatchers.IO) {
         try {
             val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
@@ -158,19 +168,7 @@ class ScanActivity : AppCompatActivity() {
             } ?: ExifInterface.ORIENTATION_NORMAL
             applyExifOrientation(decoded, exifOrientation)
         } catch (e: Exception) {
-            Log.e("ScanActivity", "Failed to load bitmap", e); null
-        }
-    }
-
-    private fun readExifFlashFired(uri: Uri): Boolean? {
-        return try {
-            val flashValue = contentResolver.openInputStream(uri)?.use { stream ->
-                ExifInterface(stream).getAttributeInt(ExifInterface.TAG_FLASH, -1)
-            } ?: -1
-            if (flashValue < 0) return null
-            (flashValue and 0x1) == 1
-        } catch (e: Exception) {
-            Log.w("ScanActivity", "Failed to read flash EXIF: ${e.message}")
+            Log.e("ScanActivity", "Failed to load bitmap", e)
             null
         }
     }
@@ -216,596 +214,568 @@ class ScanActivity : AppCompatActivity() {
         }
     }
 
-    private fun onPhotoCaptured(photo: Bitmap) {
-        capturedBitmap = photo
-        binding.ivPreview.setImageBitmap(photo)
-        binding.handOverlay.visibility = View.GONE
-        binding.tvTips.visibility = View.GONE
+    private fun storeCapture(slot: PalmImageSlot, bitmap: Bitmap, preferredPath: String?) {
+        val path = preferredPath ?: persistBitmap(slot, bitmap)
+        capturedBitmaps[slot] = bitmap
+        capturedPaths[slot] = path
+
+        previewFor(slot).setImageBitmap(bitmap)
+        when (ImageQualityChecker.check(bitmap)) {
+            ImageQualityChecker.Quality.TOO_DARK -> {
+                setSlotGuidance(slot, getString(R.string.scan_local_guidance_dark), false)
+                localQualityRanks[slot] = 1
+            }
+            ImageQualityChecker.Quality.BLURRY -> {
+                setSlotGuidance(slot, getString(R.string.scan_local_guidance_blurry), false)
+                localQualityRanks[slot] = 1
+            }
+            ImageQualityChecker.Quality.GOOD -> {
+                val message = if (slot.isDetail()) {
+                    getString(R.string.scan_detail_saved)
+                } else {
+                    getString(R.string.scan_local_guidance_good)
+                }
+                setSlotGuidance(slot, message, false)
+                localQualityRanks[slot] = 2
+            }
+        }
+
         PalmistryEventLogger.log(
             this,
-            "photo_captured",
+            "slot_captured",
             mapOf(
-                "width" to photo.width,
-                "height" to photo.height,
-                "log_file" to PalmistryEventLogger.logPath(this)
+                "slot" to slot.name,
+                "width" to bitmap.width,
+                "height" to bitmap.height,
+                "path" to path
             )
         )
-        checkImageQuality(photo)
+        syncAnalyzeButton()
     }
 
-    private fun checkImageQuality(bmp: Bitmap) {
-        val flashState = lastFlashFired
-        if (flashState == false) {
-            PalmistryEventLogger.log(
-                this,
-                "flash_requirement_failed",
-                mapOf("flash_fired" to flashState.toString())
-            )
-            setStatus(getString(R.string.scan_flash_required), isError = true)
-            binding.btnAnalyze.isEnabled = false
-            binding.btnCamera.text = getString(R.string.btn_camera_retake)
+    private fun persistBitmap(slot: PalmImageSlot, bitmap: Bitmap): String {
+        val dir = File(cacheDir, "palm_images").also { it.mkdirs() }
+        val file = File(dir, "${slot.name.lowercase()}_${System.currentTimeMillis()}.jpg")
+        FileOutputStream(file).use { out ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, AppConfig.Palmistry.SCAN_UPLOAD_JPEG_QUALITY, out)
+        }
+        return file.absolutePath
+    }
+
+    private fun syncAnalyzeButton() {
+        binding.btnAnalyze.isEnabled = requiredSlotsPresent()
+    }
+
+    private fun requiredSlotsPresent(): Boolean {
+        return capturedBitmaps[PalmImageSlot.PASSIVE_FULL] != null &&
+            capturedBitmaps[PalmImageSlot.ACTIVE_FULL] != null
+    }
+
+    private fun setSlotGuidance(slot: PalmImageSlot, text: String, isError: Boolean) {
+        val view = guidanceViewFor(slot)
+        view.text = text
+        view.setTextColor(
+            if (isError) resources.getColor(R.color.error, null)
+            else resources.getColor(R.color.text_medium, null)
+        )
+    }
+
+    private fun previewFor(slot: PalmImageSlot): ImageView = when (slot) {
+        PalmImageSlot.PASSIVE_FULL -> binding.ivPassivePreview
+        PalmImageSlot.ACTIVE_FULL -> binding.ivActivePreview
+        PalmImageSlot.DETAIL_A -> binding.ivDetailAPreview
+        PalmImageSlot.DETAIL_B -> binding.ivDetailBPreview
+    }
+
+    private fun guidanceViewFor(slot: PalmImageSlot): TextView = when (slot) {
+        PalmImageSlot.PASSIVE_FULL -> binding.tvPassiveGuidance
+        PalmImageSlot.ACTIVE_FULL -> binding.tvActiveGuidance
+        PalmImageSlot.DETAIL_A -> binding.tvDetailAGuidance
+        PalmImageSlot.DETAIL_B -> binding.tvDetailBGuidance
+    }
+
+    private fun buttonFor(slot: PalmImageSlot): MaterialButton = when (slot) {
+        PalmImageSlot.PASSIVE_FULL -> binding.btnPassiveCapture
+        PalmImageSlot.ACTIVE_FULL -> binding.btnActiveCapture
+        PalmImageSlot.DETAIL_A -> binding.btnDetailACapture
+        PalmImageSlot.DETAIL_B -> binding.btnDetailBCapture
+    }
+
+    private fun setCaptureButtonsEnabled(enabled: Boolean) {
+        PalmImageSlot.values().forEach { buttonFor(it).isEnabled = enabled }
+        binding.btnAnalyze.isEnabled = enabled && requiredSlotsPresent()
+    }
+
+    private fun selectedHandedness(): PalmHandedness {
+        return when {
+            binding.rbLeftHanded.isChecked -> PalmHandedness.LEFT_HANDED
+            binding.rbNotSure.isChecked -> PalmHandedness.NOT_SURE
+            else -> PalmHandedness.RIGHT_HANDED
+        }
+    }
+
+    private fun startPalmistryV2Analysis() {
+        if (!requiredSlotsPresent()) {
+            setStatus(getString(R.string.scan_need_required_slots), isError = true)
+            if (capturedBitmaps[PalmImageSlot.PASSIVE_FULL] == null) {
+                setSlotGuidance(PalmImageSlot.PASSIVE_FULL, getString(R.string.scan_slot_missing_required), true)
+            }
+            if (capturedBitmaps[PalmImageSlot.ACTIVE_FULL] == null) {
+                setSlotGuidance(PalmImageSlot.ACTIVE_FULL, getString(R.string.scan_slot_missing_required), true)
+            }
             return
         }
 
-        val quality = ImageQualityChecker.check(bmp)
-        val isGood = quality == ImageQualityChecker.Quality.GOOD
-        PalmistryEventLogger.log(
-            this,
-            if (flashState == null) "quality_check_flash_unknown" else "quality_check",
-            mapOf(
-                "quality" to quality.name,
-                "analyze_enabled" to isGood,
-                "flash_fired" to (flashState?.toString() ?: "unknown")
-            )
-        )
-        setStatus(ImageQualityChecker.feedback(quality), isError = !isGood)
-        binding.btnAnalyze.isEnabled = isGood
-        binding.btnCamera.text = getString(R.string.btn_camera_retake)
-    }
+        val passiveBitmap = capturedBitmaps[PalmImageSlot.PASSIVE_FULL] ?: return
+        val activeBitmap = capturedBitmaps[PalmImageSlot.ACTIVE_FULL] ?: return
+        val locale = LanguageManager.getCurrentLocale(this)
+        val handedness = selectedHandedness()
 
-    // ── Two-tier AI analysis ──────────────────────────────────────────────
-
-    private fun startAIAnalysis(bmp: Bitmap) {
-        binding.btnAnalyze.isEnabled = false
-        binding.btnCamera.isEnabled = false
-        val startedAt = System.currentTimeMillis()
-        analysisRunId = "run_${startedAt}"
-        PalmistryEventLogger.log(
-            this,
-            "analysis_start",
-            mapOf("run_id" to analysisRunId, "width" to bmp.width, "height" to bmp.height)
-        )
-
+        analysisRunId = "run_${System.currentTimeMillis()}"
+        setCaptureButtonsEnabled(false)
         lifecycleScope.launch {
             try {
-                // Step 1: encode image
-                setProgressState(getString(R.string.scan_checking_hand))
-                val base64 = withContext(Dispatchers.IO) { bitmapToBase64(bmp) }
                 PalmistryEventLogger.log(
                     this@ScanActivity,
-                    "image_encoded",
-                    mapOf("run_id" to analysisRunId, "base64_length" to base64.length)
+                    "analysis_start_v2",
+                    mapOf("run_id" to analysisRunId, "handedness" to handedness.name)
                 )
 
-                // Step 2 (cheap model): validate image is an open palm
-                val (valSys, valUser) = PromptTemplates.palmistryValidation()
-                PalmistryEventLogger.log(
-                    this@ScanActivity,
-                    "validation_request",
-                    mapOf(
-                        "run_id" to analysisRunId,
-                        "model" to OpenAIService.MODEL_VISION_FAST,
-                        "image_detail" to "low"
-                    )
-                )
-                val validationResult = OpenAIService.visionChatCompletion(
-                    systemPrompt = valSys,
-                    userMessage = valUser,
-                    imageBase64 = base64,
-                    model = OpenAIService.MODEL_VISION_FAST,
-                    imageDetail = AppConfig.Palmistry.VALIDATION_IMAGE_DETAIL,
-                    maxOutputTokens = AppConfig.Palmistry.VALIDATION_MAX_OUTPUT_TOKENS,
-                    timeoutMs = AppConfig.Palmistry.VALIDATION_TIMEOUT_MS,
-                    maxRetries = 0
-                )
-
-                val validationRaw = when (validationResult) {
-                    is OpenAIService.ApiResult.Success -> {
-                        PalmistryEventLogger.log(
-                            this@ScanActivity,
-                            "validation_response_success",
-                            mapOf(
-                                "run_id" to analysisRunId,
-                                "raw_preview" to validationResult.data.take(240)
-                            )
-                        )
-                        validationResult.data
-                    }
-                    is OpenAIService.ApiResult.RateLimited -> {
-                        PalmistryEventLogger.log(
-                            this@ScanActivity,
-                            "validation_rate_limited",
-                            mapOf("run_id" to analysisRunId)
-                        )
-                        setStatus(getString(R.string.ai_rate_limited), isError = true)
-                        return@launch
-                    }
-                    is OpenAIService.ApiResult.Error -> {
-                        PalmistryEventLogger.log(
-                            this@ScanActivity,
-                            "validation_error",
-                            mapOf("run_id" to analysisRunId, "message" to validationResult.message)
-                        )
-                        setStatus(buildAiUnavailableMessage(validationResult.message), isError = true)
-                        return@launch
-                    }
-                    else -> {
-                        setStatus(getString(R.string.scan_ai_unavailable), isError = true)
-                        return@launch
-                    }
+                setProgressState(getString(R.string.scan_loading_lines))
+                val passiveValidation = validateHand("passive", passiveBitmap) ?: run {
+                    setStatus(getString(R.string.scan_ai_unavailable), isError = true)
+                    return@launch
                 }
-
-                val parsedValidation = parseValidationGate(validationRaw)
-                    ?: inferValidationGate(validationRaw)
-                    ?: ValidationGate(
-                        decision = "VALID",
-                        reason = "Validation format was non-standard; proceeding to analysis.",
-                        instruction = ""
-                    )
-                val validation = overrideHandednessFalseReject(parsedValidation, validationRaw)
-
-                if (validation.decision.isBlank()) {
-                    PalmistryEventLogger.log(
-                        this@ScanActivity,
-                        "validation_parse_failed",
-                        mapOf("run_id" to analysisRunId, "raw_preview" to validationRaw.take(240))
-                    )
+                val activeValidation = validateHand("active", activeBitmap) ?: run {
+                    setStatus(getString(R.string.scan_ai_unavailable), isError = true)
+                    return@launch
                 }
-                PalmistryEventLogger.log(
-                    this@ScanActivity,
-                    "validation_parsed",
-                    mapOf(
-                        "run_id" to analysisRunId,
-                        "decision" to validation.decision,
-                        "reason" to validation.reason.take(180)
-                    )
-                )
+                applyValidationToUi(PalmImageSlot.PASSIVE_FULL, passiveValidation)
+                applyValidationToUi(PalmImageSlot.ACTIVE_FULL, activeValidation)
 
-                if (validation.decision != "VALID") {
-                    val rejectMessage = buildString {
-                        append(getString(R.string.scan_not_a_palm))
-                        if (validation.reason.isNotBlank()) append("\nReason: ${validation.reason}")
-                        val retake = validation.instruction.ifBlank {
-                            getString(R.string.scan_default_retake_instruction)
-                        }
-                        append("\nRetake: $retake")
-                    }
-                    setStatus(rejectMessage, isError = true)
+                if (passiveValidation.state == PalmValidationState.RETAKE_REQUIRED) {
+                    setStatus(
+                        getString(
+                            R.string.scan_retake_slot_prefix,
+                            getString(R.string.scan_passive_label),
+                            passiveValidation.guidanceMessage.ifBlank { getString(R.string.scan_default_retake_instruction) }
+                        ),
+                        isError = true
+                    )
+                    return@launch
+                }
+                if (activeValidation.state == PalmValidationState.RETAKE_REQUIRED) {
+                    setStatus(
+                        getString(
+                            R.string.scan_retake_slot_prefix,
+                            getString(R.string.scan_active_label),
+                            activeValidation.guidanceMessage.ifBlank { getString(R.string.scan_default_retake_instruction) }
+                        ),
+                        isError = true
+                    )
                     return@launch
                 }
 
-                // Step 3 (higher model): full palm analysis
-                setProgressState(getString(R.string.scan_reading_palm))
-                val locale = LanguageManager.getCurrentLocale(this@ScanActivity)
-                val (palmSys, palmUser) = PromptTemplates.palmistryVisionAnalysis(locale)
-                PalmistryEventLogger.log(
-                    this@ScanActivity,
-                    "analysis_request",
-                    mapOf(
-                        "run_id" to analysisRunId,
-                        "model" to OpenAIService.MODEL_VISION_FULL,
-                        "image_detail" to "high"
-                    )
-                )
-                val analysisResult = OpenAIService.visionChatCompletion(
-                    systemPrompt = palmSys,
-                    userMessage = palmUser,
-                    imageBase64 = base64,
-                    model = OpenAIService.MODEL_VISION_FULL,
-                    imageDetail = AppConfig.Palmistry.ANALYSIS_IMAGE_DETAIL,
-                    maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
-                    timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
-                    maxRetries = 0
-                )
+                val detailTarget = chooseDetailTargetHand(passiveValidation, activeValidation)
 
-                val parsed = when (analysisResult) {
-                    is OpenAIService.ApiResult.Success -> {
-                        PalmistryEventLogger.log(
-                            this@ScanActivity,
-                            "analysis_response_success",
-                            mapOf(
-                                "run_id" to analysisRunId,
-                                "raw_preview" to analysisResult.data.take(260)
-                            )
-                        )
-                        parseVisionAnalysis(analysisResult.data)
-                    }
-                    is OpenAIService.ApiResult.RateLimited -> {
-                        PalmistryEventLogger.log(
-                            this@ScanActivity,
-                            "analysis_rate_limited",
-                            mapOf("run_id" to analysisRunId)
-                        )
-                        setStatus(getString(R.string.ai_rate_limited), isError = true)
-                        return@launch
-                    }
-                    is OpenAIService.ApiResult.Error -> {
-                        PalmistryEventLogger.log(
-                            this@ScanActivity,
-                            "analysis_error",
-                            mapOf("run_id" to analysisRunId, "message" to analysisResult.message)
-                        )
-                        setStatus(buildAiUnavailableMessage(analysisResult.message), isError = true)
-                        return@launch
-                    }
-                    else -> {
-                        setStatus(getString(R.string.scan_ai_unavailable), isError = true)
-                        return@launch
-                    }
-                }
-
-                if (parsed == null) {
-                    PalmistryEventLogger.log(
-                        this@ScanActivity,
-                        "analysis_parse_failed",
-                        mapOf("run_id" to analysisRunId)
-                    )
-                    setStatus(getString(R.string.scan_invalid_response), isError = true)
+                setProgressState(getString(R.string.scan_loading_compare))
+                val passiveEvidence = extractEvidence("passive", locale, buildImageListFor("passive", detailTarget)) ?: run {
+                    setStatus(getString(R.string.scan_ai_unavailable), isError = true)
                     return@launch
                 }
-                PalmistryEventLogger.log(
-                    this@ScanActivity,
-                    "analysis_parsed",
-                    mapOf("run_id" to analysisRunId, "status" to parsed.status, "readings" to parsed.readings.size)
-                )
-
-                if (parsed.status == "REUPLOAD") {
-                    val reuploadMsg = buildString {
-                        append(getString(R.string.scan_palm_not_visible))
-                        parsed.reason?.takeIf { it.isNotBlank() }?.let { append("\nReason: $it") }
-                        val retake = parsed.instruction?.takeIf { it.isNotBlank() }
-                            ?: getString(R.string.scan_default_retake_instruction)
-                        append("\nRetake: $retake")
-                    }
-                    setStatus(reuploadMsg, isError = true)
+                val activeEvidence = extractEvidence("active", locale, buildImageListFor("active", detailTarget)) ?: run {
+                    setStatus(getString(R.string.scan_ai_unavailable), isError = true)
                     return@launch
                 }
 
-                if (parsed.readings.size == 7) {
-                    val capturedPalmPath = withContext(Dispatchers.IO) { saveCapturedPalmImage(bmp) }
-                    startActivity(Intent(this@ScanActivity, ResultActivity::class.java).apply {
-                        putParcelableArrayListExtra("readings", ArrayList(parsed.readings))
-                        if (!capturedPalmPath.isNullOrBlank()) {
-                            putExtra("capturedPalmPath", capturedPalmPath)
-                        }
-                    })
-                } else {
-                    setStatus(getString(R.string.scan_palm_not_visible), isError = true)
+                maybeApplyDetailRequests(passiveEvidence, activeEvidence)
+
+                setProgressState(getString(R.string.scan_loading_mounts))
+                val synthesis = synthesize(locale, handedness, passiveEvidence, activeEvidence) ?: run {
+                    setStatus(getString(R.string.scan_ai_unavailable), isError = true)
+                    return@launch
                 }
+
+                setProgressState(getString(R.string.scan_loading_signs))
+                val teaser = generateTeaser(locale, synthesis, passiveEvidence, activeEvidence)
+
+                setProgressState(getString(R.string.scan_loading_teaser))
+                val fullReading = generateFullReading(locale, handedness, synthesis, passiveEvidence, activeEvidence)
+
+                val payload = PalmSessionPayload(
+                    locale = locale,
+                    handedness = handedness,
+                    passiveImagePath = capturedPaths.getValue(PalmImageSlot.PASSIVE_FULL),
+                    activeImagePath = capturedPaths.getValue(PalmImageSlot.ACTIVE_FULL),
+                    detailImageAPath = capturedPaths[PalmImageSlot.DETAIL_A],
+                    detailImageBPath = capturedPaths[PalmImageSlot.DETAIL_B],
+                    passiveValidationJson = passiveValidation.rawJson,
+                    activeValidationJson = activeValidation.rawJson,
+                    passiveEvidenceJson = passiveEvidence.rawJson,
+                    activeEvidenceJson = activeEvidence.rawJson,
+                    synthesisJson = synthesis.rawJson,
+                    teaser = teaser,
+                    fullReading = fullReading
+                )
+                startActivity(Intent(this@ScanActivity, ResultActivity::class.java).apply {
+                    putExtra("palmSession", payload)
+                })
             } catch (e: Exception) {
-                Log.e("ScanActivity", "Analysis failed", e)
-                PalmistryEventLogger.log(
-                    this@ScanActivity,
-                    "analysis_exception",
-                    mapOf("run_id" to analysisRunId, "error" to (e.message ?: e::class.java.simpleName))
-                )
+                Log.e("ScanActivity", "Palmistry v2 analysis failed", e)
                 setStatus(getString(R.string.scan_error, e.message ?: "unknown"), isError = true)
             } finally {
-                PalmistryEventLogger.log(
-                    this@ScanActivity,
-                    "analysis_finish",
-                    mapOf("run_id" to analysisRunId, "elapsed_ms" to (System.currentTimeMillis() - startedAt))
-                )
                 clearProgressState()
-                binding.btnAnalyze.isEnabled = capturedBitmap?.let {
-                    lastFlashFired == true && ImageQualityChecker.check(it) == ImageQualityChecker.Quality.GOOD
-                } ?: false
-                binding.btnCamera.isEnabled = true
+                setCaptureButtonsEnabled(true)
             }
         }
     }
 
-    private fun bitmapToBase64(bmp: Bitmap): String {
-        val out = ByteArrayOutputStream()
-        bmp.compress(Bitmap.CompressFormat.JPEG, AppConfig.Palmistry.SCAN_UPLOAD_JPEG_QUALITY, out)
-        return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
-    }
-
-    private fun saveCapturedPalmImage(bitmap: Bitmap): String? {
-        return try {
-            val scaled = scaleBitmapForChat(bitmap, maxEdge = AppConfig.Palmistry.CHAT_IMAGE_MAX_EDGE_PX)
-            val dir = File(cacheDir, "palm_images").also { it.mkdirs() }
-            val file = File(dir, "captured_${System.currentTimeMillis()}.jpg")
-            FileOutputStream(file).use { out ->
-                scaled.compress(Bitmap.CompressFormat.JPEG, AppConfig.Palmistry.CHAT_IMAGE_JPEG_QUALITY, out)
+    private suspend fun validateHand(handLabel: String, bitmap: Bitmap): PalmValidationResult? {
+        val (systemPrompt, userPrompt) = PalmistryPrompts.validation(handLabel)
+        for (attempt in 0..1) {
+            when (val result = OpenAIService.visionChatCompletion(
+                systemPrompt = systemPrompt,
+                userMessage = userPrompt,
+                imageBase64 = bitmapToBase64(bitmap),
+                model = OpenAIService.MODEL_VISION_FAST,
+                imageDetail = AppConfig.Palmistry.VALIDATION_IMAGE_DETAIL,
+                maxOutputTokens = AppConfig.Palmistry.VALIDATION_MAX_OUTPUT_TOKENS,
+                timeoutMs = AppConfig.Palmistry.VALIDATION_TIMEOUT_MS,
+                maxRetries = 0
+            )) {
+                is OpenAIService.ApiResult.Success -> {
+                    PalmistryJsonParser.parseValidation(result.data, handLabel)?.let { return it }
+                    PalmistryEventLogger.log(
+                        this,
+                        "validation_parse_retry",
+                        mapOf("run_id" to analysisRunId, "hand" to handLabel, "attempt" to attempt)
+                    )
+                }
+                else -> return null
             }
-            file.absolutePath
-        } catch (e: Exception) {
-            Log.w("ScanActivity", "Failed to save captured palm image: ${e.message}")
-            null
-        }
-    }
-
-    private fun scaleBitmapForChat(bitmap: Bitmap, maxEdge: Int): Bitmap {
-        val max = maxOf(bitmap.width, bitmap.height)
-        if (max <= maxEdge) return bitmap
-        val ratio = maxEdge.toFloat() / max.toFloat()
-        val newW = (bitmap.width * ratio).toInt().coerceAtLeast(1)
-        val newH = (bitmap.height * ratio).toInt().coerceAtLeast(1)
-        return Bitmap.createScaledBitmap(bitmap, newW, newH, true)
-    }
-
-    private fun parseValidationGate(raw: String): ValidationGate? {
-        val fields = parseKeyValueLines(raw)
-        val decision = fields["DECISION"]?.uppercase()
-            ?: when {
-                Regex("\\bINVALID\\b", RegexOption.IGNORE_CASE).containsMatchIn(raw) -> "INVALID"
-                Regex("\\bVALID\\b", RegexOption.IGNORE_CASE).containsMatchIn(raw) -> "VALID"
-                else -> null
-            }
-            ?: return null
-        val reason = fields["REASON"]
-            ?: Regex("(?im)^\\s*(REASON|WHY)\\s*[:\\-]\\s*(.+)$").find(raw)?.groupValues?.getOrNull(2)
-            ?: ""
-        val instruction = fields["INSTRUCTION"]
-            ?: Regex("(?im)^\\s*(INSTRUCTION|RETAKE|SUGGESTION)\\s*[:\\-]\\s*(.+)$").find(raw)?.groupValues?.getOrNull(2)
-            ?: ""
-        return ValidationGate(decision = decision, reason = reason, instruction = instruction)
-    }
-
-    private fun inferValidationGate(raw: String): ValidationGate? {
-        val text = raw.lowercase()
-        val invalidHits = listOf(
-            "invalid", "not a palm", "not palm", "not a hand", "back of hand", "claw",
-            "fist", "multiple hand", "two hand", "unclear", "not visible", "obscured", "blurry"
-        ).any { it in text }
-        if (invalidHits) {
-            return ValidationGate(
-                decision = "INVALID",
-                reason = extractFirstSentence(raw).ifBlank { "Palm image is not suitable for strict reading." },
-                instruction = extractRetakeLine(raw)
-            )
-        }
-
-        val validHits = listOf(
-            "valid", "open palm", "inner palm", "single hand", "palm facing", "readiness", "looks clear"
-        ).any { it in text }
-        if (validHits) {
-            return ValidationGate(
-                decision = "VALID",
-                reason = extractFirstSentence(raw).ifBlank { "Palm appears usable." },
-                instruction = ""
-            )
         }
         return null
     }
 
-    private fun overrideHandednessFalseReject(
-        validation: ValidationGate,
-        raw: String
-    ): ValidationGate {
-        if (!shouldOverrideHandednessReject(validation, raw)) return validation
-        PalmistryEventLogger.log(
-            this,
-            "validation_handedness_override",
-            mapOf(
-                "reason" to validation.reason.take(160),
-                "instruction" to validation.instruction.take(160)
-            )
-        )
-        return validation.copy(
-            decision = "VALID",
-            reason = "Accepted: open inner palm can be either left or right hand.",
-            instruction = ""
-        )
-    }
-
-    private fun shouldOverrideHandednessReject(
-        validation: ValidationGate,
-        raw: String
-    ): Boolean {
-        if (validation.decision == "VALID") return false
-        val text = buildString {
-            append(raw)
-            append('\n')
-            append(validation.reason)
-            append('\n')
-            append(validation.instruction)
-        }.lowercase()
-
-        val handednessSignals = listOf(
-            "right hand", "left hand", "right palm", "left palm",
-            "thumb on right", "thumb on left", "thumb appears",
-            "mirrored", "mirror image", "mirror", "orientation",
-            "wrong side", "opposite side"
-        ).any { it in text }
-        if (!handednessSignals) return false
-
-        val hardInvalidSignals = listOf(
-            "back of hand", "back-hand", "not a palm", "not palm", "not a hand",
-            "claw", "curled fingers", "fist", "multiple hand", "two hand",
-            "non-hand object", "no hand", "object"
-        ).any { it in text }
-
-        return !hardInvalidSignals
-    }
-
-    private fun parseVisionAnalysis(raw: String): VisionParseResult? {
-        val fields = parseKeyValueLines(raw)
-        val parsedReadings = parseAIReadings(raw)
-        val status = fields["STATUS"]?.uppercase()
-            ?: when {
-                Regex("\\bREUPLOAD\\b", RegexOption.IGNORE_CASE).containsMatchIn(raw) -> "REUPLOAD"
-                parsedReadings.isNotEmpty() -> "OK"
-                looksLikeReuploadText(raw) -> "REUPLOAD"
-                else -> null
-            }
-            ?: return null
-        if (status == "REUPLOAD") {
-            return VisionParseResult(
-                status = status,
-                reason = fields["REASON"] ?: extractFirstSentence(raw),
-                instruction = fields["INSTRUCTION"] ?: extractRetakeLine(raw),
-                readings = emptyList()
-            )
-        }
-        if (status != "OK") return null
-        return VisionParseResult(
-            status = status,
-            reason = null,
-            instruction = null,
-            readings = normalizeReadings(parsedReadings)
-        )
-    }
-
-    private fun parseKeyValueLines(raw: String): Map<String, String> {
-        return raw.lines()
-            .mapNotNull { line ->
-                val cleaned = line.trim().removePrefix("-").trim()
-                val idx = cleaned.indexOf(':').takeIf { it > 0 } ?: cleaned.indexOf('-')
-                if (idx <= 0) return@mapNotNull null
-                val key = cleaned.substring(0, idx).trim().uppercase()
-                val value = cleaned.substring(idx + 1).trim()
-                key to value
-            }
-            .toMap()
-    }
-
-    private fun buildAiUnavailableMessage(detail: String): String {
-        if (!BuildConfig.DEBUG) return getString(R.string.scan_ai_unavailable)
-        val clean = detail.substringBefore('\n').trim().take(160)
-        if (clean.isBlank()) return getString(R.string.scan_ai_unavailable)
-        return "${getString(R.string.scan_ai_unavailable)}\n$clean"
-    }
-
-    /** Parses AI response lines of format "CATEGORY:SCORE:Interpretation sentence." */
-    private fun parseAIReadings(raw: String): List<PalmReading> {
-        val emojiMap = mapOf(
-            "HEALTH" to "❤️", "MARRIAGE" to "💑", "EDUCATION" to "📚",
-            "BRAIN" to "🧠", "CHILDREN" to "👶", "CAREER" to "💼", "LUCK" to "⭐"
-        )
-        val hindiMap = mapOf(
-            "HEALTH" to "Swasthya", "MARRIAGE" to "Vivah", "EDUCATION" to "Shiksha",
-            "BRAIN" to "Buddhi", "CHILDREN" to "Santaan", "CAREER" to "Career", "LUCK" to "Kismat"
-        )
-        val patternWithScore = Regex(
-            """(?i)^\s*-?\s*(HEALTH|MARRIAGE|EDUCATION|BRAIN|CHILDREN|CAREER|LUCK)\s*[:\-]\s*(\d{1,2})\s*[:\-]\s*(.+)$"""
-        )
-        val patternNoScore = Regex(
-            """(?i)^\s*-?\s*(HEALTH|MARRIAGE|EDUCATION|BRAIN|CHILDREN|CAREER|LUCK)\s*[:\-]\s*(.+)$"""
-        )
-        return raw.lines()
-            .mapNotNull { line ->
-                val trimmed = line.trim()
-                val withScore = patternWithScore.find(trimmed)
-                if (withScore != null) {
-                    val cat = withScore.groupValues[1].uppercase()
-                    val score = withScore.groupValues[2].toIntOrNull()?.coerceIn(1, 10) ?: return@mapNotNull null
-                    val interp = withScore.groupValues[3].trim().ifBlank { return@mapNotNull null }
-                    return@mapNotNull PalmReading(
-                        category = cat.lowercase().replaceFirstChar { it.uppercase() },
-                        categoryHindi = hindiMap[cat] ?: cat.lowercase().replaceFirstChar { it.uppercase() },
-                        score = score,
-                        interpretation = interp,
-                        emoji = emojiMap[cat] ?: "✨"
+    private suspend fun extractEvidence(
+        handLabel: String,
+        locale: String,
+        imageBase64List: List<String>
+    ): PalmEvidenceResult? {
+        val (systemPrompt, userPrompt) = PalmistryPrompts.evidenceExtraction(handLabel, locale)
+        for (attempt in 0..1) {
+            when (val result = OpenAIService.multiImageVisionChatCompletion(
+                systemPrompt = systemPrompt,
+                userMessage = userPrompt,
+                imageBase64List = imageBase64List,
+                model = OpenAIService.MODEL_PALM_PREMIUM,
+                imageDetail = AppConfig.Palmistry.ANALYSIS_IMAGE_DETAIL,
+                maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
+                timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
+                maxRetries = 0
+            )) {
+                is OpenAIService.ApiResult.Success -> {
+                    PalmistryJsonParser.parseEvidence(result.data, handLabel)?.let { return it }
+                    PalmistryEventLogger.log(
+                        this,
+                        "evidence_parse_retry",
+                        mapOf("run_id" to analysisRunId, "hand" to handLabel, "attempt" to attempt)
                     )
                 }
-                val noScore = patternNoScore.find(trimmed) ?: return@mapNotNull null
-                val cat = noScore.groupValues[1].uppercase()
-                val interp = noScore.groupValues[2].trim().ifBlank { return@mapNotNull null }
-                val fallbackScore = 6
-                PalmReading(
-                    category = cat.lowercase().replaceFirstChar { it.uppercase() },
-                    categoryHindi = hindiMap[cat] ?: cat.lowercase().replaceFirstChar { it.uppercase() },
-                    score = fallbackScore,
-                    interpretation = interp,
-                    emoji = emojiMap[cat] ?: "✨"
-                )
-            }
-            .distinctBy { it.category }
-    }
-
-    private fun extractFirstSentence(raw: String): String {
-        return raw.lines()
-            .map { it.trim() }
-            .firstOrNull { it.isNotBlank() && !it.contains("STATUS", true) && !it.contains("DECISION", true) }
-            ?.take(180)
-            .orEmpty()
-    }
-
-    private fun extractRetakeLine(raw: String): String {
-        val line = raw.lines().firstOrNull {
-            val t = it.lowercase()
-            "retake" in t || "reupload" in t || "upload" in t || "angle" in t || "palm" in t
-        }?.trim().orEmpty()
-        return if (line.isBlank()) getString(R.string.scan_default_retake_instruction) else line.take(220)
-    }
-
-    private fun looksLikeReuploadText(raw: String): Boolean {
-        val t = raw.lowercase()
-        return listOf(
-            "retake", "reupload", "not clear", "not visible", "unclear",
-            "obscured", "blur", "poor lighting", "not readable", "try again"
-        ).any { it in t }
-    }
-
-    private fun parseAIReadingsLegacy(raw: String): List<PalmReading> {
-        val emojiMap = mapOf(
-            "HEALTH" to "❤️", "MARRIAGE" to "💑", "EDUCATION" to "📚",
-            "BRAIN" to "🧠", "CHILDREN" to "👶", "CAREER" to "💼", "LUCK" to "⭐"
-        )
-        val hindiMap = mapOf(
-            "HEALTH" to "Swasthya", "MARRIAGE" to "Vivah", "EDUCATION" to "Shiksha",
-            "BRAIN" to "Buddhi", "CHILDREN" to "Santaan", "CAREER" to "Career", "LUCK" to "Kismat"
-        )
-        val pattern = Regex(
-            """(?i)^\s*-?\s*(HEALTH|MARRIAGE|EDUCATION|BRAIN|CHILDREN|CAREER|LUCK)\s*[:\-]\s*(\d{1,2})\s*[:\-]\s*(.+)$"""
-        )
-        return raw.lines()
-            .mapNotNull { line ->
-                val match = pattern.find(line.trim()) ?: return@mapNotNull null
-                val cat = match.groupValues[1].uppercase()
-                val score = match.groupValues[2].toIntOrNull()?.coerceIn(1, 10) ?: return@mapNotNull null
-                val interp = match.groupValues[3].trim().ifBlank { return@mapNotNull null }
-                PalmReading(
-                    category = cat.lowercase().replaceFirstChar { it.uppercase() },
-                    categoryHindi = hindiMap[cat] ?: cat.lowercase().replaceFirstChar { it.uppercase() },
-                    score = score,
-                    interpretation = interp,
-                    emoji = emojiMap[cat] ?: "✨"
-                )
-            }
-            .distinctBy { it.category }
-    }
-
-    private fun normalizeReadings(parsed: List<PalmReading>): List<PalmReading> {
-        if (parsed.size >= 7) return parsed.take(7)
-        val byCat = parsed.associateBy { it.category.uppercase() }.toMutableMap()
-        val expected = listOf("HEALTH", "MARRIAGE", "EDUCATION", "BRAIN", "CHILDREN", "CAREER", "LUCK")
-        val avg = if (parsed.isNotEmpty()) parsed.map { it.score }.average().toInt().coerceIn(4, 8) else 6
-        expected.forEach { cat ->
-            if (byCat[cat] == null) {
-                byCat[cat] = PalmReading(
-                    category = cat.lowercase().replaceFirstChar { it.uppercase() },
-                    categoryHindi = cat.lowercase().replaceFirstChar { it.uppercase() },
-                    score = avg,
-                    interpretation = "Palm lines for this area are partially visible; keep your palm flat and fully open for a more precise reading.",
-                    emoji = "✨"
-                )
+                else -> return null
             }
         }
-        return expected.mapNotNull { byCat[it] }
+        return null
     }
 
-    // ── UI state helpers ──────────────────────────────────────────────────
+    private suspend fun synthesize(
+        locale: String,
+        handedness: PalmHandedness,
+        passiveEvidence: PalmEvidenceResult,
+        activeEvidence: PalmEvidenceResult
+    ): PalmSynthesisResult? {
+        val (systemPrompt, _) = PalmistryPrompts.synthesis(handedness)
+        val userPrompt = """
+Locale: $locale
+Handedness: ${handedness.name}
+
+Passive evidence JSON:
+${passiveEvidence.rawJson}
+
+Active evidence JSON:
+${activeEvidence.rawJson}
+        """.trimIndent()
+        for (attempt in 0..1) {
+            when (val result = OpenAIService.chatCompletion(
+                systemPrompt = systemPrompt,
+                userMessage = userPrompt,
+                model = OpenAIService.MODEL_PALM_PREMIUM,
+                maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
+                timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
+                maxRetries = 0
+            )) {
+                is OpenAIService.ApiResult.Success -> {
+                    PalmistryJsonParser.parseSynthesis(result.data)?.let { return it }
+                    PalmistryEventLogger.log(
+                        this,
+                        "synthesis_parse_retry",
+                        mapOf("run_id" to analysisRunId, "attempt" to attempt)
+                    )
+                }
+                else -> return null
+            }
+        }
+        return null
+    }
+
+    private suspend fun generateTeaser(
+        locale: String,
+        synthesis: PalmSynthesisResult,
+        passiveEvidence: PalmEvidenceResult,
+        activeEvidence: PalmEvidenceResult
+    ): PalmTeaser {
+        val (systemPrompt, _) = PalmistryPrompts.teaser(locale)
+        val userPrompt = """
+Synthesis JSON:
+${synthesis.rawJson}
+
+Passive evidence JSON:
+${passiveEvidence.rawJson}
+
+Active evidence JSON:
+${activeEvidence.rawJson}
+        """.trimIndent()
+        for (attempt in 0..1) {
+            when (val result = OpenAIService.chatCompletion(
+                systemPrompt = systemPrompt,
+                userMessage = userPrompt,
+                model = OpenAIService.MODEL_PALM_PREMIUM,
+                maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
+                timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
+                maxRetries = 0
+            )) {
+                is OpenAIService.ApiResult.Success -> {
+                    PalmistryJsonParser.parseTeaser(result.data)?.let { return it }
+                    PalmistryEventLogger.log(
+                        this,
+                        "teaser_parse_retry",
+                        mapOf("run_id" to analysisRunId, "attempt" to attempt)
+                    )
+                }
+                else -> return fallbackTeaser(synthesis, passiveEvidence, activeEvidence)
+            }
+        }
+        return fallbackTeaser(synthesis, passiveEvidence, activeEvidence)
+    }
+
+    private suspend fun generateFullReading(
+        locale: String,
+        handedness: PalmHandedness,
+        synthesis: PalmSynthesisResult,
+        passiveEvidence: PalmEvidenceResult,
+        activeEvidence: PalmEvidenceResult
+    ): PalmFullReading {
+        val (systemPrompt, userPromptTemplate) = PalmistryPrompts.fullReading(locale, handedness)
+        val userPrompt = """
+${userPromptTemplate}
+
+Synthesis JSON:
+${synthesis.rawJson}
+
+Passive evidence JSON:
+${passiveEvidence.rawJson}
+
+Active evidence JSON:
+${activeEvidence.rawJson}
+        """.trimIndent()
+        for (attempt in 0..1) {
+            when (val result = OpenAIService.chatCompletion(
+                systemPrompt = systemPrompt,
+                userMessage = userPrompt,
+                model = OpenAIService.MODEL_PALM_PREMIUM,
+                maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
+                timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
+                maxRetries = 0
+            )) {
+                is OpenAIService.ApiResult.Success -> {
+                    PalmistryJsonParser.parseFullReading(result.data)?.let { return it }
+                    PalmistryEventLogger.log(
+                        this,
+                        "full_reading_parse_retry",
+                        mapOf("run_id" to analysisRunId, "attempt" to attempt)
+                    )
+                }
+                else -> return fallbackFullReading(synthesis, passiveEvidence, activeEvidence)
+            }
+        }
+        return fallbackFullReading(synthesis, passiveEvidence, activeEvidence)
+    }
+
+    private fun fallbackTeaser(
+        synthesis: PalmSynthesisResult,
+        passiveEvidence: PalmEvidenceResult,
+        activeEvidence: PalmEvidenceResult
+    ): PalmTeaser {
+        val observations = (passiveEvidence.visibleEvidence + activeEvidence.visibleEvidence)
+            .take(4)
+            .mapIndexed { index, text ->
+                PalmObservation(
+                    title = "Observed sign ${index + 1}",
+                    body = text,
+                    confidence = "medium"
+                )
+            }
+        return PalmTeaser(
+            openingVerdict = synthesis.overallStory.ifBlank {
+                "Your two hands are not telling the exact same story."
+            },
+            whatLifeGaveYou = passiveEvidence.visibleEvidence.firstOrNull()
+                ?: "The passive hand shows the baseline pattern life gave you.",
+            whatYouAreBecoming = activeEvidence.visibleEvidence.firstOrNull()
+                ?: "The active hand shows what is strengthening through lived choices.",
+            observedSigns = observations,
+            contrastInsight = synthesis.curiosityHooks.firstOrNull()
+                ?: "The contrast between the two hands suggests change rather than a fixed script.",
+            curiosityHooks = synthesis.curiosityHooks.take(2),
+            lockedInsights = listOf("Love and marriage pattern", "Career and money pattern"),
+            overallConfidence = if (synthesis.overallConfidence >= 0.75) "high" else "medium",
+            rawJson = """{"fallback":"teaser"}"""
+        )
+    }
+
+    private fun fallbackFullReading(
+        synthesis: PalmSynthesisResult,
+        passiveEvidence: PalmEvidenceResult,
+        activeEvidence: PalmEvidenceResult
+    ): PalmFullReading {
+        val sections = buildList {
+            add(
+                PalmReadingSection(
+                    id = "nature",
+                    title = "What life gave you",
+                    body = passiveEvidence.visibleEvidence.joinToString("\n") { "- $it" }
+                        .ifBlank { "The passive hand is readable but still benefits from more detailed evidence." },
+                    confidence = "medium"
+                )
+            )
+            add(
+                PalmReadingSection(
+                    id = "destiny_vs_effort",
+                    title = "What you are becoming",
+                    body = activeEvidence.visibleEvidence.joinToString("\n") { "- $it" }
+                        .ifBlank { "The active hand suggests a more self-shaped path, but some detail remains uncertain." },
+                    confidence = "medium"
+                )
+            )
+            add(
+                PalmReadingSection(
+                    id = "contrast",
+                    title = "How the two hands differ",
+                    body = synthesis.overallStory.ifBlank {
+                        "The two hands suggest a shift between inherited pattern and current direction."
+                    },
+                    confidence = "medium"
+                )
+            )
+        }
+        return PalmFullReading(
+            openingSentence = synthesis.overallStory.ifBlank {
+                "Your hands suggest a life that is becoming more self-directed with time."
+            },
+            sections = sections,
+            finalGuidance = synthesis.curiosityHooks.firstOrNull()
+                ?: "The larger message here is gradual unfolding rather than instant certainty.",
+            overallConfidence = if (synthesis.overallConfidence >= 0.75) "high" else "medium",
+            rawJson = """{"fallback":"full_reading"}"""
+        )
+    }
+
+    private fun applyValidationToUi(slot: PalmImageSlot, validation: PalmValidationResult) {
+        val guidance = validation.guidanceMessage.ifBlank {
+            when (validation.state) {
+                PalmValidationState.ACCEPT -> getString(R.string.scan_local_guidance_good)
+                PalmValidationState.ACCEPT_WITH_GUIDANCE -> getString(R.string.scan_detail_request_center)
+                PalmValidationState.RETAKE_REQUIRED -> getString(R.string.scan_default_retake_instruction)
+            }
+        }
+        setSlotGuidance(slot, guidance, validation.state == PalmValidationState.RETAKE_REQUIRED)
+    }
+
+    private fun maybeApplyDetailRequests(
+        passiveEvidence: PalmEvidenceResult,
+        activeEvidence: PalmEvidenceResult
+    ) {
+        val requests = passiveEvidence.recommendedDetailRequests + activeEvidence.recommendedDetailRequests
+        if (requests.isEmpty()) return
+
+        var statusMessage: String? = null
+        requests.forEach { request ->
+            val slot = when (request.slot.lowercase()) {
+                "detail_a" -> PalmImageSlot.DETAIL_A
+                "detail_b" -> PalmImageSlot.DETAIL_B
+                else -> null
+            } ?: return@forEach
+
+            if (capturedBitmaps[slot] != null) return@forEach
+
+            val fallback = when (request.target.lowercase()) {
+                "thumb_side_closeup", "outer_edge_closeup" -> getString(R.string.scan_detail_request_side)
+                else -> getString(R.string.scan_detail_request_center)
+            }
+            val guidance = request.reason.ifBlank { fallback }
+            setSlotGuidance(slot, guidance, false)
+            if (statusMessage == null) statusMessage = guidance
+        }
+
+        statusMessage?.let { setStatus(it, isError = false) }
+    }
+
+    private fun chooseDetailTargetHand(
+        passiveValidation: PalmValidationResult,
+        activeValidation: PalmValidationResult
+    ): String {
+        if (passiveValidation.state == PalmValidationState.ACCEPT_WITH_GUIDANCE &&
+            activeValidation.state == PalmValidationState.ACCEPT
+        ) {
+            return "passive"
+        }
+        val passiveRank = localQualityRanks[PalmImageSlot.PASSIVE_FULL] ?: 2
+        val activeRank = localQualityRanks[PalmImageSlot.ACTIVE_FULL] ?: 2
+        return if (passiveRank < activeRank) "passive" else "active"
+    }
+
+    private suspend fun buildImageListFor(handLabel: String, detailTarget: String = "active"): List<String> {
+        val slots = mutableListOf<PalmImageSlot>()
+        slots += if (handLabel == "passive") PalmImageSlot.PASSIVE_FULL else PalmImageSlot.ACTIVE_FULL
+        if (detailTarget == handLabel) {
+            if (capturedBitmaps[PalmImageSlot.DETAIL_A] != null) slots += PalmImageSlot.DETAIL_A
+            if (capturedBitmaps[PalmImageSlot.DETAIL_B] != null) slots += PalmImageSlot.DETAIL_B
+        }
+        val encoded = mutableListOf<String>()
+        for (slot in slots) {
+            val bitmap = capturedBitmaps[slot] ?: continue
+            encoded += withContext(Dispatchers.IO) { bitmapToBase64(bitmap) }
+        }
+        return encoded
+    }
+
+    private fun bitmapToBase64(bitmap: Bitmap): String {
+        val out = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, AppConfig.Palmistry.SCAN_UPLOAD_JPEG_QUALITY, out)
+        return Base64.encodeToString(out.toByteArray(), Base64.NO_WRAP)
+    }
+
+    private fun PalmImageSlot.isDetail(): Boolean {
+        return this == PalmImageSlot.DETAIL_A || this == PalmImageSlot.DETAIL_B
+    }
 
     private fun setProgressState(message: String) {
-        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = android.view.View.VISIBLE
         setStatus(message, isError = false)
     }
 
     private fun clearProgressState() {
-        binding.progressBar.visibility = View.GONE
+        binding.progressBar.visibility = android.view.View.GONE
     }
 
     private fun setStatus(msg: String, isError: Boolean) {
