@@ -27,26 +27,26 @@
             android:textColor="@color/brand_gold"
             android:textAllCaps="true"
             android:letterSpacing="0.04"
-            android:layout_marginBottom="6dp" />
+            android:layout_marginBottom="8dp" />
 
         <TextView
             android:id="@+id/tvValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Value"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="@color/text_dark"
-            android:layout_marginBottom="6dp" />
+            android:layout_marginBottom="10dp" />
 
         <TextView
             android:id="@+id/tvDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Description"
-            android:textSize="13sp"
+            android:textSize="16sp"
             android:textColor="@color/text_medium"
-            android:lineSpacingExtra="2dp" />
+            android:lineSpacingExtra="6dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/tvReadMore"

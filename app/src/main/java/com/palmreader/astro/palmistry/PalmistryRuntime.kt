@@ -44,10 +44,10 @@ data class PalmRecoverableError(
 
 object PalmProgressMapper {
     fun labelFor(step: AnalysisStep): String = when (step) {
-        AnalysisStep.PREPARE_IMAGES -> "Preparing images"
-        AnalysisStep.REMOVE_BACKGROUND -> "Cleaning background"
-        AnalysisStep.VALIDATE_IMAGES -> "Checking palm clarity"
-        AnalysisStep.EXTRACT_EVIDENCE -> "Reading major lines"
+        AnalysisStep.PREPARE_IMAGES -> "Preparing your photos"
+        AnalysisStep.REMOVE_BACKGROUND -> "Cleaning the images"
+        AnalysisStep.VALIDATE_IMAGES -> "Checking line clarity"
+        AnalysisStep.EXTRACT_EVIDENCE -> "Reading major signs"
         AnalysisStep.SYNTHESIZE_HANDS -> "Comparing both hands"
         AnalysisStep.GENERATE_TEASER,
         AnalysisStep.GENERATE_FULL_READING -> "Writing your reading"
@@ -55,13 +55,13 @@ object PalmProgressMapper {
     }
 
     fun percentFor(step: AnalysisStep): Int = when (step) {
-        AnalysisStep.PREPARE_IMAGES -> 10
+        AnalysisStep.PREPARE_IMAGES -> 5
         AnalysisStep.REMOVE_BACKGROUND -> 25
-        AnalysisStep.VALIDATE_IMAGES -> 45
-        AnalysisStep.EXTRACT_EVIDENCE -> 65
-        AnalysisStep.SYNTHESIZE_HANDS -> 85
-        AnalysisStep.GENERATE_TEASER -> 100
-        AnalysisStep.GENERATE_FULL_READING -> 100
-        AnalysisStep.GENERATE_QA -> 100
+        AnalysisStep.VALIDATE_IMAGES -> 40
+        AnalysisStep.EXTRACT_EVIDENCE -> 78
+        AnalysisStep.SYNTHESIZE_HANDS -> 92
+        AnalysisStep.GENERATE_TEASER -> 99
+        AnalysisStep.GENERATE_FULL_READING -> 99
+        AnalysisStep.GENERATE_QA -> 99
     }
 }

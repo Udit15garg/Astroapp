@@ -82,13 +82,6 @@ class ResultActivity : BaseFeatureActivity() {
         binding.llReadings.removeAllViews()
 
         val summary = session.resultSummary
-        if (session.recoverableMessages.isNotEmpty()) {
-            addNarrativeCard(
-                label = "Scan note",
-                title = "Some deeper steps were recovered automatically",
-                body = session.recoverableMessages.distinct().joinToString("\n") { "- $it" }
-            )
-        }
         addNarrativeCard(
             label = getString(R.string.result_opening_label),
             title = summary.openingRead.title,
@@ -124,16 +117,26 @@ class ResultActivity : BaseFeatureActivity() {
     private fun renderSuggestionChips(prompts: List<String>) {
         binding.chipGroupPrompts.removeAllViews()
         prompts.forEach { prompt ->
+            val suggestedQuestion = suggestedQuestionFor(prompt)
             val chip = Chip(this).apply {
                 text = prompt
                 isCheckable = false
                 setOnClickListener {
-                    binding.etQuestion.setText(prompt)
-                    binding.etQuestion.setSelection(prompt.length)
+                    binding.etQuestion.setText(suggestedQuestion)
+                    binding.etQuestion.setSelection(suggestedQuestion.length)
+                    binding.etQuestion.requestFocus()
                 }
             }
             binding.chipGroupPrompts.addView(chip)
         }
+    }
+
+    private fun suggestedQuestionFor(prompt: String): String = when (prompt.trim().lowercase()) {
+        "love and marriage" -> "What does my palm say about love and marriage?"
+        "career and money" -> "What does my palm say about career and money?"
+        "timing and turning points" -> "What major turning points are visible in my palm?"
+        "special signs on my palm" -> "What special signs or symbols are visible in my palm?"
+        else -> prompt
     }
 
     private fun setupQA() {
@@ -426,7 +429,7 @@ ${session.resultSummary.rawJson}
             append(answer.shortAnswer.ifBlank { "The visible signs are not strong enough for a confident answer." })
             append('\n')
             append("Detailed Answer - ")
-            append(answer.detailedAnswer.ifBlank { "The palm evidence here is limited, so the answer should be treated cautiously." })
+            append(answer.detailedAnswer.ifBlank { "Some smaller markings are softer in this scan, so this answer stays closer to the main visible signs." })
             if (answer.limitsOrUncertainty.isNotEmpty()) {
                 append('\n')
                 append("Note - ")

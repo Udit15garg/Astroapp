@@ -154,7 +154,7 @@
     <string name="scan_slot_pending">Upload required photo.</string>
     <string name="scan_slot_optional">Optional. Add for a richer reading.</string>
     <string name="scan_slot_processing">Preparing photo…</string>
-    <string name="scan_slot_ready">Photo prepared for analysis.</string>
+    <string name="scan_slot_ready">Photo is ready for analysis.</string>
     <string name="scan_slot_missing_required">Add this required full-hand image.</string>
     <string name="scan_capture_passive">Upload left hand</string>
     <string name="scan_capture_active">Upload right hand</string>
@@ -169,7 +169,9 @@
     <string name="scan_continue_hint">Add detail shots for a more accurate reading</string>
     <string name="scan_loader_title">Reading your palms…</string>
     <string name="scan_progress_percent">%1$d%%</string>
-    <string name="scan_progress_subtext">Looking closely at your major lines and mounts, then comparing what your left and right hands suggest together.</string>
+    <string name="scan_progress_subtext">We’re checking the main lines, shape, mounts, and balance across both hands.</string>
+    <string name="scan_loader_ready_label">Writing your reading</string>
+    <string name="scan_loader_ready_subtext">Your first reading is ready.</string>
     <string name="scan_loading_lines">Reading major lines\u2026</string>
     <string name="scan_loading_compare">Comparing both hands\u2026</string>
     <string name="scan_loading_mounts">Checking mounts and finger balance\u2026</string>
@@ -186,6 +188,10 @@
     <string name="scan_local_guidance_good">Main palm lines look usable here.</string>
     <string name="scan_detail_request_center">The center lines are weaker here. A clearer center-palm photo would help.</string>
     <string name="scan_detail_request_side">The side detail is weaker here. A clearer side photo would help.</string>
+    <string name="scan_source_picker_title">Add a palm photo</string>
+    <string name="scan_source_take_photo">Take Photo</string>
+    <string name="scan_source_choose_gallery">Choose from Gallery</string>
+    <string name="scan_gallery_import_failed">We could not use that image. Please choose another photo.</string>
     <string name="btn_camera">Open Camera</string>
     <string name="btn_camera_retake">Retake Photo</string>
     <string name="btn_analyze">Read My Palm</string>
@@ -217,7 +223,7 @@
     <!-- ── Results ── -->
     <string name="result_title">Your Palm Reading</string>
     <string name="result_subtitle">AI analysis of your palm lines</string>
-    <string name="result_opening_label">Opening verdict</string>
+    <string name="result_opening_label">Opening read</string>
     <string name="result_inherited_label">What life gave you</string>
     <string name="result_active_label">What you are becoming</string>
     <string name="result_signs_label">What stood out in your hands</string>

@@ -1,5 +1,6 @@
 package com.palmreader.astro
 
+import android.animation.ValueAnimator
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,6 +17,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -29,7 +31,6 @@ import com.palmreader.astro.palmistry.PalmEvidenceResult
 import com.palmreader.astro.palmistry.PalmImagePreprocessor
 import com.palmreader.astro.palmistry.PalmImageSlot
 import com.palmreader.astro.palmistry.PalmOpeningRead
-import com.palmreader.astro.palmistry.PalmPreprocessResult
 import com.palmreader.astro.palmistry.PalmProgressMapper
 import com.palmreader.astro.palmistry.PalmRecoverableError
 import com.palmreader.astro.palmistry.PalmResultModule
@@ -55,13 +56,10 @@ class ScanActivity : AppCompatActivity() {
     private val processedBitmaps = mutableMapOf<PalmImageSlot, Bitmap>()
     private val processedPaths = mutableMapOf<PalmImageSlot, String>()
     private val originalPaths = mutableMapOf<PalmImageSlot, String>()
-    private val preprocessResults = mutableMapOf<PalmImageSlot, PalmPreprocessResult>()
     private val slotStates = mutableMapOf<PalmImageSlot, UploadSlotState>()
     private val slotGuidance = mutableMapOf<PalmImageSlot, String>()
-    private val localQualityRanks = mutableMapOf<PalmImageSlot, Int>()
     private val recoverableErrors = mutableListOf<PalmRecoverableError>()
     private var currentCaptureSlot: PalmImageSlot? = null
-    private var photoUri: Uri? = null
     private var pendingPhotoFile: File? = null
     private var analysisRunId: String = ""
     private var captureButtonsEnabled = true
@@ -84,6 +82,23 @@ class ScanActivity : AppCompatActivity() {
     ) { granted ->
         if (granted) launchCameraInternal()
         else Toast.makeText(this, getString(R.string.scan_camera_permission_denied), Toast.LENGTH_LONG).show()
+    }
+
+    private val galleryLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        val slot = currentCaptureSlot ?: return@registerForActivityResult
+        if (uri == null) return@registerForActivityResult
+        lifecycleScope.launch {
+            runCatching { copyGalleryUriToCache(slot, uri) }
+                .onSuccess { path -> processCapturedFile(slot, path) }
+                .onFailure { error ->
+                    Log.e("ScanActivity", "Gallery import failed for $slot", error)
+                    val message = getString(R.string.scan_gallery_import_failed)
+                    setSlotState(slot, UploadSlotState.RETAKE_REQUIRED, message)
+                    setStatus(message, isError = true)
+                }
+        }
     }
 
     private val legacyCameraLauncher = registerForActivityResult(
@@ -130,7 +145,25 @@ class ScanActivity : AppCompatActivity() {
 
     private fun beginCapture(slot: PalmImageSlot) {
         currentCaptureSlot = slot
-        ensureCameraPermissionAndLaunch()
+        showPhotoSourcePicker()
+    }
+
+    private fun showPhotoSourcePicker() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.scan_source_picker_title)
+            .setItems(
+                arrayOf(
+                    getString(R.string.scan_source_take_photo),
+                    getString(R.string.scan_source_choose_gallery)
+                )
+            ) { _, which ->
+                when (which) {
+                    0 -> ensureCameraPermissionAndLaunch()
+                    1 -> galleryLauncher.launch("image/*")
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     private fun ensureCameraPermissionAndLaunch() {
@@ -143,7 +176,6 @@ class ScanActivity : AppCompatActivity() {
         val slot = currentCaptureSlot ?: return
         try {
             val uri = createPhotoUri(slot)
-            photoUri = uri
             cameraLauncher.launch(uri)
         } catch (e: Exception) {
             Log.w("ScanActivity", "TakePicture failed, using legacy: ${e.message}")
@@ -179,12 +211,11 @@ class ScanActivity : AppCompatActivity() {
             originalPaths[slot] = originalPath
             setSlotState(slot, UploadSlotState.VALIDATING, getString(R.string.scan_slot_processing))
             val preprocess = preprocessor.preprocess(originalPath)
-            preprocessResults[slot] = preprocess
             processedPaths[slot] = preprocess.processedUri
             val bitmap = decodeBitmapFile(preprocess.processedUri, AppConfig.Palmistry.SCAN_MAX_EDGE_PX)
                 ?: error("processed bitmap missing")
             processedBitmaps[slot] = bitmap
-            applyLocalAssessment(slot, bitmap, preprocess)
+            applyLocalAssessment(slot, bitmap)
             PalmistryEventLogger.log(
                 this,
                 "upload_completed",
@@ -205,7 +236,7 @@ class ScanActivity : AppCompatActivity() {
             }
             if (slot.isDetail()) {
                 markRecoverableError(
-                    step = AnalysisStep.REMOVE_BACKGROUND,
+                    step = AnalysisStep.PREPARE_IMAGES,
                     code = "optional_preprocess_${slot.name.lowercase()}",
                     userMessage = userMessage,
                     technicalMessage = e.message
@@ -222,23 +253,19 @@ class ScanActivity : AppCompatActivity() {
 
     private fun applyLocalAssessment(
         slot: PalmImageSlot,
-        bitmap: Bitmap,
-        preprocess: PalmPreprocessResult
+        bitmap: Bitmap
     ) {
         val quality = ImageQualityChecker.check(bitmap)
         val state = when {
-            preprocess.maskConfidence < 0.24 -> UploadSlotState.ACCEPTED_WITH_GUIDANCE
             quality == ImageQualityChecker.Quality.GOOD -> UploadSlotState.ACCEPTED
             else -> UploadSlotState.ACCEPTED_WITH_GUIDANCE
         }
         val guidance = when {
-            preprocess.maskConfidence < 0.24 -> getString(R.string.scan_partial_retake_message)
             quality == ImageQualityChecker.Quality.TOO_DARK -> getString(R.string.scan_local_guidance_dark)
             quality == ImageQualityChecker.Quality.BLURRY -> getString(R.string.scan_local_guidance_blurry)
             slot.isDetail() -> getString(R.string.scan_detail_saved)
-            else -> getString(R.string.scan_slot_ready)
+            else -> getString(R.string.scan_local_guidance_good)
         }
-        localQualityRanks[slot] = if (state == UploadSlotState.ACCEPTED) 2 else 1
         setSlotState(slot, state, guidance)
     }
 
@@ -428,6 +455,7 @@ class ScanActivity : AppCompatActivity() {
                 }
 
                 sessionState = PalmSessionState.Ready
+                completeProgress()
                 val payload = PalmSessionPayload(
                     locale = locale,
                     handedness = com.palmreader.astro.palmistry.PalmHandedness.NOT_SURE,
@@ -440,7 +468,7 @@ class ScanActivity : AppCompatActivity() {
                     passiveEvidenceJson = leftEvidence.rawJson,
                     activeEvidenceJson = rightEvidence.rawJson,
                     resultSummary = resultSummary,
-                    recoverableMessages = recoverableErrors.map { it.userMessage }.distinct()
+                    recoverableMessages = emptyList()
                 )
                 startActivity(Intent(this@ScanActivity, ResultActivity::class.java).apply {
                     putExtra("palmSession", payload)
@@ -796,13 +824,33 @@ ${rightEvidence.rawJson}
             mapOf("run_id" to analysisRunId, "step" to step.name)
         )
         binding.layoutProgress.visibility = View.VISIBLE
-        binding.progressBar.progress = PalmProgressMapper.percentFor(step)
-        binding.tvProgressPercent.text = getString(
-            R.string.scan_progress_percent,
-            PalmProgressMapper.percentFor(step)
-        )
+        animateProgressTo(PalmProgressMapper.percentFor(step))
         binding.tvProgressLabel.text = PalmProgressMapper.labelFor(step)
         binding.tvProgressSubtext.text = getString(R.string.scan_progress_subtext)
+    }
+
+    private fun completeProgress() {
+        binding.layoutProgress.visibility = View.VISIBLE
+        animateProgressTo(100)
+        binding.tvProgressLabel.text = getString(R.string.scan_loader_ready_label)
+        binding.tvProgressSubtext.text = getString(R.string.scan_loader_ready_subtext)
+    }
+
+    private fun animateProgressTo(target: Int) {
+        val start = binding.progressBar.progress
+        if (start == target) {
+            binding.tvProgressPercent.text = getString(R.string.scan_progress_percent, target)
+            return
+        }
+        ValueAnimator.ofInt(start, target).apply {
+            duration = 320L
+            addUpdateListener { animator ->
+                val value = animator.animatedValue as Int
+                binding.progressBar.progress = value
+                binding.tvProgressPercent.text = getString(R.string.scan_progress_percent, value)
+            }
+            start()
+        }
     }
 
     private fun clearProgressState() {
@@ -847,6 +895,15 @@ ${rightEvidence.rawJson}
 
     private fun PalmImageSlot.isDetail(): Boolean {
         return this == PalmImageSlot.DETAIL_A || this == PalmImageSlot.DETAIL_B
+    }
+
+    private suspend fun copyGalleryUriToCache(slot: PalmImageSlot, uri: Uri): String = withContext(Dispatchers.IO) {
+        val dir = File(cacheDir, "palm_originals").also { it.mkdirs() }
+        val file = File(dir, "${slot.name.lowercase()}_${System.currentTimeMillis()}.jpg")
+        contentResolver.openInputStream(uri)?.use { input ->
+            FileOutputStream(file).use { output -> input.copyTo(output) }
+        } ?: error("Unable to open gallery image")
+        file.absolutePath
     }
 
     private fun String.toConsumerLine(fallback: String): String {

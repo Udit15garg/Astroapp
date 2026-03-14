@@ -33,10 +33,10 @@ object AppConfig {
 
     object Palmistry {
         /** Max long edge while loading captured palm for analysis (higher keeps line detail). */
-        const val SCAN_MAX_EDGE_PX: Int = 2048
+        const val SCAN_MAX_EDGE_PX: Int = 2200
 
         /** JPEG quality for analysis upload image. Higher = better detail + larger payload. */
-        const val SCAN_UPLOAD_JPEG_QUALITY: Int = 90
+        const val SCAN_UPLOAD_JPEG_QUALITY: Int = 92
 
         /** Max long edge for image shown in result chat. */
         const val CHAT_IMAGE_MAX_EDGE_PX: Int = 1000

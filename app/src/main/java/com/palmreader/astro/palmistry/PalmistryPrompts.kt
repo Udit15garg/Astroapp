@@ -60,6 +60,9 @@ Rules:
 - Do not interpret destiny, marriage, money, personality, spirituality, or timing.
 - Do not invent any feature that is unclear.
 - If a feature is not visible, mark it as unclear.
+- Explicitly check mounts: jupiter, saturn, apollo, mercury, venus, luna, upper_mars, lower_mars.
+- Explicitly check symbolic formations when visible: m_sign, mystic_cross, triangle, square, trident, star, island, grille, fork, branch, break, fish_like_mark, apollo_success_line, mercury_marking.
+- If no strong symbol is visible, return an empty special_signs array.
 - Output JSON only.
 - No markdown.
 
@@ -81,11 +84,22 @@ Return exactly this JSON shape:
     "sun_line": { "presence": "", "depth": "", "continuity": "", "confidence": 0.0, "refs": [] },
     "mercury_line": { "presence": "", "depth": "", "continuity": "", "confidence": 0.0, "refs": [] }
   },
-  "mount_summary": {},
+  "mount_summary": {
+    "jupiter": { "level": "flat|balanced|raised|prominent|unclear", "confidence": 0.0, "refs": [] },
+    "saturn": { "level": "flat|balanced|raised|prominent|unclear", "confidence": 0.0, "refs": [] },
+    "apollo": { "level": "flat|balanced|raised|prominent|unclear", "confidence": 0.0, "refs": [] },
+    "mercury": { "level": "flat|balanced|raised|prominent|unclear", "confidence": 0.0, "refs": [] },
+    "venus": { "level": "flat|balanced|raised|prominent|unclear", "confidence": 0.0, "refs": [] },
+    "luna": { "level": "flat|balanced|raised|prominent|unclear", "confidence": 0.0, "refs": [] },
+    "upper_mars": { "level": "flat|balanced|raised|prominent|unclear", "confidence": 0.0, "refs": [] },
+    "lower_mars": { "level": "flat|balanced|raised|prominent|unclear", "confidence": 0.0, "refs": [] }
+  },
   "hand_shape": { "value": "", "confidence": 0.0 },
   "finger_length_pattern": { "value": "", "confidence": 0.0 },
   "thumb_angle": { "value": "", "confidence": 0.0 },
-  "special_signs": [],
+  "special_signs": [
+    { "type": "", "confidence": 0.0, "clarity": "", "refs": [] }
+  ],
   "unresolved_areas": [],
   "observation_refs": [
     { "id": "", "feature": "", "attribute": "", "value": "", "evidence_text": "", "source_images": [], "confidence": 0.0 }
@@ -124,6 +138,13 @@ Rules:
 - Do not mention model limitations or internal scan stages unless absolutely necessary.
 - Do not output raw evidence dumps.
 - Do not show all uploaded images back to the user.
+- If a full-hand image is usable but a detail shot is soft, do not call the whole hand unclear. Say only that some smaller markings are softer.
+- Use mounts and symbolic formations when they are visible, but never hallucinate rare signs.
+- In Palm Shape, include overall hand type and the most relevant mount emphasis if visible.
+- In Finger Balance, include finger proportions and thumb openness in simple language.
+- In Key Formations on Your Hand, talk about major lines, mounts, and symbolic marks together.
+- In Right vs Left Hand, compare inherited pattern versus developed path.
+- In What Your Future Holds, stay practical and forward-looking, not horoscope-like.
 - Output JSON only.
 - No markdown.
 
@@ -158,7 +179,7 @@ Return exactly this JSON shape:
 You are answering a user's question about their palm reading.
 ${languageInstruction(locale)}
 
-You will receive the left full-hand image, the right full-hand image, optional right-side and right-center detail images, evidence JSON, synthesis JSON, and the user's prior reading summary.
+You will receive the left full-hand image, the right full-hand image, optional right-side and right-center detail images, evidence JSON, the prior reading summary, and the user's question.
 
 Rules:
 - Answer only from visible evidence and grounded interpretation.

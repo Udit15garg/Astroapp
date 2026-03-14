@@ -426,7 +426,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_gravity="end"
                         android:text="@string/scan_button_upload"
-                        android:backgroundTint="@color/secondary" />
+                        android:backgroundTint="@color/primary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -521,7 +521,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_gravity="end"
                         android:text="@string/scan_button_upload"
-                        android:backgroundTint="@color/secondary" />
+                        android:backgroundTint="@color/primary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
