@@ -1,6 +1,7 @@
 package com.palmreader.astro
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -140,7 +141,7 @@ class ResultActivity : BaseFeatureActivity() {
 
         val summary = session.resultSummary
         addNarrativeCard(
-            label = getString(R.string.result_opening_label),
+            label = "",
             title = summary.openingRead.title,
             body = summary.openingRead.body
         )
@@ -178,10 +179,18 @@ class ResultActivity : BaseFeatureActivity() {
             val chip = Chip(this).apply {
                 text = prompt
                 isCheckable = false
+                chipBackgroundColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.btn_secondary_bg))
+                chipStrokeColor = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.glass_card_border))
+                chipStrokeWidth = 1f
+                setTextColor(ContextCompat.getColor(context, R.color.text_dark))
+                setEnsureMinTouchTargetSize(false)
+                minHeight = (36 * resources.displayMetrics.density).toInt()
                 setOnClickListener {
                     binding.etQuestion.setText(suggestedQuestion)
                     binding.etQuestion.setSelection(suggestedQuestion.length)
                     binding.etQuestion.requestFocus()
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(binding.etQuestion, InputMethodManager.SHOW_IMPLICIT)
                 }
             }
             binding.chipGroupPrompts.addView(chip)
@@ -501,10 +510,11 @@ ${session.resultSummary.rawJson}
         if (typingIndicatorView != null) return
         val tv = TextView(this).apply {
             text = getString(R.string.qa_typing_indicator)
-            textSize = 16f
-            setPadding(24, 12, 24, 12)
+            textSize = 15f
+            setPadding(24, 14, 24, 14)
             setBackgroundResource(R.drawable.bg_chat_bot)
             setTextColor(ContextCompat.getColor(context, R.color.text_medium))
+            setLineSpacing(4f, 1f)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -527,8 +537,9 @@ ${session.resultSummary.rawJson}
     private fun appendChat(text: String, isUser: Boolean) {
         val tv = TextView(this).apply {
             this.text = text
-            textSize = 14f
-            setPadding(24, 16, 24, 16)
+            textSize = 15f
+            setPadding(24, 18, 24, 18)
+            setLineSpacing(5f, 1f)
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT

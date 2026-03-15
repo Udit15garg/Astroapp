@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.palmreader.astro.api.OpenAIService
 import com.palmreader.astro.databinding.ActivityScanBinding
 import com.palmreader.astro.palmistry.AnalysisStep
@@ -409,6 +410,7 @@ class ScanActivity : AppCompatActivity() {
         val iconView = stateIconViewFor(slot)
         val progressView = stateProgressViewFor(slot)
         val button = buttonFor(slot)
+        val card = cardFor(slot)
         val state = slotStates[slot] ?: UploadSlotState.EMPTY
         val guidance = slotGuidance[slot].orEmpty()
 
@@ -417,13 +419,31 @@ class ScanActivity : AppCompatActivity() {
             ContextCompat.getColor(
                 this,
                 when (state) {
-                    UploadSlotState.ACCEPTED -> R.color.text_medium
+                    UploadSlotState.ACCEPTED -> R.color.success
                     UploadSlotState.ACCEPTED_WITH_GUIDANCE -> R.color.warning
                     UploadSlotState.RETAKE_REQUIRED -> R.color.error
                     else -> R.color.text_medium
                 }
             )
         )
+        val (backgroundColor, strokeColor, alpha) = when (state) {
+            UploadSlotState.ACCEPTED -> Triple(R.color.palm_success_surface, R.color.palm_success_border, 1f)
+            UploadSlotState.ACCEPTED_WITH_GUIDANCE -> {
+                val border = if (slot.isDetail()) R.color.palm_purple_border else R.color.palm_gold_border
+                val surface = if (slot.isDetail()) R.color.palm_purple_surface else R.color.palm_gold_surface
+                Triple(surface, border, 1f)
+            }
+            UploadSlotState.RETAKE_REQUIRED -> Triple(R.color.palm_error_surface, R.color.palm_error_border, 1f)
+            UploadSlotState.UPLOADING,
+            UploadSlotState.VALIDATING -> Triple(R.color.palm_purple_surface, R.color.palm_purple_border, 1f)
+            UploadSlotState.EMPTY -> {
+                val border = if (slot.isDetail()) R.color.glass_card_border else R.color.palm_gold_border
+                Triple(R.color.glass_card, border, if (slot.isDetail()) 0.88f else 1f)
+            }
+        }
+        card.setCardBackgroundColor(ContextCompat.getColor(this, backgroundColor))
+        card.strokeColor = ContextCompat.getColor(this, strokeColor)
+        card.alpha = alpha
 
         progressView.visibility = if (state == UploadSlotState.UPLOADING || state == UploadSlotState.VALIDATING) {
             View.VISIBLE
@@ -479,6 +499,13 @@ class ScanActivity : AppCompatActivity() {
         PalmImageSlot.ACTIVE_FULL -> binding.btnActiveCapture
         PalmImageSlot.DETAIL_A -> binding.btnDetailACapture
         PalmImageSlot.DETAIL_B -> binding.btnDetailBCapture
+    }
+
+    private fun cardFor(slot: PalmImageSlot): MaterialCardView = when (slot) {
+        PalmImageSlot.PASSIVE_FULL -> binding.cardPassive
+        PalmImageSlot.ACTIVE_FULL -> binding.cardActive
+        PalmImageSlot.DETAIL_A -> binding.cardDetailA
+        PalmImageSlot.DETAIL_B -> binding.cardDetailB
     }
 
     private fun setCaptureButtonsEnabled(enabled: Boolean) {

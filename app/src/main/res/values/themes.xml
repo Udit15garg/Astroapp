@@ -66,51 +66,60 @@
 
     <!-- ── Text Appearances ── -->
     <style name="TextAppearance.Astro.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">serif</item>
         <item name="android:textSize">28sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/text_dark</item>
     </style>
 
     <style name="TextAppearance.Astro.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">serif</item>
         <item name="android:textSize">22sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/text_dark</item>
     </style>
 
     <style name="TextAppearance.Astro.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">serif</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textColor">@color/text_dark</item>
     </style>
 
     <style name="TextAppearance.Astro.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">sans-serif-medium</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text_dark</item>
     </style>
 
     <style name="TextAppearance.Astro.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">sans-serif</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/text_dark</item>
     </style>
 
     <style name="TextAppearance.Astro.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">sans-serif</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/text_medium</item>
     </style>
 
     <style name="TextAppearance.Astro.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">sans-serif</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/text_medium</item>
     </style>
 
     <style name="TextAppearance.Astro.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">sans-serif-medium</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/secondary</item>
+        <item name="android:textColor">@color/primary</item>
     </style>
 
     <style name="TextAppearance.Astro.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">sans-serif-medium</item>
         <item name="android:textSize">11sp</item>
         <item name="android:textColor">@color/text_light</item>
     </style>
@@ -135,15 +144,18 @@
     <style name="Widget.Astro.Button.Primary" parent="Widget.Material3.Button">
         <item name="backgroundTint">@color/primary</item>
         <item name="android:textColor">@color/on_primary</item>
-        <item name="cornerRadius">14dp</item>
+        <item name="cornerRadius">16dp</item>
         <item name="android:minHeight">@dimen/touch_target_min</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
-    <!-- Secondary Button (Glass outline) -->
-    <style name="Widget.Astro.Button.Secondary" parent="Widget.Material3.Button.TonalButton">
+    <!-- Secondary Button (Subtle outline) -->
+    <style name="Widget.Astro.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
         <item name="backgroundTint">@color/btn_secondary_bg</item>
         <item name="android:textColor">@color/text_dark</item>
-        <item name="cornerRadius">14dp</item>
+        <item name="strokeColor">@color/glass_card_border</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cornerRadius">12dp</item>
         <item name="android:minHeight">@dimen/touch_target_min</item>
     </style>
 

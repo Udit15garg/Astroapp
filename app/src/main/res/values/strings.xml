@@ -139,6 +139,9 @@
     <string name="scan_instruction">Align your open right palm within the guide, then tap Open Camera</string>
     <string name="scan_instruction_v2">The reading depends on visible palm lines, not on flash.</string>
     <string name="scan_intro_v2">Upload clear photos of your hands.\nLeft hand shows base tendencies. Right hand shows how your path is developing.</string>
+    <string name="scan_required_section">Required photos</string>
+    <string name="scan_optional_section">Optional details</string>
+    <string name="scan_progress_eyebrow">Analysis status</string>
     <string name="scan_handedness_title">Which hand is dominant?</string>
     <string name="scan_handedness_right">Right-handed</string>
     <string name="scan_handedness_left">Left-handed</string>
@@ -151,7 +154,7 @@
     <string name="scan_slot_detail_a_subtitle">Pinky-side edge of the palm</string>
     <string name="scan_slot_detail_b_title">Center of right hand</string>
     <string name="scan_slot_detail_b_subtitle">Middle palm close-up for line detail</string>
-    <string name="scan_slot_pending">Upload required photo.</string>
+    <string name="scan_slot_pending">Upload this photo to continue.</string>
     <string name="scan_slot_optional">Optional. Add for a richer reading.</string>
     <string name="scan_slot_processing">Preparing photo…</string>
     <string name="scan_slot_ready">Photo is ready for analysis.</string>
@@ -226,7 +229,7 @@
     <string name="scan_retry_interpretation">Your palm has been scanned. We\'re retrying the interpretation.</string>
     <string name="scan_partial_retake_message">The center lines are not clear enough yet. Please retake the highlighted photo in brighter light.</string>
     <string name="scan_optional_photo_skipped">That detail photo was weak, but the main reading can still continue.</string>
-    <string name="scan_status_saved_loaded">Saved reading loaded. Replace any photo, then update the reading when ready.</string>
+    <string name="scan_status_saved_loaded">Saved reading loaded. Replace any photo, then update when ready.</string>
     <string name="scan_status_stale_ready">New photo saved. Update the reading when you are ready.</string>
     <string name="scan_take_photo_first">Take a palm photo first</string>
     <string name="scan_camera_unavailable">Camera is not available on this device</string>
@@ -236,8 +239,8 @@
     <string name="scan_tips">Tips for best results:\n\u2022 Hold your palm flat and open\n\u2022 Use natural or bright indoor light\n\u2022 Keep camera 20\u201330 cm from hand\n\u2022 Avoid shadows across the palm</string>
 
     <!-- ── Results ── -->
-    <string name="result_title">Your Palm Reading</string>
-    <string name="result_subtitle">AI analysis of your palm lines</string>
+    <string name="result_title">Palm Reading</string>
+    <string name="result_subtitle">Shape, signs, and contrast across both hands</string>
     <string name="result_opening_label">Opening read</string>
     <string name="result_inherited_label">What life gave you</string>
     <string name="result_active_label">What you are becoming</string>
@@ -259,7 +262,7 @@
     <!-- ── Q&A ── -->
     <string name="qa_title">Ask a Question</string>
     <string name="qa_hint">E.g.: When will I get married?</string>
-    <string name="qa_hint_v2">Ask about love, career, timing, money, or a visible sign in your palm.</string>
+    <string name="qa_hint_v2">Ask about love, money, timing, weak points, or a sign in your palm.</string>
     <string name="qa_credit_note">Each question costs 1 credit</string>
     <string name="qa_no_reading_first">Complete your reading first</string>
     <string name="btn_send">Ask</string>
