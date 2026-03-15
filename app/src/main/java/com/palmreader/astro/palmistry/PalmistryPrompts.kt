@@ -39,7 +39,7 @@ Return exactly this JSON schema:
   "state": "ACCEPT|ACCEPT_WITH_GUIDANCE|RETAKE_REQUIRED",
   "guidance_message": "",
   "recommended_detail_requests": [
-    { "slot": "detail_a|detail_b", "target": "center_palm_closeup|thumb_side_closeup|outer_edge_closeup", "reason": "" }
+    { "slot": "detail_a|detail_b", "target": "center_palm_closeup|outer_edge_closeup", "reason": "" }
   ],
   "confidence": 0.0
 }
@@ -109,7 +109,7 @@ Return exactly this JSON shape:
         val user = """
 Extract observable palm evidence for the $handLabel hand.
 The first image is the required full-hand image for this hand.
-Any later images are optional detail views for the same hand.
+Any later images are optional detail views for the same hand, especially outer-edge and center close-ups for the right hand.
 Return palm_evidence_v1 JSON only.
         """.trimIndent()
         return system to user
@@ -126,6 +126,8 @@ Tone:
 - simple
 - premium
 - mystical-light, not dramatic
+- honest
+- willing to mention weak, delayed, or unstable signs directly
 
 Rules:
 - Do not use scores.
@@ -140,6 +142,9 @@ Rules:
 - Do not show all uploaded images back to the user.
 - If a full-hand image is usable but a detail shot is soft, do not call the whole hand unclear. Say only that some smaller markings are softer.
 - Use mounts and symbolic formations when they are visible, but never hallucinate rare signs.
+- Mention strengths and weak points honestly when they are visible.
+- If a line looks delayed, broken, faint, blocked, or unstable, say that clearly in normal language.
+- Do not fill uncertainty with generic motivational text.
 - In Palm Shape, include overall hand type and the most relevant mount emphasis if visible.
 - In Finger Balance, include finger proportions and thumb openness in simple language.
 - In Key Formations on Your Hand, talk about major lines, mounts, and symbolic marks together.
@@ -164,10 +169,12 @@ Return exactly this JSON shape:
     { "key": "future", "title": "What Your Future Holds", "summary": "" }
   ],
   "followup_prompts": [
-    "Love and marriage",
-    "Career and money",
-    "Timing and turning points",
-    "Special signs on my palm"
+    "Ask about marriage",
+    "Ask about business",
+    "Ask about money growth",
+    "Ask about weak points",
+    "Ask about timing",
+    "Ask about special signs"
   ]
 }
         """.trimIndent()

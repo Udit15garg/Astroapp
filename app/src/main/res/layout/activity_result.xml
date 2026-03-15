@@ -101,6 +101,68 @@
                 app:chipSpacingVertical="8dp"
                 app:singleLine="false" />
 
+            <TextView
+                android:id="@+id/tvImproveLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/result_improve_label"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_dark"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutImproveActions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnImproveRightHand"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="@string/result_improve_right_hand"
+                    android:textColor="@color/text_dark"
+                    android:backgroundTint="@color/surface"
+                    app:strokeColor="@color/glass_card_border"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnImproveOuterEdge"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/result_improve_outer_edge"
+                    android:textColor="@color/text_dark"
+                    android:backgroundTint="@color/surface"
+                    app:strokeColor="@color/glass_card_border"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnImproveCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/result_improve_center"
+                    android:textColor="@color/text_dark"
+                    android:backgroundTint="@color/surface"
+                    app:strokeColor="@color/glass_card_border"
+                    app:strokeWidth="1dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnImproveCustom"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/result_improve_custom"
+                    android:textColor="@color/text_dark"
+                    android:backgroundTint="@color/surface"
+                    app:strokeColor="@color/glass_card_border"
+                    app:strokeWidth="1dp" />
+            </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/llChat"
                 android:layout_width="match_parent"

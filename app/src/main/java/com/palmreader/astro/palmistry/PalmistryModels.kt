@@ -87,17 +87,37 @@ data class PalmQaAnswer(
 ) : Parcelable
 
 @Parcelize
+data class PalmChatEntry(
+    val isUser: Boolean,
+    val text: String,
+    val timestamp: Long = System.currentTimeMillis()
+) : Parcelable
+
+@Parcelize
 data class PalmSessionPayload(
+    val sessionId: String,
+    val userId: Long,
+    val createdAt: Long,
+    val label: String,
     val locale: String,
     val handedness: PalmHandedness,
+    val originalPassiveImagePath: String,
+    val originalActiveImagePath: String,
+    val originalDetailImageAPath: String?,
+    val originalDetailImageBPath: String?,
     val passiveImagePath: String,
     val activeImagePath: String,
     val detailImageAPath: String?,
     val detailImageBPath: String?,
+    val extraOriginalImagePaths: List<String> = emptyList(),
+    val extraImagePaths: List<String> = emptyList(),
     val passiveValidationJson: String,
     val activeValidationJson: String,
     val passiveEvidenceJson: String,
     val activeEvidenceJson: String,
     val resultSummary: PalmResultSummary,
+    val chatHistory: List<PalmChatEntry> = emptyList(),
+    val unresolvedAreas: List<String> = emptyList(),
+    val isStale: Boolean = false,
     val recoverableMessages: List<String> = emptyList()
 ) : Parcelable

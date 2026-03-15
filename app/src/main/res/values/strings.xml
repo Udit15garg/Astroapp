@@ -147,18 +147,19 @@
     <string name="scan_slot_passive_subtitle">Full inner palm</string>
     <string name="scan_slot_active_title">Right hand</string>
     <string name="scan_slot_active_subtitle">Full inner palm</string>
-    <string name="scan_slot_detail_a_title">Side of right hand</string>
-    <string name="scan_slot_detail_a_subtitle">Thumb-side or outer-side detail</string>
+    <string name="scan_slot_detail_a_title">Outer Edge of Right Hand</string>
+    <string name="scan_slot_detail_a_subtitle">Pinky-side edge of the palm</string>
     <string name="scan_slot_detail_b_title">Center of right hand</string>
     <string name="scan_slot_detail_b_subtitle">Middle palm close-up for line detail</string>
     <string name="scan_slot_pending">Upload required photo.</string>
     <string name="scan_slot_optional">Optional. Add for a richer reading.</string>
     <string name="scan_slot_processing">Preparing photo…</string>
     <string name="scan_slot_ready">Photo is ready for analysis.</string>
+    <string name="scan_saved_slot_ready">Saved photo is ready for analysis.</string>
     <string name="scan_slot_missing_required">Add this required full-hand image.</string>
     <string name="scan_capture_passive">Upload left hand</string>
     <string name="scan_capture_active">Upload right hand</string>
-    <string name="scan_capture_detail_a">Upload side detail</string>
+    <string name="scan_capture_detail_a">Upload outer edge</string>
     <string name="scan_capture_detail_b">Upload center detail</string>
     <string name="scan_button_upload">Upload</string>
     <string name="scan_button_replace">Replace</string>
@@ -167,11 +168,23 @@
     <string name="scan_continue_two">Continue</string>
     <string name="scan_continue_full">Continue</string>
     <string name="scan_continue_hint">Add detail shots for a more accurate reading</string>
+    <string name="scan_hint_replace_to_update">Replace a photo to refresh this saved reading.</string>
+    <string name="scan_update_reading">Update Reading</string>
+    <string name="scan_resume_session">Resume latest reading</string>
     <string name="scan_loader_title">Reading your palms…</string>
     <string name="scan_progress_percent">%1$d%%</string>
     <string name="scan_progress_subtext">We’re checking the main lines, shape, mounts, and balance across both hands.</string>
     <string name="scan_loader_ready_label">Writing your reading</string>
     <string name="scan_loader_ready_subtext">Your first reading is ready.</string>
+    <string name="scan_stage_prepare">Preparing photos</string>
+    <string name="scan_stage_check_left">Checking left hand</string>
+    <string name="scan_stage_check_right">Checking right hand</string>
+    <string name="scan_stage_read_main_lines">Reading main lines</string>
+    <string name="scan_stage_read_detail">Reading right-hand detail</string>
+    <string name="scan_stage_read_mounts">Reading mounts and signs</string>
+    <string name="scan_stage_compare">Comparing both hands</string>
+    <string name="scan_stage_write">Writing your reading</string>
+    <string name="scan_stage_finalize">Finalizing</string>
     <string name="scan_loading_lines">Reading major lines\u2026</string>
     <string name="scan_loading_compare">Comparing both hands\u2026</string>
     <string name="scan_loading_mounts">Checking mounts and finger balance\u2026</string>
@@ -187,7 +200,7 @@
     <string name="scan_local_guidance_blurry">Usable, but a steadier retake may improve line detail.</string>
     <string name="scan_local_guidance_good">Main palm lines look usable here.</string>
     <string name="scan_detail_request_center">The center lines are weaker here. A clearer center-palm photo would help.</string>
-    <string name="scan_detail_request_side">The side detail is weaker here. A clearer side photo would help.</string>
+    <string name="scan_detail_request_side">The outer edge is weaker here. A clearer pinky-side photo would help.</string>
     <string name="scan_source_picker_title">Add a palm photo</string>
     <string name="scan_source_take_photo">Take Photo</string>
     <string name="scan_source_choose_gallery">Choose from Gallery</string>
@@ -213,6 +226,8 @@
     <string name="scan_retry_interpretation">Your palm has been scanned. We\'re retrying the interpretation.</string>
     <string name="scan_partial_retake_message">The center lines are not clear enough yet. Please retake the highlighted photo in brighter light.</string>
     <string name="scan_optional_photo_skipped">That detail photo was weak, but the main reading can still continue.</string>
+    <string name="scan_status_saved_loaded">Saved reading loaded. Replace any photo, then update the reading when ready.</string>
+    <string name="scan_status_stale_ready">New photo saved. Update the reading when you are ready.</string>
     <string name="scan_take_photo_first">Take a palm photo first</string>
     <string name="scan_camera_unavailable">Camera is not available on this device</string>
     <string name="scan_camera_permission_denied">Camera permission is required to take a palm photo</string>
@@ -234,6 +249,12 @@
     <string name="result_sources_label">Evidence used</string>
     <string name="result_no_full_reading">The teaser is ready, but the full reading is still being prepared.</string>
     <string name="result_followup_label">Ask about a specific area</string>
+    <string name="result_improve_label">Improve this reading</string>
+    <string name="result_improve_right_hand">Upload clearer right hand</string>
+    <string name="result_improve_outer_edge">Upload outer edge close-up</string>
+    <string name="result_improve_center">Upload center close-up</string>
+    <string name="result_improve_custom">Upload custom palm photo</string>
+    <string name="result_custom_saved">This extra photo was added to the same reading. It will be used in the next visual answer.</string>
 
     <!-- ── Q&A ── -->
     <string name="qa_title">Ask a Question</string>

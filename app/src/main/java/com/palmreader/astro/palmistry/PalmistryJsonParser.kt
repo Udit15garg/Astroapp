@@ -149,12 +149,14 @@ object PalmistryJsonParser {
         val mounts = obj.optJSONObject("mount_summary") ?: obj.optJSONObject("mounts")
         mounts?.let { mountObj ->
             val mountBits = buildList {
-                val keys = listOf("venus", "luna", "jupiter", "saturn", "apollo", "mercury", "mars_positive", "mars_negative")
-                keys.forEach { key ->
-                    mountObj.optString(key)
-                        .takeIf(::isMeaningfulValue)
-                        ?.let { add("${key.replace('_', ' ')}: $it") }
-                }
+                addMountLevel(mountObj, "venus", "Venus")
+                addMountLevel(mountObj, "luna", "Moon")
+                addMountLevel(mountObj, "jupiter", "Jupiter")
+                addMountLevel(mountObj, "saturn", "Saturn")
+                addMountLevel(mountObj, "apollo", "Apollo")
+                addMountLevel(mountObj, "mercury", "Mercury")
+                addMountLevel(mountObj, "upper_mars", "Upper Mars", "mars_positive")
+                addMountLevel(mountObj, "lower_mars", "Lower Mars", "mars_negative")
             }
             if (mountBits.isNotEmpty()) {
                 evidence += "Mount balance noted as ${mountBits.joinToString(", ")}."
@@ -207,6 +209,22 @@ object PalmistryJsonParser {
         val normalized = value.trim()
         if (normalized.isBlank()) return false
         return normalized.lowercase() !in setOf("unclear", "unknown", "none", "none_clear", "not_visible", "not clear")
+    }
+
+    private fun MutableList<String>.addMountLevel(
+        mounts: JSONObject,
+        key: String,
+        label: String,
+        legacyKey: String? = null
+    ) {
+        val raw = when {
+            mounts.optJSONObject(key) != null -> mounts.optJSONObject(key)?.optString("level")
+            mounts.has(key) -> mounts.optString(key)
+            legacyKey != null && mounts.optJSONObject(legacyKey) != null -> mounts.optJSONObject(legacyKey)?.optString("level")
+            legacyKey != null && mounts.has(legacyKey) -> mounts.optString(legacyKey)
+            else -> null
+        }
+        raw?.takeIf(::isMeaningfulValue)?.let { add("$label: $it") }
     }
 
     private fun parseDetailRequests(array: JSONArray?): List<PalmDetailRequest> {

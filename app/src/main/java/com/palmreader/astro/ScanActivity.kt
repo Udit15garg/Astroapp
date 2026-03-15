@@ -36,6 +36,7 @@ import com.palmreader.astro.palmistry.PalmRecoverableError
 import com.palmreader.astro.palmistry.PalmResultModule
 import com.palmreader.astro.palmistry.PalmResultSummary
 import com.palmreader.astro.palmistry.PalmSessionPayload
+import com.palmreader.astro.palmistry.PalmSessionStore
 import com.palmreader.astro.palmistry.PalmSessionState
 import com.palmreader.astro.palmistry.PalmValidationResult
 import com.palmreader.astro.palmistry.PalmValidationState
@@ -48,11 +49,21 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ScanActivity : AppCompatActivity() {
 
+    companion object {
+        const val EXTRA_PALM_SESSION_ID = "palm_session_id"
+        const val EXTRA_PALM_FOCUS_SLOT = "palm_focus_slot"
+    }
+
     private lateinit var binding: ActivityScanBinding
     private val preprocessor: PalmImagePreprocessor by lazy { HeuristicPalmImagePreprocessor(this) }
+    private val sessionStore by lazy { PalmSessionStore(this) }
+    private val userSession by lazy { SessionManager(this) }
     private val processedBitmaps = mutableMapOf<PalmImageSlot, Bitmap>()
     private val processedPaths = mutableMapOf<PalmImageSlot, String>()
     private val originalPaths = mutableMapOf<PalmImageSlot, String>()
@@ -64,6 +75,9 @@ class ScanActivity : AppCompatActivity() {
     private var analysisRunId: String = ""
     private var captureButtonsEnabled = true
     private var sessionState: PalmSessionState = PalmSessionState.Idle
+    private var loadedSession: PalmSessionPayload? = null
+    private var latestSavedSession: PalmSessionPayload? = null
+    private var sessionIsStale: Boolean = false
 
     private val cameraLauncher = registerForActivityResult(
         ActivityResultContracts.TakePicture()
@@ -136,11 +150,87 @@ class ScanActivity : AppCompatActivity() {
         binding.btnDetailACapture.setOnClickListener { beginCapture(PalmImageSlot.DETAIL_A) }
         binding.btnDetailBCapture.setOnClickListener { beginCapture(PalmImageSlot.DETAIL_B) }
         binding.btnAnalyze.setOnClickListener { startPalmistryV2Analysis() }
+        binding.btnResumeSession.setOnClickListener { latestSavedSession?.let(::openSavedSession) }
 
         PalmImageSlot.values().forEach(::refreshSlotUi)
         binding.layoutProgress.visibility = View.GONE
         setStatus(getString(R.string.scan_instruction_v2), isError = false)
+        restoreSessionContext()
         syncAnalyzeButton()
+    }
+
+    private fun restoreSessionContext() {
+        val requestedId = intent.getStringExtra(EXTRA_PALM_SESSION_ID)
+        if (!requestedId.isNullOrBlank()) {
+            sessionStore.load(userSession.userId, requestedId)?.let { saved ->
+                applySavedSession(saved)
+                intent.getStringExtra(EXTRA_PALM_FOCUS_SLOT)
+                    ?.let { focus -> PalmImageSlot.values().firstOrNull { it.name == focus } }
+                    ?.let { slot -> binding.root.post { beginCapture(slot) } }
+                return
+            }
+        }
+
+        latestSavedSession = sessionStore.latest(userSession.userId)
+        binding.btnResumeSession.visibility = if (latestSavedSession == null) View.GONE else View.VISIBLE
+    }
+
+    private fun applySavedSession(saved: PalmSessionPayload) {
+        loadedSession = saved
+        sessionIsStale = saved.isStale
+        latestSavedSession = null
+        binding.btnResumeSession.visibility = View.GONE
+
+        restoreSlot(
+            slot = PalmImageSlot.PASSIVE_FULL,
+            originalPath = saved.originalPassiveImagePath,
+            processedPath = saved.passiveImagePath,
+            validationJson = saved.passiveValidationJson,
+            handLabel = "left"
+        )
+        restoreSlot(
+            slot = PalmImageSlot.ACTIVE_FULL,
+            originalPath = saved.originalActiveImagePath,
+            processedPath = saved.activeImagePath,
+            validationJson = saved.activeValidationJson,
+            handLabel = "right"
+        )
+        restoreOptionalSlot(PalmImageSlot.DETAIL_A, saved.originalDetailImageAPath, saved.detailImageAPath)
+        restoreOptionalSlot(PalmImageSlot.DETAIL_B, saved.originalDetailImageBPath, saved.detailImageBPath)
+
+        setStatus(
+            if (sessionIsStale) getString(R.string.scan_status_stale_ready)
+            else getString(R.string.scan_status_saved_loaded),
+            isError = false
+        )
+    }
+
+    private fun restoreSlot(
+        slot: PalmImageSlot,
+        originalPath: String?,
+        processedPath: String?,
+        validationJson: String,
+        handLabel: String
+    ) {
+        if (originalPath.isNullOrBlank() || processedPath.isNullOrBlank()) return
+        originalPaths[slot] = originalPath
+        processedPaths[slot] = processedPath
+        PalmistryJsonParser.parseValidation(validationJson, handLabel)?.let {
+            applyValidationToUi(slot, it)
+        } ?: setSlotState(slot, UploadSlotState.ACCEPTED, getString(R.string.scan_saved_slot_ready))
+    }
+
+    private fun restoreOptionalSlot(slot: PalmImageSlot, originalPath: String?, processedPath: String?) {
+        if (originalPath.isNullOrBlank() || processedPath.isNullOrBlank()) return
+        originalPaths[slot] = originalPath
+        processedPaths[slot] = processedPath
+        setSlotState(slot, UploadSlotState.ACCEPTED, getString(R.string.scan_saved_slot_ready))
+    }
+
+    private fun openSavedSession(saved: PalmSessionPayload) {
+        startActivity(Intent(this, ResultActivity::class.java).apply {
+            putExtra("palmSession", saved)
+        })
     }
 
     private fun beginCapture(slot: PalmImageSlot) {
@@ -216,6 +306,10 @@ class ScanActivity : AppCompatActivity() {
                 ?: error("processed bitmap missing")
             processedBitmaps[slot] = bitmap
             applyLocalAssessment(slot, bitmap)
+            if (loadedSession != null) {
+                sessionIsStale = true
+                setStatus(getString(R.string.scan_status_stale_ready), isError = false)
+            }
             PalmistryEventLogger.log(
                 this,
                 "upload_completed",
@@ -270,11 +364,28 @@ class ScanActivity : AppCompatActivity() {
     }
 
     private fun syncAnalyzeButton() {
-        val canContinue = captureButtonsEnabled && requiredSlotsAccepted()
+        val hasSavedReading = loadedSession != null
+        val canContinue = captureButtonsEnabled &&
+            requiredSlotsAccepted() &&
+            (!hasSavedReading || sessionIsStale)
         binding.btnAnalyze.isEnabled = canContinue
-        binding.btnAnalyze.text = getString(R.string.scan_continue_full)
+        binding.btnAnalyze.text = if (hasSavedReading) {
+            getString(R.string.scan_update_reading)
+        } else {
+            getString(R.string.scan_continue_full)
+        }
         val acceptedCount = PalmImageSlot.values().count { isAcceptedForContinue(it) }
-        binding.tvAnalyzeHint.visibility = if (acceptedCount >= 3 || !canContinue) View.GONE else View.VISIBLE
+        val showHint = if (hasSavedReading && !sessionIsStale) {
+            true
+        } else {
+            acceptedCount < 3 && canContinue
+        }
+        binding.tvAnalyzeHint.visibility = if (showHint) View.VISIBLE else View.GONE
+        binding.tvAnalyzeHint.text = if (hasSavedReading && !sessionIsStale) {
+            getString(R.string.scan_hint_replace_to_update)
+        } else {
+            getString(R.string.scan_continue_hint)
+        }
     }
 
     private fun requiredSlotsAccepted(): Boolean {
@@ -396,17 +507,16 @@ class ScanActivity : AppCompatActivity() {
             try {
                 PalmistryEventLogger.log(this@ScanActivity, "analysis_start_v2", mapOf("run_id" to analysisRunId))
                 val locale = LanguageManager.getCurrentLocale(this@ScanActivity)
+                val activeSession = loadedSession
 
                 sessionState = PalmSessionState.Preprocessing
-                updateProgress(AnalysisStep.PREPARE_IMAGES)
+                updateProgress(5, getString(R.string.scan_stage_prepare))
                 ensureRequiredBitmapsLoaded()
 
-                sessionState = PalmSessionState.Preprocessing
-                updateProgress(AnalysisStep.REMOVE_BACKGROUND)
-
                 sessionState = PalmSessionState.Validating
-                updateProgress(AnalysisStep.VALIDATE_IMAGES)
+                updateProgress(12, getString(R.string.scan_stage_check_left))
                 val leftValidation = validateOrFallback(PalmImageSlot.PASSIVE_FULL, "left")
+                updateProgress(20, getString(R.string.scan_stage_check_right))
                 val rightValidation = validateOrFallback(PalmImageSlot.ACTIVE_FULL, "right")
                 applyValidationToUi(PalmImageSlot.PASSIVE_FULL, leftValidation)
                 applyValidationToUi(PalmImageSlot.ACTIVE_FULL, rightValidation)
@@ -436,15 +546,17 @@ class ScanActivity : AppCompatActivity() {
                 }
 
                 sessionState = PalmSessionState.ExtractingEvidence
-                updateProgress(AnalysisStep.EXTRACT_EVIDENCE)
+                updateProgress(30, getString(R.string.scan_stage_read_main_lines))
                 val leftEvidence = extractEvidence("left", locale, buildImageListFor("left"))
                     ?: fallbackEvidence("left", PalmImageSlot.PASSIVE_FULL)
+                updateProgress(45, getString(R.string.scan_stage_read_detail))
                 val rightEvidence = extractEvidence("right", locale, buildImageListFor("right"))
                     ?: fallbackEvidence("right", PalmImageSlot.ACTIVE_FULL)
                 maybeApplyDetailRequests(leftEvidence, rightEvidence)
 
                 sessionState = PalmSessionState.GeneratingTeaser
-                updateProgress(AnalysisStep.SYNTHESIZE_HANDS)
+                updateProgress(60, getString(R.string.scan_stage_read_mounts))
+                updateProgress(75, getString(R.string.scan_stage_compare))
                 val resultSummary = generateResultSummary(locale, leftEvidence, rightEvidence)
                 if (resultSummary.rawJson.contains("fallback")) {
                     markRecoverableError(
@@ -455,21 +567,42 @@ class ScanActivity : AppCompatActivity() {
                 }
 
                 sessionState = PalmSessionState.Ready
+                updateProgress(96, getString(R.string.scan_stage_finalize))
                 completeProgress()
+                val sessionId = activeSession?.sessionId ?: "palm_${userSession.userId}_${System.currentTimeMillis()}"
+                val createdAt = activeSession?.createdAt ?: System.currentTimeMillis()
                 val payload = PalmSessionPayload(
+                    sessionId = sessionId,
+                    userId = userSession.userId,
+                    createdAt = createdAt,
+                    label = activeSession?.label ?: buildSessionLabel(createdAt),
                     locale = locale,
                     handedness = com.palmreader.astro.palmistry.PalmHandedness.NOT_SURE,
+                    originalPassiveImagePath = originalPaths.getValue(PalmImageSlot.PASSIVE_FULL),
+                    originalActiveImagePath = originalPaths.getValue(PalmImageSlot.ACTIVE_FULL),
+                    originalDetailImageAPath = originalPaths[PalmImageSlot.DETAIL_A],
+                    originalDetailImageBPath = originalPaths[PalmImageSlot.DETAIL_B],
                     passiveImagePath = processedPaths.getValue(PalmImageSlot.PASSIVE_FULL),
                     activeImagePath = processedPaths.getValue(PalmImageSlot.ACTIVE_FULL),
                     detailImageAPath = processedPaths[PalmImageSlot.DETAIL_A],
                     detailImageBPath = processedPaths[PalmImageSlot.DETAIL_B],
+                    extraOriginalImagePaths = activeSession?.extraOriginalImagePaths ?: emptyList(),
+                    extraImagePaths = activeSession?.extraImagePaths ?: emptyList(),
                     passiveValidationJson = leftValidation.rawJson,
                     activeValidationJson = rightValidation.rawJson,
                     passiveEvidenceJson = leftEvidence.rawJson,
                     activeEvidenceJson = rightEvidence.rawJson,
                     resultSummary = resultSummary,
+                    chatHistory = activeSession?.chatHistory ?: emptyList(),
+                    unresolvedAreas = (leftEvidence.recommendedDetailRequests + rightEvidence.recommendedDetailRequests)
+                        .mapNotNull { it.reason.takeIf(String::isNotBlank) }
+                        .distinct(),
+                    isStale = false,
                     recoverableMessages = emptyList()
                 )
+                sessionStore.save(payload)
+                loadedSession = payload
+                sessionIsStale = false
                 startActivity(Intent(this@ScanActivity, ResultActivity::class.java).apply {
                     putExtra("palmSession", payload)
                 })
@@ -620,7 +753,7 @@ class ScanActivity : AppCompatActivity() {
         leftEvidence: PalmEvidenceResult,
         rightEvidence: PalmEvidenceResult
     ): PalmResultSummary {
-        updateProgress(AnalysisStep.GENERATE_TEASER)
+        updateProgress(88, getString(R.string.scan_stage_write))
         val (systemPrompt, _) = PalmistryPrompts.resultSummary(locale)
         val userPrompt = """
 Left evidence JSON:
@@ -663,7 +796,7 @@ ${rightEvidence.rawJson}
         return PalmResultSummary(
             openingRead = PalmOpeningRead(
                 title = "Your overall reading",
-                body = "Your hands suggest a practical path with room for change. One hand looks more like a steady base, while the other suggests growth through experience and choice."
+                body = "Your hands suggest a practical base with some uneven development. One hand looks steadier, while the other shows more change, effort, and course correction over time."
             ),
             modules = listOf(
                 PalmResultModule(
@@ -689,14 +822,16 @@ ${rightEvidence.rawJson}
                 PalmResultModule(
                     key = "future",
                     title = "What Your Future Holds",
-                    summary = "Your palm suggests gradual progress rather than sudden luck, with better results when you stay consistent and let direction build over time."
+                    summary = "Your palm points more toward gradual progress than sudden luck. The stronger pattern here is earned improvement, though delays or stop-start phases may appear before things settle."
                 )
             ),
             followupPrompts = listOf(
-                "Love and marriage",
-                "Career and money",
-                "Timing and turning points",
-                "Special signs on my palm"
+                "Ask about marriage",
+                "Ask about business",
+                "Ask about money growth",
+                "Ask about weak points",
+                "Ask about timing",
+                "Ask about special signs"
             ),
             rawJson = """{"fallback":"result_summary"}"""
         )
@@ -829,6 +964,13 @@ ${rightEvidence.rawJson}
         binding.tvProgressSubtext.text = getString(R.string.scan_progress_subtext)
     }
 
+    private fun updateProgress(percent: Int, label: String) {
+        binding.layoutProgress.visibility = View.VISIBLE
+        animateProgressTo(percent)
+        binding.tvProgressLabel.text = label
+        binding.tvProgressSubtext.text = getString(R.string.scan_progress_subtext)
+    }
+
     private fun completeProgress() {
         binding.layoutProgress.visibility = View.VISIBLE
         animateProgressTo(100)
@@ -904,6 +1046,10 @@ ${rightEvidence.rawJson}
             FileOutputStream(file).use { output -> input.copyTo(output) }
         } ?: error("Unable to open gallery image")
         file.absolutePath
+    }
+
+    private fun buildSessionLabel(timestamp: Long): String {
+        return "Palm reading ${SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.ENGLISH).format(Date(timestamp))}"
     }
 
     private fun String.toConsumerLine(fallback: String): String {
