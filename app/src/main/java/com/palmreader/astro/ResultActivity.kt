@@ -26,7 +26,6 @@ import com.palmreader.astro.palmistry.HeuristicPalmImagePreprocessor
 import com.palmreader.astro.palmistry.PalmEvidenceResult
 import com.palmreader.astro.palmistry.PalmImagePreprocessor
 import com.palmreader.astro.palmistry.PalmImageSlot
-import com.palmreader.astro.palmistry.PalmQaAnswer
 import com.palmreader.astro.palmistry.PalmChatEntry
 import com.palmreader.astro.palmistry.PalmSessionStore
 import com.palmreader.astro.palmistry.PalmResultSummary
@@ -141,18 +140,33 @@ class ResultActivity : BaseFeatureActivity() {
 
         val summary = session.resultSummary
         addNarrativeCard(
-            label = "",
+            label = "Overall Reading",
             title = summary.openingRead.title,
             body = summary.openingRead.body
         )
 
         summary.modules.forEach { module ->
             addNarrativeCard(
-                label = "",
+                label = labelForModuleKey(module.key),
                 title = module.title,
                 body = module.summary
             )
         }
+    }
+
+    private fun labelForModuleKey(key: String): String = when (key) {
+        "palm_shape" -> "Hand Type"
+        "fingers" -> "Fingers"
+        "major_lines" -> "Major Lines"
+        "secondary_lines" -> "Lines"
+        "mounts" -> "Mounts"
+        "symbols" -> "Symbols & Marks"
+        "love_marriage" -> "Love & Marriage"
+        "career_money" -> "Career & Money"
+        "health" -> "Health"
+        "luck" -> "Luck & Timing"
+        "left_vs_right" -> "Left vs Right"
+        else -> ""
     }
 
     private fun addNarrativeCard(label: String, title: String, body: String?, meta: String? = null) {
@@ -227,16 +241,22 @@ class ResultActivity : BaseFeatureActivity() {
     }
 
     private fun suggestedQuestionFor(prompt: String): String = when (prompt.trim().lowercase()) {
+        "ask about love & marriage in detail" -> "What does my palm say about love and long-term relationships?"
+        "ask about career path" -> "What career path does my palm suggest and am I suited for business or employment?"
+        "ask about money & finances" -> "What does my palm say about money growth and financial stability?"
+        "ask about health signs" -> "What health signs are visible in my palm and what should I watch?"
+        "ask about special symbols" -> "What special symbols or marks are visible in my palm and what do they mean?"
+        "ask about timing & turning points" -> "What major turning points or timing patterns are visible in my palm?"
+        "ask about love & relationships" -> "What does my palm say about love and relationships?"
+        "ask about career & money" -> "What does my palm say about career and finances?"
+        "ask about health" -> "What health signs are visible in my palm?"
+        "ask about timing" -> "What timing or turning points are visible in my palm?"
+        "ask about your strengths" -> "What are the strongest and most positive signs in my palm?"
         "ask about marriage" -> "What does my palm say about marriage and long-term relationships?"
-        "ask about business" -> "Does my palm support business, or am I better suited to a stable career path?"
-        "ask about money growth" -> "What does my palm say about money growth and financial stability?"
+        "ask about business" -> "Does my palm support business, or am I better suited to employment?"
+        "ask about money growth" -> "What does my palm say about money growth?"
         "ask about weak points" -> "What is the weakest point shown in my palm right now?"
-        "ask about timing" -> "What major turning points are visible in my palm?"
         "ask about special signs" -> "What special signs or symbols are visible in my palm?"
-        "love and marriage" -> "What does my palm say about love and marriage?"
-        "career and money" -> "What does my palm say about career and money?"
-        "timing and turning points" -> "What major turning points are visible in my palm?"
-        "special signs on my palm" -> "What special signs or symbols are visible in my palm?"
         else -> prompt
     }
 
@@ -361,10 +381,9 @@ class ResultActivity : BaseFeatureActivity() {
                         appendChatEntryToSession(isUser = false, text = msg)
                         saveToHistory(getString(R.string.feature_palmistry), q, msg)
                     } else {
-                        val formatted = formatPalmQaAnswer(answer)
-                        appendChat(formatted, isUser = false)
-                        appendChatEntryToSession(isUser = false, text = formatted)
-                        saveToHistory(getString(R.string.feature_palmistry), q, formatted)
+                        appendChat(answer, isUser = false)
+                        appendChatEntryToSession(isUser = false, text = answer)
+                        saveToHistory(getString(R.string.feature_palmistry), q, answer)
                     }
                 } catch (e: Exception) {
                     Log.e("AstroAI", "Palmistry v2 Q&A failed", e)
@@ -388,7 +407,7 @@ class ResultActivity : BaseFeatureActivity() {
         }
     }
 
-    private suspend fun askPalmQuestion(session: PalmSessionPayload, question: String): PalmQaAnswer? {
+    private suspend fun askPalmQuestion(session: PalmSessionPayload, question: String): String? {
         val (systemPrompt, userQuestionPrompt) = PalmistryPrompts.qa(session.locale, question)
         val priorSummary = buildString {
             resultSummary?.let {
@@ -402,17 +421,8 @@ class ResultActivity : BaseFeatureActivity() {
         val userPrompt = """
 ${userQuestionPrompt}
 
-Prior reading summary:
+Their palm reading:
 $priorSummary
-
-Passive evidence JSON:
-${session.passiveEvidenceJson}
-
-Active evidence JSON:
-${session.activeEvidenceJson}
-
-Result summary JSON:
-${session.resultSummary.rawJson}
         """.trimIndent()
 
         val imageBase64List = mutableListOf<String>()
@@ -425,42 +435,33 @@ ${session.resultSummary.rawJson}
             session.detailImageBPath?.let { path ->
                 imagePathToBase64(path).takeIf { it.isNotBlank() }?.let(imageBase64List::add)
             }
-            session.extraImagePaths.forEach { path ->
-                imagePathToBase64(path).takeIf { it.isNotBlank() }?.let(imageBase64List::add)
-            }
         }
 
-        for (attempt in 0..1) {
-            val result = if (imageBase64List.isNotEmpty()) {
-                OpenAIService.multiImageVisionChatCompletion(
-                    systemPrompt = systemPrompt,
-                    userMessage = userPrompt,
-                    imageBase64List = imageBase64List,
-                    model = OpenAIService.MODEL_PALM_PREMIUM,
-                    imageDetail = AppConfig.Palmistry.ANALYSIS_IMAGE_DETAIL,
-                    maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
-                    timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
-                    maxRetries = 0
-                )
-            } else {
-                OpenAIService.chatCompletion(
-                    systemPrompt = systemPrompt,
-                    userMessage = userPrompt,
-                    model = OpenAIService.MODEL_PALM_PREMIUM,
-                    maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
-                    timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
-                    maxRetries = 0
-                )
-            }
-            when (result) {
-                is OpenAIService.ApiResult.Success -> {
-                    PalmistryJsonParser.parseQaAnswer(result.data)?.let { return it }
-                    Log.w("ResultActivity", "Palm QA parse retry attempt=$attempt")
-                }
-                else -> return null
-            }
+        val result = if (imageBase64List.isNotEmpty()) {
+            OpenAIService.multiImageVisionChatCompletion(
+                systemPrompt = systemPrompt,
+                userMessage = userPrompt,
+                imageBase64List = imageBase64List,
+                model = OpenAIService.MODEL_VISION_FULL,
+                imageDetail = "low",
+                maxOutputTokens = AppConfig.Palmistry.QA_MAX_OUTPUT_TOKENS,
+                timeoutMs = AppConfig.Palmistry.QA_TIMEOUT_MS,
+                maxRetries = 1
+            )
+        } else {
+            OpenAIService.chatCompletion(
+                systemPrompt = systemPrompt,
+                userMessage = userPrompt,
+                model = OpenAIService.MODEL_VISION_FULL,
+                maxOutputTokens = AppConfig.Palmistry.QA_MAX_OUTPUT_TOKENS,
+                timeoutMs = AppConfig.Palmistry.QA_TIMEOUT_MS,
+                maxRetries = 1
+            )
         }
-        return null
+        return when (result) {
+            is OpenAIService.ApiResult.Success -> result.data.trim().takeIf { it.isNotBlank() }
+            else -> null
+        }
     }
 
     private suspend fun imagePathToBase64(path: String): String = withContext(Dispatchers.IO) {
@@ -585,26 +586,6 @@ ${session.resultSummary.rawJson}
 
     private fun buildPalmQaUnavailableMessage(primaryMessage: String): String {
         return listOf(primaryMessage, getString(R.string.qa_credit_restored_note)).joinToString("\n")
-    }
-
-    private fun formatPalmQaAnswer(answer: PalmQaAnswer): String {
-        return buildString {
-            append("Short Answer - ")
-            append(answer.shortAnswer.ifBlank { "The visible signs are not strong enough for a confident answer." })
-            append('\n')
-            append("Detailed Answer - ")
-            append(answer.detailedAnswer.ifBlank { "Some smaller markings are softer in this scan, so this answer stays closer to the main visible signs." })
-            if (answer.limitsOrUncertainty.isNotEmpty()) {
-                append('\n')
-                append("Note - ")
-                append(answer.limitsOrUncertainty.joinToString("; "))
-            }
-            if (answer.suggestedFollowUps.isNotEmpty()) {
-                append('\n')
-                append("Try asking - ")
-                append(answer.suggestedFollowUps.joinToString(" | "))
-            }
-        }
     }
 
     private fun requiresImageReinspection(question: String): Boolean {
