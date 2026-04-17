@@ -445,8 +445,8 @@ object OpenAIService {
             requestMethod = "POST"
             setRequestProperty("Content-Type", "application/json")
             transport.authHeader?.let { setRequestProperty("Authorization", it) }
-            connectTimeout = 15_000
-            readTimeout = 90_000
+            connectTimeout = 12_000
+            readTimeout = 22_000
             doOutput = true
         }
 

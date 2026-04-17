@@ -59,8 +59,8 @@ object AppConfig {
         /** Output token budget for direct palm reading (11 comprehensive sections). */
         const val ANALYSIS_MAX_OUTPUT_TOKENS: Int = 1600
 
-        /** Timeout for direct palm reading call. */
-        const val ANALYSIS_TIMEOUT_MS: Long = 30_000L
+        /** Timeout for direct palm reading call (keep below readTimeout=22s in OpenAIService). */
+        const val ANALYSIS_TIMEOUT_MS: Long = 20_000L
 
         /** Output token budget for palm Q&A answers. */
         const val QA_MAX_OUTPUT_TOKENS: Int = 400

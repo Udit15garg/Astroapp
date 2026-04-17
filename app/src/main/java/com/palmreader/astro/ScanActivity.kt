@@ -538,10 +538,27 @@ class ScanActivity : AppCompatActivity() {
 
                 updateProgress(15, getString(R.string.scan_stage_prepare))
                 ensureRequiredBitmapsLoaded()
-
-                updateProgress(45, getString(R.string.scan_stage_read_main_lines))
                 val allImages = buildAllImagesForReading()
-                val resultSummary = generateDirectReading(locale, allImages)
+
+                updateProgress(38, getString(R.string.scan_stage_read_main_lines))
+                val progressJob = launch {
+                    val stages = listOf(
+                        48 to R.string.scan_stage_read_detail,
+                        58 to R.string.scan_stage_read_mounts,
+                        68 to R.string.scan_stage_compare,
+                        78 to R.string.scan_stage_write,
+                        86 to R.string.scan_stage_finalize
+                    )
+                    for ((pct, res) in stages) {
+                        delay(3_500L)
+                        updateProgress(pct, getString(res))
+                    }
+                }
+                val resultSummary = try {
+                    generateDirectReading(locale, allImages)
+                } finally {
+                    progressJob.cancel()
+                }
 
                 updateProgress(96, getString(R.string.scan_stage_finalize))
                 completeProgress()
@@ -611,7 +628,7 @@ class ScanActivity : AppCompatActivity() {
             imageDetail = AppConfig.Palmistry.ANALYSIS_IMAGE_DETAIL,
             maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
             timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
-            maxRetries = 1
+            maxRetries = 0
         )) {
             is OpenAIService.ApiResult.Success ->
                 PalmistryJsonParser.parseResultSummary(result.data) ?: fallbackResultSummary()

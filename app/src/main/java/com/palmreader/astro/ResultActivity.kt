@@ -101,6 +101,7 @@ class ResultActivity : BaseFeatureActivity() {
         renderSuggestionChips(activeSession.resultSummary.followupPrompts)
         renderPersistedChat(activeSession)
         bindImproveActions()
+        setupImproveToggle()
         setupQA()
     }
 
@@ -215,6 +216,20 @@ class ResultActivity : BaseFeatureActivity() {
         binding.llChat.removeAllViews()
         session.chatHistory.forEach { entry ->
             appendChat(entry.text, entry.isUser)
+        }
+    }
+
+    private fun setupImproveToggle() {
+        binding.layoutImproveActions.visibility = View.GONE
+        binding.tvImproveLabel.apply {
+            text = "${getString(R.string.result_improve_label)}  ▾"
+            isClickable = true
+            isFocusable = true
+            setOnClickListener {
+                val expanding = binding.layoutImproveActions.visibility != View.VISIBLE
+                binding.layoutImproveActions.visibility = if (expanding) View.VISIBLE else View.GONE
+                text = "${getString(R.string.result_improve_label)}  ${if (expanding) "▲" else "▾"}"
+            }
         }
     }
 
