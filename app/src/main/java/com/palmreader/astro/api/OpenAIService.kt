@@ -22,10 +22,11 @@ object OpenAIService {
 
     private const val OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions"
     private const val MODEL = "gpt-4o-mini"
-    const val MODEL_VISION_FAST = "gpt-4o-mini"  // fast strict hand validation
-    const val MODEL_VISION_FULL = "gpt-4o"       // stable full palm analysis
-    const val MODEL_PALM_QA = "gpt-4o-mini"      // stable palm follow-up answers
-    const val MODEL_PALM_PREMIUM = "gpt-5"       // richer extraction / synthesis / q&a
+    const val MODEL_VISION_FAST = "gpt-4o-mini"          // fast strict hand validation
+    const val MODEL_VISION_FULL = "gpt-4o"               // standard full palm analysis (~15s)
+    const val MODEL_VISION_DEEP = "gpt-5.3-chat-latest"  // deep palm analysis (~45s, richer)
+    const val MODEL_PALM_QA = "gpt-4o-mini"              // palm follow-up answers
+    const val MODEL_PALM_PREMIUM = "gpt-5.3-chat-latest" // richer extraction / synthesis / q&a
     private const val TIMEOUT_MS = 90_000L
 
     private data class RequestTransport(
@@ -226,6 +227,7 @@ object OpenAIService {
             if (imageBase64List.isEmpty()) {
                 return@withContext ApiResult.Error("No images were supplied for vision analysis.")
             }
+            val readTimeoutMs = (timeoutMs + 8_000L).coerceAtLeast(22_000L).toInt()
             var lastResult: ApiResult<String> = ApiResult.Error("Unknown multi-image vision error", -1)
             var backoffMs = 1_500L
             val retries = maxRetries.coerceIn(0, 2)
@@ -245,7 +247,8 @@ object OpenAIService {
                             model = model,
                             temperature = temperature,
                             imageDetail = imageDetail,
-                            maxOutputTokens = maxOutputTokens
+                            maxOutputTokens = maxOutputTokens,
+                            readTimeoutMs = readTimeoutMs
                         )
                     } catch (e: IOException) {
                         ApiResult.Error("Network error: ${e.message}", -1)
@@ -272,7 +275,8 @@ object OpenAIService {
                             model = fallbackModel,
                             temperature = temperature,
                             imageDetail = imageDetail,
-                            maxOutputTokens = maxOutputTokens
+                            maxOutputTokens = maxOutputTokens,
+                            readTimeoutMs = readTimeoutMs
                         )
                     } catch (e: IOException) {
                         ApiResult.Error("Network error: ${e.message}", -1)
@@ -355,7 +359,8 @@ object OpenAIService {
         model: String,
         temperature: Float,
         imageDetail: String,
-        maxOutputTokens: Int
+        maxOutputTokens: Int,
+        readTimeoutMs: Int = 22_000
     ): ApiResult<String> {
         val userContent = JSONArray().apply {
             put(JSONObject().apply {
@@ -388,7 +393,7 @@ object OpenAIService {
                 })
             })
         }
-        return executeHttpRequest(transport, requestBody)
+        return executeHttpRequest(transport, requestBody, readTimeoutMs)
     }
 
     private fun makeRequest(
@@ -439,14 +444,18 @@ object OpenAIService {
         body.put("reasoning_effort", "low")
     }
 
-    private fun executeHttpRequest(transport: RequestTransport, requestBody: JSONObject): ApiResult<String> {
+    private fun executeHttpRequest(
+        transport: RequestTransport,
+        requestBody: JSONObject,
+        readTimeoutMs: Int = 22_000
+    ): ApiResult<String> {
         val startedAt = System.currentTimeMillis()
         val connection = (URL(transport.endpoint).openConnection() as HttpURLConnection).apply {
             requestMethod = "POST"
             setRequestProperty("Content-Type", "application/json")
             transport.authHeader?.let { setRequestProperty("Authorization", it) }
             connectTimeout = 12_000
-            readTimeout = 22_000
+            readTimeout = readTimeoutMs
             doOutput = true
         }
 

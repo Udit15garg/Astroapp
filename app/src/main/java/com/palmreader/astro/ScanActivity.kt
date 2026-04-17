@@ -26,14 +26,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.palmreader.astro.api.OpenAIService
 import com.palmreader.astro.databinding.ActivityScanBinding
-import com.palmreader.astro.palmistry.AnalysisStep
 import com.palmreader.astro.palmistry.HeuristicPalmImagePreprocessor
-import com.palmreader.astro.palmistry.PalmEvidenceResult
 import com.palmreader.astro.palmistry.PalmImagePreprocessor
 import com.palmreader.astro.palmistry.PalmImageSlot
 import com.palmreader.astro.palmistry.PalmOpeningRead
-import com.palmreader.astro.palmistry.PalmProgressMapper
-import com.palmreader.astro.palmistry.PalmRecoverableError
 import com.palmreader.astro.palmistry.PalmResultModule
 import com.palmreader.astro.palmistry.PalmResultSummary
 import com.palmreader.astro.palmistry.PalmSessionPayload
@@ -45,6 +41,7 @@ import com.palmreader.astro.palmistry.PalmistryJsonParser
 import com.palmreader.astro.palmistry.PalmistryPrompts
 import com.palmreader.astro.palmistry.UploadSlotState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -70,7 +67,6 @@ class ScanActivity : AppCompatActivity() {
     private val originalPaths = mutableMapOf<PalmImageSlot, String>()
     private val slotStates = mutableMapOf<PalmImageSlot, UploadSlotState>()
     private val slotGuidance = mutableMapOf<PalmImageSlot, String>()
-    private val recoverableErrors = mutableListOf<PalmRecoverableError>()
     private var currentCaptureSlot: PalmImageSlot? = null
     private var pendingPhotoFile: File? = null
     private var analysisRunId: String = ""
@@ -329,14 +325,6 @@ class ScanActivity : AppCompatActivity() {
             } else {
                 getString(R.string.scan_partial_retake_message)
             }
-            if (slot.isDetail()) {
-                markRecoverableError(
-                    step = AnalysisStep.PREPARE_IMAGES,
-                    code = "optional_preprocess_${slot.name.lowercase()}",
-                    userMessage = userMessage,
-                    technicalMessage = e.message
-                )
-            }
             setSlotState(slot, UploadSlotState.RETAKE_REQUIRED, userMessage)
             if (!slot.isDetail()) {
                 setStatus(userMessage, isError = true)
@@ -527,7 +515,6 @@ class ScanActivity : AppCompatActivity() {
         }
 
         analysisRunId = "run_${System.currentTimeMillis()}"
-        recoverableErrors.clear()
         setCaptureButtonsEnabled(false)
 
         lifecycleScope.launch {
@@ -550,7 +537,7 @@ class ScanActivity : AppCompatActivity() {
                         86 to R.string.scan_stage_finalize
                     )
                     for ((pct, res) in stages) {
-                        delay(3_500L)
+                        delay(9_000L)
                         updateProgress(pct, getString(res))
                     }
                 }
@@ -624,7 +611,7 @@ class ScanActivity : AppCompatActivity() {
             systemPrompt = system,
             userMessage = user,
             imageBase64List = images,
-            model = OpenAIService.MODEL_VISION_FULL,
+            model = OpenAIService.MODEL_VISION_DEEP,
             imageDetail = AppConfig.Palmistry.ANALYSIS_IMAGE_DETAIL,
             maxOutputTokens = AppConfig.Palmistry.ANALYSIS_MAX_OUTPUT_TOKENS,
             timeoutMs = AppConfig.Palmistry.ANALYSIS_TIMEOUT_MS,
@@ -761,18 +748,6 @@ class ScanActivity : AppCompatActivity() {
         return file.absolutePath
     }
 
-    private fun updateProgress(step: AnalysisStep) {
-        PalmistryEventLogger.log(
-            this,
-            "analysis_step_started",
-            mapOf("run_id" to analysisRunId, "step" to step.name)
-        )
-        binding.layoutProgress.visibility = View.VISIBLE
-        animateProgressTo(PalmProgressMapper.percentFor(step))
-        binding.tvProgressLabel.text = PalmProgressMapper.labelFor(step)
-        binding.tvProgressSubtext.text = getString(R.string.scan_progress_subtext)
-    }
-
     private fun updateProgress(percent: Int, label: String) {
         binding.layoutProgress.visibility = View.VISIBLE
         animateProgressTo(percent)
@@ -814,32 +789,6 @@ class ScanActivity : AppCompatActivity() {
             ContextCompat.getColor(
                 this,
                 if (isError) R.color.error else R.color.text_medium
-            )
-        )
-    }
-
-    private fun markRecoverableError(
-        step: AnalysisStep,
-        code: String,
-        userMessage: String,
-        technicalMessage: String? = null
-    ) {
-        recoverableErrors += PalmRecoverableError(
-            step = step,
-            code = code,
-            userMessage = userMessage,
-            technicalMessage = technicalMessage
-        )
-        sessionState = PalmSessionState.RecoverableError(step, userMessage)
-        PalmistryEventLogger.log(
-            this,
-            "recoverable_error",
-            mapOf(
-                "run_id" to analysisRunId,
-                "step" to step.name,
-                "code" to code,
-                "message" to userMessage,
-                "technical" to technicalMessage
             )
         )
     }

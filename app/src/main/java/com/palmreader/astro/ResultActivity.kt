@@ -23,14 +23,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.palmreader.astro.api.OpenAIService
 import com.palmreader.astro.databinding.ActivityResultBinding
 import com.palmreader.astro.palmistry.HeuristicPalmImagePreprocessor
-import com.palmreader.astro.palmistry.PalmEvidenceResult
 import com.palmreader.astro.palmistry.PalmImagePreprocessor
 import com.palmreader.astro.palmistry.PalmImageSlot
 import com.palmreader.astro.palmistry.PalmChatEntry
 import com.palmreader.astro.palmistry.PalmSessionStore
 import com.palmreader.astro.palmistry.PalmResultSummary
 import com.palmreader.astro.palmistry.PalmSessionPayload
-import com.palmreader.astro.palmistry.PalmistryJsonParser
 import com.palmreader.astro.palmistry.PalmistryPrompts
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -49,8 +47,6 @@ class ResultActivity : BaseFeatureActivity() {
     private var persona: PersonaEntity? = null
     private var typingIndicatorView: TextView? = null
     private var palmSession: PalmSessionPayload? = null
-    private var passiveEvidence: PalmEvidenceResult? = null
-    private var activeEvidence: PalmEvidenceResult? = null
     private var resultSummary: PalmResultSummary? = null
     private var pendingCustomPhotoFile: File? = null
 
@@ -89,8 +85,6 @@ class ResultActivity : BaseFeatureActivity() {
         palmSession = sessionStore.load(session.userId, session.sessionId) ?: session
         val activeSession = palmSession ?: session
 
-        passiveEvidence = PalmistryJsonParser.parseEvidence(activeSession.passiveEvidenceJson, "left")
-        activeEvidence = PalmistryJsonParser.parseEvidence(activeSession.activeEvidenceJson, "right")
         resultSummary = activeSession.resultSummary
 
         binding.btnBack.setOnClickListener { finish() }
@@ -113,13 +107,12 @@ class ResultActivity : BaseFeatureActivity() {
             refreshed.chatHistory.size != current.chatHistory.size
         ) {
             palmSession = refreshed
-            passiveEvidence = PalmistryJsonParser.parseEvidence(refreshed.passiveEvidenceJson, "left")
-            activeEvidence = PalmistryJsonParser.parseEvidence(refreshed.activeEvidenceJson, "right")
             resultSummary = refreshed.resultSummary
             renderPalmSession(refreshed)
             renderSuggestionChips(refreshed.resultSummary.followupPrompts)
             renderPersistedChat(refreshed)
             bindImproveActions()
+            setupImproveToggle()
         }
     }
 
@@ -267,11 +260,6 @@ class ResultActivity : BaseFeatureActivity() {
         "ask about health" -> "What health signs are visible in my palm?"
         "ask about timing" -> "What timing or turning points are visible in my palm?"
         "ask about your strengths" -> "What are the strongest and most positive signs in my palm?"
-        "ask about marriage" -> "What does my palm say about marriage and long-term relationships?"
-        "ask about business" -> "Does my palm support business, or am I better suited to employment?"
-        "ask about money growth" -> "What does my palm say about money growth?"
-        "ask about weak points" -> "What is the weakest point shown in my palm right now?"
-        "ask about special signs" -> "What special signs or symbols are visible in my palm?"
         else -> prompt
     }
 

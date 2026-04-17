@@ -80,20 +80,6 @@ object PalmistryJsonParser {
         )
     }
 
-    fun parseQaAnswer(raw: String): PalmQaAnswer? {
-        val obj = parseObject(raw) ?: return null
-        return PalmQaAnswer(
-            shortAnswer = obj.optString("short_answer"),
-            detailedAnswer = obj.optString("detailed_answer"),
-            visibilityStatus = obj.optString("visibility_status"),
-            confidence = obj.optString("confidence"),
-            evidenceUsed = parseStringArray(obj.optJSONArray("evidence_used")),
-            limitsOrUncertainty = parseStringArray(obj.optJSONArray("limits_or_uncertainty")),
-            suggestedFollowUps = parseStringArray(obj.optJSONArray("suggested_follow_ups")),
-            rawJson = normalizeJson(raw)
-        )
-    }
-
     fun normalizeJson(raw: String): String {
         val trimmed = raw.trim()
         val firstBrace = trimmed.indexOf('{')

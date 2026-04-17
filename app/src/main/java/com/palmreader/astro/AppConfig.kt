@@ -53,14 +53,14 @@ object AppConfig {
         /** Timeout for fast validation pass. */
         const val VALIDATION_TIMEOUT_MS: Long = 12_000L
 
-        /** Vision detail for full palm analysis pass. */
+        /** Vision detail for palm analysis pass. */
         const val ANALYSIS_IMAGE_DETAIL: String = "high"
 
-        /** Output token budget for direct palm reading (11 comprehensive sections). */
+        /** Output token budget for palm reading (11 comprehensive sections, gpt-5.3). */
         const val ANALYSIS_MAX_OUTPUT_TOKENS: Int = 1600
 
-        /** Timeout for direct palm reading call (keep below readTimeout=22s in OpenAIService). */
-        const val ANALYSIS_TIMEOUT_MS: Long = 20_000L
+        /** Timeout for palm reading — gpt-5.3 averages ~35s, 65s gives safe headroom. */
+        const val ANALYSIS_TIMEOUT_MS: Long = 65_000L
 
         /** Output token budget for palm Q&A answers. */
         const val QA_MAX_OUTPUT_TOKENS: Int = 400

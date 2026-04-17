@@ -75,18 +75,6 @@ data class PalmResultSummary(
 ) : Parcelable
 
 @Parcelize
-data class PalmQaAnswer(
-    val shortAnswer: String,
-    val detailedAnswer: String,
-    val visibilityStatus: String,
-    val confidence: String,
-    val evidenceUsed: List<String>,
-    val limitsOrUncertainty: List<String>,
-    val suggestedFollowUps: List<String>,
-    val rawJson: String
-) : Parcelable
-
-@Parcelize
 data class PalmChatEntry(
     val isUser: Boolean,
     val text: String,
