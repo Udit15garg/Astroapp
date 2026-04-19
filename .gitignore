@@ -20,3 +20,4 @@ out/
 .claude/
 **/node_modules/
 **/.expo/
+test_palm.py

@@ -1,0 +1,10 @@
+# Copy this file to local.properties and fill in your values.
+# local.properties is git-ignored — never commit real keys.
+
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+
+# OpenAI key for local dev/testing (Android build + test_palm.py)
+OPENAI_API_KEY=sk-...
+
+# Optional: proxy token if using a backend proxy instead of direct OpenAI
+OPENAI_PROXY_TOKEN=
